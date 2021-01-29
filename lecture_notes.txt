@@ -1,0 +1,87 @@
+tf.math.sigmoid(z)
+tf.math.tanh(z)
+tf.nn.relu(z)
+
+activation function to introduce non linearity
+
+(linear activation functions produce linear decisions) activation function just allows the appeoximation of "arbitrarily complex functions"
+
+
+dot product of weights, add bias, add non linearity -> steps for deep learning
+
+dense layer = tf.keras.layers.Dense(units=([number of outputs]))
+
+hidden layers can be added using dense
+
+
+model = tf.keras.Sequential([
+tf.keras.layers.Dense(n), tf.keras.layers.Dense(2)]) -> runs layers to propagate sequentially
+
+loss function to optimize weights and biases 
+
+calculating loss:
+
+loss = tf.reduce_mean(tf.nn.softmax_corss_entropy_with_logits(y, predicted)) -> classification problem
+
+for regression, use mean squared error loss ->
+loss = tf.reduce_mean(tf.square(tf.subtract(y, predicted)))
+
+loss optimization -> gradient descent finds lowest point in loss optimization function(based on weights) to reduce loss as much as possible
+
+backpropagation already implemented
+
+learning rate is defined by the size of the step taken in gradient descent to converge on the lcal minimum (least loss in loss function pltted by weights). If it is too large, you can easily overshoot, else you might get stuck in a local minima. This however can be dynamically solved by tensorflow.
+
+many algorithms for gradient descent algorithm
+
+SGD -> tf.keras.optimizers.SGD
+Adam -> tf.keras.optimizers.Adam
+Adadelta -> tf.keras.optimizers.Adadelta
+Adagrad -> tf.keras.optimizers.Adagrad
+RMSProp -> tf.keras.optimizers.RMSProp
+
+example code:
+
+
+""""""
+
+import tensorflow as tf
+
+model = tf.keras.Sequential([...])
+
+while True: # do forever
+
+	prediction = model(z)
+	with tf.GradientTape() as tape:
+		loss = compute_loss(y, prediction) -> produces non 2d loss function upon which gradient descent needs to be performed
+	# update the weights using the gradient
+	grads = tape.gradient(loss, model.trainable_variables)
+	optimizer.apply_gradients(zip(grads, model.trainable_variables)) # next iteration, confidence will be better
+
+
+deep learning overfitting:
+
+47:43 in lecture has a good illustration
+
+we dont want it to memorize the detection of just the training data (if you do train forever, it will do that). we want it to be generalizable so that it can be applied to new training data.
+
+Drop out fixes this. sets some activations which forces network to rely on all nodes as a whole and not just one (we dont want a memorization channel. find multiple channels in model and makes it more robust (essential for regularization). typical dropout is 50%. 
+
+tf.keras.layers.Dropout(p=0.5)
+
+Also early stopping helps with regularization
+
+look at 51.04 in lecture. YOu can graph both testing and training loss versus training iteration to see point at which the training data loss and testing data loss diverge(if it trains too far, it starts memorizing data). We dont want it to do much better on training data then testing data and so we can find the training iteration at which we want to stop training by graphing the two.
+
+Link to lecture: https://www.youtube.com/watch?v=njKP3FqW3Sk&list=PLtBw6njQRU-rwp5__7C0oIVt26ZgjG9NI&index=1
+
+Lecture 2 on RNNs
+
+Deep Sequence Modeling - sequential processing of data (need previous data for future predictions)
+
+input and output sizes are not always defined (words in a sentence can vary and maybe want to feed in sentences of different lengths to model)
+	we can use fixed model to force it look at first n elements or
+	use sequence as sets of counts (count number of times word appears and pass that into data) (doesnt save order though)
+	
+
+RNNs have loops where network takes where last output is being fed in as input 
