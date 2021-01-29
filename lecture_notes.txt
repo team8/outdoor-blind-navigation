@@ -85,3 +85,49 @@ input and output sizes are not always defined (words in a sentence can vary and 
 	
 
 RNNs have loops where network takes where last output is being fed in as input 
+
+
+CNN Notes: 
+
+enter matrix of image (3 dimensional for rgb) (less dimensions in image makes computationally faster)
+
+classificication (binary output) vs regression gives value in range
+
+end number of nodes needs to be number of possible situations. Result on each ending node is probability. 
+
+dense layers every node connected to every other node
+
+Image detection needs to have spacial structure such that it knows what is around each node so that it is not just predicting on counts of certain rgb values in an image.
+
+Pass groups of pixels to each node fixes this as each node is also getting surrounding data. The patch operation is called convolution. 
+ex. 4 byb 4 patch convolution means moving 2d window that looks at 4 pixels by 4 pixels, runs some set of weights on patch of pixels to extract local features. 
+
+How does convolution extract features. convolution makes it look for similar "patches". see 14:00 in lecture of convolution. Different filters can help detect specific features (filter is just matrix of weights). see 16:45 in lecture to see how filter with image creates feature map. Different weights in filter can detect different things (sharpen, edge detection (canny (is that the same)). Can use multiple filters to extract different features. 
+
+CNNs are neural network architectures:
+input image -> convolution layer (filter feature maps)  -> maxpooling -> Dense Layers. 
+Pooling: downsampling operation on each feature map
+
+each neuron is only seeing a little patch when using a conv layers. 
+
+mutiple filters on a single convolutional layer (convolutional layers creates multiple images based on each filter being run. convolutional layer return volume of images where depth is number of filters you set. 
+
+do more research on stride and receptive field.
+how to specify filter in convolutional layer?
+
+activation function used on conv layer as well
+
+pooling - remove dimensionality of input data (used after convolutional layer) (often multiple conv layer then max pooling layer in sequence). 
+
+max pooling find maximum of patches (stride referse to distance movement between each patch)
+
+ stacking convolution + relu + pooling for finding features. Then it is flattened and passed to a few dense layers. 
+
+ cnns used for classification, not necessarily regression
+
+can also be used for semantic segmentation to find what class each pixel in the image is (dynamically labeling of each pixel). just change ooutput dimensions and stuff
+
+
+
+
+
