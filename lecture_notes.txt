@@ -127,7 +127,11 @@ max pooling find maximum of patches (stride referse to distance movement between
 
 can also be used for semantic segmentation to find what class each pixel in the image is (dynamically labeling of each pixel). just change ooutput dimensions and stuff
 
+Bigger filter size means more of surrounding pixels will be used for feature detection (maybe 11 by 11 or 9 by 9 max)
 
+filter coefficients are learnt during training process
+
+see how to vidualize result of image being passed through convolution filter
 
 
 
