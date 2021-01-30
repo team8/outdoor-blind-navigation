@@ -1,0 +1,7 @@
+Run this command to install weights for nn "wget_https://pjreddie.com/media/files/yolov3.weights"
+Then run python3 yolo_opencv.py --image person.jpg --config yolov3.cfg --weights yolov3.weights --classes yolov3.txt 
+
+Custom tuning of yolo NN
+https://blog.francium.tech/custom-object-training-and-detection-with-yolov3-darknet-and-opencv-41542f2ff44e
+
+
