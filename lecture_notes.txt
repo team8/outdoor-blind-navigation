@@ -91,7 +91,7 @@ CNN Notes:
 
 enter matrix of image (3 dimensional for rgb) (less dimensions in image makes computationally faster)
 
-classificication (binary output) vs regression gives value in range
+classification (binary output) vs regression gives value in range
 
 end number of nodes needs to be number of possible situations. Result on each ending node is probability. 
 
