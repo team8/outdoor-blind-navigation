@@ -1,3 +1,5 @@
 *.weights
 *.jpg
 *.png
+
+venv/
