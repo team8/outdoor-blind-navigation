@@ -1,6 +1,7 @@
 *.weights
 *.jpg
 *.png
+*.mov
 
 # for Pycharm
 idea/
