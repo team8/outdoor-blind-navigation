@@ -38,7 +38,8 @@ def preprocess(img_location, side):
 
     # remove the blue red layer for smaller image size
     b, g, r = cv2.split(img)
-    img = cv2.merge((b, g, edges))
+    img = cv2.merge((b, edges, r))
+    cv2.imshow('green', img)
 
     # if lines is not None:
     #     for line in lines:
@@ -47,7 +48,6 @@ def preprocess(img_location, side):
     #             cv2.line(img, (x1, y1), (x2, y2), (255, 0, 0), 3)
 
     # print(img.shape)
-    cv2.imshow('test1', img2)
     cv2.imshow('test2', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
