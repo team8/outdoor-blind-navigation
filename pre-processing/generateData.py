@@ -5,12 +5,12 @@ import cv2
 import tensorflow as tf
 from tensorflow.keras.layers.experimental import preprocessing
 
-data_augmentation = tf.keras.Sequential([
+data_augmentation = [
         preprocessing.RandomRotation(0.2),
         preprocessing.RandomZoom(0.2, 0.2),
         preprocessing.RandomContrast(0.25),
         preprocessing.RandomTranslation(0.2,0.2)
-])
+]
 
 #This should duplicate everything in a directory and put it into another one
 def flipData(path, label, outpath):
@@ -53,12 +53,14 @@ def fillDataSet(images_to_generate, path, label, outpath):
         cv2.imwrite(new_image_path, transformed_image)  # save transformed image to path
 
         i += 1
+
+
 def genLeft():
-    flipData(300, "/programming/ml-dataset/Sidewalk Dataset/Right of Sidewalk", "Left", "~/programming/ml-dataset/Sidewalk Dataset Augmented/Left of Sidewalk")
-    fillDataSet(1000, "/programming/ml-dataset/Sidewalk Dataset/Left of Sidewalk", "Left",  "~/programming/ml-dataset/Sidewalk Dataset Augmented/Left of Sidewalk")
+    flipData(300, "../../../ml-datasets/Sidewalk Dataset Augmented/Right of Sidewalk/", "Left", "../../../ml-datasets/Sidewalk Dataset Augmented/Left of Sidewalk")
+    fillDataSet(1000, "../../../ml-datasets/Sidewalk Dataset Augmented/Left of Sidewalk", "Left",  "../../../ml-datasets/Sidewalk Dataset Augmented/Left of Sidewalk")
 def genRight():
-    flipData(300, "/programming/ml-dataset/Sidewalk Dataset/Left of Sidewalk", "Right", "~/programming/ml-dataset/Sidewalk Dataset Augmented/Right of Sidewalk")
-    fillDataSet(1000, "/programming/ml-dataset/Sidewalk Dataset/Right of Sidewalk", "Right",  "~/programming/ml-dataset/Sidewalk Dataset Augmented/Right of Sidewalk")
+    flipData(300, "../../../ml-datasets/Sidewalk Dataset Augmented/Left of Sidewalk", "Right", "../../../programming/ml-datasets/Sidewalk Dataset Augmented/Right of Sidewalk")
+    fillDataSet(1000, "../../../programming/ml-datasets/Sidewalk Dataset Augmented/Right of Sidewalk", "Right",  "../../../programming/ml-datasets/Sidewalk Dataset Augmented/Right of Sidewalk")
 
 
 genLeft()
