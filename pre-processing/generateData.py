@@ -19,12 +19,26 @@ def flipData(path, label, outpath):
     for im in os.listdir(path):  # read image from folder, append into images array
         images.append(os.path.join(path, im))
     for i in range(0, len(images)):
-        image = images[i - 1]
+        image = images[i]
         original_image = cv2.imread(image)
         transformed_image = cv2.flip(original_image, 1)
         new_image_path = "%s/fd_%s_%s.jpg" % (outpath, label, i + 1)
         transformed_image = cv2.cvtColor(transformed_image, cv2.COLOR_BGR2RGB)
         cv2.imwrite(new_image_path, transformed_image)  # save transformed image to path
+
+def flipData(numberToMake, path, label, outpath):
+    images = []
+    print(os.listdir(path))
+    for im in os.listdir(path):  # read image from folder, append into images array
+        images.append(os.path.join(path, im))
+    for i in range(0, numberToMake):
+        image = images[i]
+        original_image = cv2.imread(image)
+        transformed_image = cv2.flip(original_image, 1)
+        new_image_path = "%s/fd_%s_%s.jpg" % (outpath, label, i + 1)
+        transformed_image = cv2.cvtColor(transformed_image, cv2.COLOR_BGR2RGB)
+        cv2.imwrite(new_image_path, transformed_image)  # save transformed image to path
+
 
 def fillDataSet(images_to_generate, path, label, outpath):
     images = []
@@ -38,5 +52,14 @@ def fillDataSet(images_to_generate, path, label, outpath):
         transformed_image=cv2.cvtColor(transformed_image, cv2.COLOR_BGR2RGB)
         cv2.imwrite(new_image_path, transformed_image)  # save transformed image to path
 
+        i += 1
+def genLeft():
+    flipData(300, "/programming/ml-dataset/Sidewalk Dataset/Right of Sidewalk", "Left", "~/programming/ml-dataset/Sidewalk Dataset Augmented/Left of Sidewalk")
+    fillDataSet(1000, "/programming/ml-dataset/Sidewalk Dataset/Left of Sidewalk", "Left",  "~/programming/ml-dataset/Sidewalk Dataset Augmented/Left of Sidewalk")
+def genRight():
+    flipData(300, "/programming/ml-dataset/Sidewalk Dataset/Left of Sidewalk", "Right", "~/programming/ml-dataset/Sidewalk Dataset Augmented/Right of Sidewalk")
+    fillDataSet(1000, "/programming/ml-dataset/Sidewalk Dataset/Right of Sidewalk", "Right",  "~/programming/ml-dataset/Sidewalk Dataset Augmented/Right of Sidewalk")
 
 
+genLeft()
+genRight()
