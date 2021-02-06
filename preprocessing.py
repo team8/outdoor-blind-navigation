@@ -49,6 +49,9 @@ def preprocess(img, side):
     cv2.waitKey(1)
     cv2.destroyAllWindows()
 
+    img = img / 255
+    return img
+
 
 cap = cv2.VideoCapture('1080p.mov')
 # cap = cv2.VideoCapture(0)
