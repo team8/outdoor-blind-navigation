@@ -27,7 +27,7 @@ model.compile(
 
 
 # model.fit(x=np.array(fire_detection_train_dataset), y=one_hot_encoded_array, epochs=8)
-batch_size = 64
+batch_size = 32
 dataset_path = "../../../ml-datasets/Sidewalk Dataset Augmented/"
 # train_ds = tf.keras.preprocessing.image_dataset_from_directory( dataset_path , validation_split = 0.1, subset="training", seed=123, image_size = (input_shape[0], input_shape[1]))
 train_ds = tf.keras.preprocessing.image_dataset_from_directory( dataset_path , validation_split = 0.1, subset="training", seed=123, image_size = (input_shape[0], input_shape[1]), batch_size=batch_size, label_mode="categorical")
@@ -68,35 +68,13 @@ labels = ["Left of Sidewalk", "Middle of Sidewalk", "Right of Sidewalk"]
 
 # train_ds = train_ds.map(create_one_hot_encoded)
 
-train_ds = train_ds.shuffle(buffer_size = 1000)
+train_ds = train_ds.shuffle(buffer_size = 100)
 # train_ds = train_ds.map(lambda x, y: (x, [0, 1, 0]))
 # train_ds = train_ds.map(lambda x, y: (x, np.array(labels.index(y))))
 train_ds = train_ds.cache()
 # train_ds = train_ds.batch(batch_size)
 print(train_ds)
-model.fit(train_ds, batch_size = batch_size, epochs=7)
-
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[0], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[1], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[2], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[3], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[4], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[5], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[6], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[7], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[8], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[9], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[10], 0)))
-print("\n\n\n\n")
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[-1], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[-2], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[-3], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[-4], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[-5], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[-6], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[-7], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[-8], 0)))
-print(model.predict(np.expand_dims(sidewalk_detection_train_dataset[-9], 0)))
+model.fit(train_ds, batch_size = batch_size, epochs=15)
 
 print(model.summary())
 
