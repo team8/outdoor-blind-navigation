@@ -1,12 +1,11 @@
 import tensorflow as tf
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import cv2
 import os
 import numpy as np
 import random
 import preprocessing
-
-input_shape = (240, 100, 3)
+input_shape = (360, 240, 3)
 model = tf.keras.models.Sequential([
    tf.keras.layers.Conv2D(64, (11, 11), input_shape=input_shape),
    tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
@@ -30,8 +29,19 @@ model.compile(
 batch_size = 32
 dataset_path = "../../../ml-datasets/Sidewalk Dataset Augmented/"
 # train_ds = tf.keras.preprocessing.image_dataset_from_directory( dataset_path , validation_split = 0.1, subset="training", seed=123, image_size = (input_shape[0], input_shape[1]))
-train_ds = tf.keras.preprocessing.image_dataset_from_directory( dataset_path , validation_split = 0.1, subset="training", seed=123, image_size = (input_shape[0], input_shape[1]), batch_size=batch_size, label_mode="categorical")
+train_ds = tf.keras.preprocessing.image_dataset_from_directory( dataset_path , labels='inferred', validation_split = 0.1, subset="training", seed=123, image_size = (input_shape[0], input_shape[1]), batch_size=batch_size, label_mode="categorical")
 labels = ["Left of Sidewalk", "Middle of Sidewalk", "Right of Sidewalk"]
+
+class_names = train_ds.class_names
+print(class_names)
+plt.figure(figsize=(10, 10))
+for images, labels in train_ds.take(1):
+  for i in range(9):
+    ax = plt.subplot(3, 3, i + 1)
+    cv2.imshow("image", images[i].numpy().astype("uint8"))
+    print(labels[i])
+    cv2.waitKey(3000);
+    # plt.axis("off")
 # def fix(image, label):
     # img = tf.cast(image, tf.float32)
     # return tf.expand_dims(img, 0), label
