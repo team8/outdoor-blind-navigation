@@ -24,7 +24,7 @@ def rotate(img_name):
     if exif['Orientation'] == 3:
         img = cv2.rotate(img, cv2.ROTATE_180)
     if exif['Orientation'] == 6:
-        img = cv2.rotate(img, cv2.ROTATE_90)
+        img = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
     if exif['Orientation'] == 8:
         img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
 
