@@ -2,6 +2,6 @@
 *.jpg
 *.png
 *.mov
-
+*.h5
 # for Pycharm
 idea/
