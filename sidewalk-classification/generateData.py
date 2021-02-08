@@ -2,16 +2,16 @@ import os
 import random
 
 import cv2
-from tensorflow.keras.layers.experimental import preprocessing
+# from tensorflow.keras.layers.experimental import preprocessing
 import pathlib
 
 
-data_augmentation = [
-        preprocessing.RandomRotation(0.2),
-        preprocessing.RandomZoom(0.2, 0.2),
-        preprocessing.RandomContrast(0.25),
-        preprocessing.RandomTranslation(0.2,0.2)
-]
+# data_augmentation = [
+        # preprocessing.RandomRotation(0.2),
+        # preprocessing.RandomZoom(0.2, 0.2),
+        # preprocessing.RandomContrast(0.25),
+        # preprocessing.RandomTranslation(0.2,0.2)
+# ]
 
 #This should duplicate everything in a directory and put it into another one
 def flipData(path, label, outpath):
@@ -27,8 +27,10 @@ def flipData(path, label, outpath):
         cv2.imwrite(new_image_path, transformed_image)  # save transformed image to path
 
 def flipData(numberToMake, path, label, outpath):
+    print(path)
     images = []
     for im in os.listdir(path):  # read image from folder, append into images array
+        print(im)
         images.append(os.path.join(path, im))
     for i in range(0, numberToMake):
         image = images[i]
@@ -43,11 +45,11 @@ def flipData(numberToMake, path, label, outpath):
 
 
 def genLeft(num):
-    flipData(num, "../ml-datasets/Right of Sidewalk/", "Left", "../ml-datasets/Sidewalk Dataset Augmented/Left of Sidewalk")
+    flipData(num, "../../../ml-datasets/Sidewalk Dataset Augmented/Right of Sidewalk/", "Left", "../../../ml-datasets/Sidewalk Dataset Augmented/Left of Sidewalk")
 def genRight(num):
-    flipData(num, "../ml-datasets/Left of Sidewalk", "Right", "../ml-datasets/Sidewalk Dataset Augmented/Right of Sidewalk")
+    flipData(num, "../../../ml-datasets/Sidewalk Dataset Augmented/Left of Sidewalk", "Right", "../../../ml-datasets/Sidewalk Dataset Augmented/Right of Sidewalk")
 def genMiddle(num):
-    flipData(num, "../ml-datasets/Middle of Sidewalk", "Middle", "../ml-datasets/Sidewalk Dataset Augmented/Middle of Sidewalk")
+    flipData(num, "../../../ml-datasets/Sidewalk Dataset Augmented/Middle of Sidewalk", "Middle", "../../../ml-datasets/Sidewalk Dataset Augmented/Middle of Sidewalk")
 
 #Left percent, middle percent, right percent correspond to what percent of the total images generated will be what. total is how many in total you will geneate, smallestSetNum will be how many images are in the smallest set
 def genBalanced(leftPercent, middlePercent, rightPercent, total, smallestSetNum):
@@ -61,7 +63,7 @@ def genBalanced(leftPercent, middlePercent, rightPercent, total, smallestSetNum)
     genMiddle((int)(middlePercent * total))
     genRight((int)(rightPercent * total))
 
-genBalanced(1/3, 1/3, 1/3, 9, 3)
+genBalanced(1/3, 1/2, 1/3, 900, 700)
 
 
 

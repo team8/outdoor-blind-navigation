@@ -1,5 +1,5 @@
 *.weights
 *.jpg
 *.png
-
+*.h5
 venv/
