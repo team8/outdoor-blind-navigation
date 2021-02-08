@@ -37,9 +37,7 @@ def flipData(numberToMake, path, label, outpath):
         transformed_image = cv2.flip(original_image, 1)
         new_image_path = "%s/fd_%s_%s.jpg" % (outpath, label, i + 1)
         new_image_path = pathlib.PurePosixPath(new_image_path)
-        print(new_image_path)
-        transformed_image = cv2.cvtColor(transformed_image, cv2.COLOR_BGR2RGB)
-        print(cv2.imwrite(new_image_path.__str__(), transformed_image))  # save transformed image to path
+        cv2.imwrite(new_image_path.__str__(), transformed_image)  # save transformed image to path
 
 
 
