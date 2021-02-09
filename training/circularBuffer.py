@@ -18,10 +18,11 @@ class CircularBuffer:
 
     def add(self, item):
         if self.full():
-            print(self.remove())
+            removed = self.remove()
             self.tail = (self.tail + 1) % self.capacity
             self.queue[self.tail] = item
             self.size = self.size + 1
+            return removed
         else:
             self.tail = (self.tail + 1) % self.capacity
             self.queue[self.tail] = item
