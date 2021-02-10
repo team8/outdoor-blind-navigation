@@ -50,14 +50,17 @@ class CircularBuffer:
             self.size = self.size - 1
             return item
 
+    def second_dimension_capacity(self):
+        return len(self.queue[0])
+
     def second_dimension_list(self):
         tmplist = []
+        for x in range(self.second_dimension_capacity()):
+            tmplist.append([])
         tmp = self.queue
         for x in self.queue:
-            tmplist.append([])
             for y in x:
-                print(list_multi_dimension(tmp, y))
-                tmplist[list_multi_dimension(tmp, y)].append(y)
+                tmplist[list_multi_dimension(tmp, y)].extend([y])
         return tmplist
 
     def average(self):
