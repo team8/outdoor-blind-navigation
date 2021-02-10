@@ -27,9 +27,9 @@ for x in range(len(list)):
 cb2 = circularBuffer.CircularBuffer(3, [])
 
 cb2.add([1, 2, 3])
-cb2.add([4, 5, 6])
+cb2.add([3, 1, 2])
 print("The size is %s" % cb2.size)
-cb2.add([7, 8, 9])
+cb2.add([2, 3, 1])
 print("The list is %s" % cb2.second_dimension_list())
 print("The average is %s" % cb2.average())
 print("The median is %s" % cb2.median())

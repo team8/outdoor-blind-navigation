@@ -1,19 +1,6 @@
 import statistics
 
 
-def list_multi_dimension(list, elem, r=False):
-    for row, i in enumerate(list):
-        try:
-            column = i.index(elem)
-        except ValueError:
-            continue
-        if r:
-            return row, column
-        else:
-            return column
-    return -1
-
-
 class CircularBuffer:
     def __init__(self, capacity, typeex=0):
         self.capacity = capacity
@@ -57,10 +44,10 @@ class CircularBuffer:
         tmplist = []
         for x in range(self.second_dimension_capacity()):
             tmplist.append([])
-        tmp = self.queue
         for x in self.queue:
             for y in x:
-                tmplist[list_multi_dimension(tmp, y)].extend([y])
+                element = x.index(y)
+                tmplist[element].extend([y])
         return tmplist
 
     def average(self):
