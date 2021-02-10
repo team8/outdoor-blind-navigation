@@ -1,3 +1,7 @@
 *.weights
 *.jpg
 *.png
+*.mov
+*.h5
+idea/
+venv/
