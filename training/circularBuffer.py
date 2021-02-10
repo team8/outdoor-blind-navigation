@@ -1,13 +1,26 @@
 import statistics
 
 
+def list_multi_dimension(list, elem, r=False):
+    for row, i in enumerate(list):
+        try:
+            column = i.index(elem)
+        except ValueError:
+            continue
+        if r:
+            return row, column
+        else:
+            return column
+    return -1
+
+
 class CircularBuffer:
-    def __init__(self, type, capacity):
+    def __init__(self, capacity, typeex=0):
         self.capacity = capacity
         self.queue = [None] * capacity
         self.tail = -1
         self.head = 0
-        self.type = type
+        self.type = typeex
         self.size = 0
 
     def full(self):
@@ -37,17 +50,43 @@ class CircularBuffer:
             self.size = self.size - 1
             return item
 
+    def second_dimension_list(self):
+        tmplist = []
+        tmp = self.queue
+        for x in self.queue:
+            tmplist.append([])
+            for y in x:
+                print(list_multi_dimension(tmp, y))
+                tmplist[list_multi_dimension(tmp, y)].append(y)
+        return tmplist
+
     def average(self):
-        if self.type != "num":
-            print("Incompatible data type")
-        else:
+        if isinstance(self.type, (float, int)):
             return statistics.mean(self.queue)
+        elif isinstance(self.type, list):
+            tmp = self.second_dimension_list()
+            one_d_list = []
+            for x in range(len(tmp)):
+                innertmp = tmp[x]
+                mean = statistics.mean(innertmp)
+                one_d_list.append(mean)
+            return one_d_list
+        else:
+            print("Incompatible data type")
 
     def median(self):
-        if self.type != "num":
-            print("Incompatible data type")
-        else:
+        if isinstance(self.type, (float, int)):
             return statistics.median(self.queue)
+        elif isinstance(self.type, list):
+            tmp = self.second_dimension_list()
+            one_d_list = []
+            for x in range(len(tmp)):
+                innertmp = tmp[x]
+                median = statistics.median(innertmp)
+                one_d_list.append(median)
+            return one_d_list
+        else:
+            print("Incompatible data type")
 
     def return_list(self):
         return self.queue
