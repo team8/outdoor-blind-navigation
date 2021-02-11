@@ -1,4 +1,5 @@
 import statistics
+import numpy as np
 
 
 class CircularBuffer:
@@ -10,14 +11,14 @@ class CircularBuffer:
         self.type = typeex
         self.size = 0
 
-    def full(self):
+    def __full(self):
         return self.size == self.capacity
 
-    def empty(self):
+    def __empty(self):
         return self.size == 0
 
     def add(self, item):
-        if self.full():
+        if self.__full():
             removed = self.remove()
             self.tail = (self.tail + 1) % self.capacity
             self.queue[self.tail] = item
@@ -29,7 +30,7 @@ class CircularBuffer:
             self.size = self.size + 1
 
     def remove(self):
-        if self.empty():
+        if self.__empty():
             print("Queue Empty")
         else:
             item = self.queue[self.head]
@@ -37,24 +38,36 @@ class CircularBuffer:
             self.size = self.size - 1
             return item
 
-    def second_dimension_capacity(self):
-        return len(self.queue[0])
+    def __second_dimension_capacity(self):
+        if isinstance(self.type, np.ndarray):
+            return len(self.queue)
+        else:
+            return len(self.queue[0])
 
-    def second_dimension_list(self):
+    def __second_dimension_list(self):
         tmplist = []
-        for x in range(self.second_dimension_capacity()):
-            tmplist.append([])
-        for x in self.queue:
-            for y in x:
-                element = x.index(y)
-                tmplist[element].extend([y])
+        for x in range(self.__second_dimension_capacity()):
+            if x is not None:
+                tmplist.append([])
+        if isinstance(self.type, np.ndarray):
+            for x in self.queue:
+                if x is not None:
+                    for y in x:
+                        element = list(x).index(y)
+                        tmplist[element].extend([y])
+        else:
+            for x in self.queue:
+                if x is not None:
+                    for y in x:
+                        element = x.index(y)
+                        tmplist[element].extend([y])
         return tmplist
 
     def average(self):
         if isinstance(self.type, (float, int)):
             return statistics.mean(self.queue)
-        elif isinstance(self.type, list):
-            tmp = self.second_dimension_list()
+        elif isinstance(self.type, (list, np.ndarray)):
+            tmp = self.__second_dimension_list()
             one_d_list = []
             for x in range(len(tmp)):
                 innertmp = tmp[x]
@@ -67,13 +80,27 @@ class CircularBuffer:
     def median(self):
         if isinstance(self.type, (float, int)):
             return statistics.median(self.queue)
-        elif isinstance(self.type, list):
-            tmp = self.second_dimension_list()
+        elif isinstance(self.type, (list, np.ndarray)):
+            tmp = self.__second_dimension_list()
             one_d_list = []
             for x in range(len(tmp)):
                 innertmp = tmp[x]
                 median = statistics.median(innertmp)
                 one_d_list.append(median)
+            return one_d_list
+        else:
+            print("Incompatible data type")
+
+    def mode(self):
+        if isinstance(self.type, (float, int)):
+            return statistics.mode(self.queue)
+        elif isinstance(self.type, (list, np.ndarray)):
+            tmp = self.__second_dimension_list()
+            one_d_list = []
+            for x in range(len(tmp)):
+                innertmp = tmp[x]
+                mode = statistics.mode(innertmp)
+                one_d_list.append(mode)
             return one_d_list
         else:
             print("Incompatible data type")
