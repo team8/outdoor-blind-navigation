@@ -5,7 +5,8 @@ import numpy as np
 def play_audio_file(filename):
     wave_obj = sa.WaveObject.from_wave_file(filename)
     play_obj = wave_obj.play()
-    play_obj.wait_done()  # Wait until sound has finished playing
+
+    print("e")
 
 
 #stick with 44100 for the sample_count, as simpleaudio does not support weird sample counts
