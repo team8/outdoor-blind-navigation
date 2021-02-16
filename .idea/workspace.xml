@@ -4,7 +4,6 @@
     <list default="true" id="2fd74517-2fa9-4b76-be95-a80faab30992" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/BufferTests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/BufferTests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/circularBuffer.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/circularBuffer.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -188,16 +187,6 @@
           <url>file://$PROJECT_DIR$/tests/BufferTests.py</url>
           <line>4</line>
           <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/tests/BufferTests.py</url>
-          <line>12</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/tests/BufferTests.py</url>
-          <line>11</line>
-          <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/utils/circularBuffer.py</url>
