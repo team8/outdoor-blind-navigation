@@ -5,7 +5,6 @@ import numpy as np
 def play_audio_file(filename):
     wave_obj = sa.WaveObject.from_wave_file(filename)
     play_obj = wave_obj.play()
-
     print("e")
 
 
