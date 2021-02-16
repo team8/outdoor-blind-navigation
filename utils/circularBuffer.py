@@ -30,6 +30,10 @@ class CircularBuffer:
             return None
         else:
             temp = list(filter(None, temp))
+        if(type(temp[0]) == list):
+            return np.mean(temp, axis=0)
+        else:
+            temp = list(filter(None, temp))
             return sum(temp) / len(temp)
 
     def median(self):

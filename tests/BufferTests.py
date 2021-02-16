@@ -2,12 +2,13 @@ from utils import circularBuffer
 from utils.circularBuffer import CircularBuffer
 
 br = CircularBuffer(3)
+input1 = [1,2,3]
+input2 = [3,1,2]
+input3 = [2,3,1]
 
-testIn = [1,2,3]
+inputTotal = [input1, input2, input3]
 
-br.initQueue(testIn)
+inputRealTotal = [inputTotal,inputTotal,inputTotal]
+br.initQueue(inputRealTotal)
 print(br.toString())
-br.add(3)
-br.add(2)
-
-print(br.toString())
+print(br.mean())
