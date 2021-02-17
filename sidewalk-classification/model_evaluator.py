@@ -22,8 +22,8 @@ while True:
     else:
         state = classes[np.argmax(averaged_prediction)]
     end_time = time.time()
-    
+    confidence =  np.argmax(averaged_prediction) * 100 // 1 if averaged_prediction is not None else None
     cv2.imshow("Sidewalk Stream", orig_cap)
-    print("FPS:", 1/ (end_time - start_time), state, np.argmax(averaged_prediction))
+    print("FPS:", 1/ (end_time - start_time), state, "Confidence:", confidence)
     cv2.waitKey(1)
 
