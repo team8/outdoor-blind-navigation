@@ -1,4 +1,3 @@
-import statistics
 import numpy as np
 
 #Using an inefficient but easy to code implementation
