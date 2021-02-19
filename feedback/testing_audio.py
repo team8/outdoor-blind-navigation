@@ -5,13 +5,13 @@ has_started = False
 
 while True:
     if not has_started:
-        # audio_player.add_new_sound("testAudioPython.wav")
-        # audio_player.add_new_sound("clasppy.wav")
-        # audio_player.add_new_sound("clikcy tung.wav")
-        # audio_player.add_new_sound("bigboonk.wav")
-        # audio_player.add_new_sound("clasppy.wav")
-        # audio_player.add_new_sound("testAudioPython.wav")
-        audio_interpreter.create_audio_cue("stop sign", -1, 101, 100, 100)
+        #all audio cues implemented - stop sign and people, middle, right, left, all prioritized.
+        audio_interpreter.create_audio_cue("stop sign", 0, 1, 100, 100)
+        audio_interpreter.create_audio_cue("stop sign", 50, 1, 100, 100)
+        audio_interpreter.create_audio_cue("stop sign", 100, 1, 100, 100)
+        audio_interpreter.create_audio_cue("person", 0, 1, 100, 100)
+        audio_interpreter.create_audio_cue("person", 50, 1, 100, 100)
+        audio_interpreter.create_audio_cue("person", 100, 1, 100, 100)
         has_started = True
         print(audio_player.audioClips)
     if len(audio_player.audioClips) > 0 and not audio_player.is_playing:

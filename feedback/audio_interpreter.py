@@ -15,4 +15,20 @@ def create_audio_cue(object_name, object_pixel_x, object_pixel_y, image_width, i
         pixel_quadrant_x = 0
     if pixel_quadrant_y <= 0:
         pixel_quadrant_y = 0
+
+    if object_name == "stop sign":
+        if pixel_quadrant_x == 0:
+            audio_player.add_new_sound("stopsignleft.wav")
+        if pixel_quadrant_x == 1:
+            audio_player.add_new_sound("stopsignmiddle.wav")
+        if pixel_quadrant_x == 2:
+            audio_player.add_new_sound("stopsignright.wav")
+    elif object_name == "person":
+        if pixel_quadrant_x == 0:
+            audio_player.add_new_sound("personleft.wav")
+        if pixel_quadrant_x == 1:
+            audio_player.add_new_sound("personahead.wav")
+        if pixel_quadrant_x == 2:
+            audio_player.add_new_sound("personright.wav")
+
     print(str(pixel_quadrant_x) + " " + str(pixel_quadrant_y))

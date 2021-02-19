@@ -1,10 +1,12 @@
 import simpleaudio as sa
 
 audioClipDictionary = {
-    "testAudioPython.wav": 1,
-    "bigboonk.wav": 2,
-    "clikcy tung.wav": 3,
-    "clasppy.wav": 4
+    "personahead.wav": 1,
+    "personleft.wav": 2,
+    "personright.wav": 3,
+    "stopsignmiddle.wav": 4,
+    "stopsignleft.wav": 5,
+    "stopsignright.wav": 6,
 }
 
 audioClips = []
