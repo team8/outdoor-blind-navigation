@@ -54,7 +54,9 @@ model.compile(
 batch_size = 32
 dataset_path = "../../../ml-datasets/Sidewalk Dataset Augmented/"
 # train_ds = tf.keras.preprocessing.image_dataset_from_directory( dataset_path , validation_split = 0.1, subset="training", seed=123, image_size = (input_shape[0], input_shape[1]))
-train_ds = tf.keras.preprocessing.image_dataset_from_directory(dataset_path , labels='inferred', batch_size=batch_size, validation_split = 0.05, subset="training", seed=121, image_size = (input_shape[0], input_shape[1]), label_mode="categorical")
+train_ds = tf.keras.preprocessing.image_dataset_from_directory(dataset_path , labels='inferred', batch_size=batch_size, validation_split = 0.2, subset="training", seed=121, image_size = (input_shape[0], input_shape[1]), label_mode="categorical")
+
+val_ds = tf.keras.preprocessing.image_dataset_from_directory(dataset_path , labels='inferred', batch_size=batch_size, validation_split = 0.2, subset="validation", seed=121, image_size = (input_shape[0], input_shape[1]), label_mode="categorical")
 labels = ["Left of Sidewalk", "Middle of Sidewalk", "Right of Sidewalk"]
 
 normalization_layer = tf.keras.layers.experimental.preprocessing.Rescaling(1./255)
@@ -62,7 +64,7 @@ normalized_ds = train_ds.map(lambda x, y: (normalization_layer(x), y))
 train_ds = train_ds.shuffle(buffer_size = 1000)
 train_ds = train_ds.cache()
 print(train_ds)
-model.fit(train_ds, epochs=10)
+model.fit(train_ds, validation_data=val_ds, epochs=8)
 
 print(model.summary())
 if input("Do you want to save model? y for yes, n for no?\n") == 'y':
