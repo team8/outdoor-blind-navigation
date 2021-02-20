@@ -21,16 +21,20 @@ input_shape = (100, 100, 3)
 # model.compile(
     # optimizer='Adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
 
-VGG16_MODEL=tf.keras.applications.VGG16(input_shape=input_shape,
+# VGG16_MODEL=tf.keras.applications.VGG16(input_shape=input_shape,
+                                               # include_top=False,
+                                               # weights='imagenet')
+
+RESNET_MODEL=tf.keras.applications.ResNet152(input_shape=input_shape,
                                                include_top=False,
                                                weights='imagenet')
-
-VGG16_MODEL.trainable=False
+RESNET_MODEL.trainable=False
 global_average_layer = tf.keras.layers.GlobalAveragePooling2D()
 prediction_layer = tf.keras.layers.Dense(3,activation='softmax')
 
 model = tf.keras.Sequential([
-  VGG16_MODEL,
+  # VGG16_MODEL,
+    RESNET_MODEL,
   global_average_layer,
   prediction_layer
 ])
@@ -58,9 +62,9 @@ normalized_ds = train_ds.map(lambda x, y: (normalization_layer(x), y))
 train_ds = train_ds.shuffle(buffer_size = 1000)
 train_ds = train_ds.cache()
 print(train_ds)
-model.fit(train_ds, epochs=15)
+model.fit(train_ds, epochs=10)
 
 print(model.summary())
 if input("Do you want to save model? y for yes, n for no?\n") == 'y':
-    model.save("sidewalk_classification_model.h5")
+    model.save("sidewalk_classification_model_resnet.h5")
 
