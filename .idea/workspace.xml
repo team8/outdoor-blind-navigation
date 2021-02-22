@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2fd74517-2fa9-4b76-be95-a80faab30992" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/utils/display/sidewalk_display.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/blind-navigation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/blind-navigation.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/display/sidewalk_display.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/display/sidewalk_display.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,7 +154,7 @@
       <workItem from="1612999422864" duration="1256000" />
       <workItem from="1613000702001" duration="6029000" />
       <workItem from="1613086148894" duration="6868000" />
-      <workItem from="1613785935081" duration="43811000" />
+      <workItem from="1613785935081" duration="51326000" />
     </task>
     <servers />
   </component>
