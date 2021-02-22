@@ -78,7 +78,7 @@ while True:
     screen = pygame.display.set_mode((rect2[2], rect2[3]))
     screen.blit(img2, rect2)
     if direction == 0:
-        img = pygame.image.load("../../utils/display/Right6.png")
+        img = pygame.image.load("../../utils/display/Left.png")
         img = img.convert_alpha()
         rect = img.get_rect()
         rect[2] /= 3
@@ -111,4 +111,3 @@ while True:
         rect = rect.move((rect2[2] / 2 - rect[2] / 2, 5 / 10 * rect2[3]))
         screen.blit(img, rect)
     pygame.display.flip()
-    cv2.waitKey(1)
