@@ -35,17 +35,25 @@ def start_display():
     varx = 1575
     vary = 1000
     stream = cv2.VideoCapture(0)
+    direction = 0
     while True:
-        direction = 1
         transform = stream.read()[1]
-        for event in pygame.event.get():
+        events = pygame.event.get()
+        for event in events:
             if event.type == pygame.QUIT:
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_d:
+                    direction = 1
+                if event.key == pygame.K_a:
+                    direction = 0
+                if event.key == pygame.K_w:
+                    direction = 2
         screen.fill(bg_color)
-        #img2 = pygame.image.load("D:/Maxwell/SpecialRobotStuff/blind-navigation/utils/display/School.jpg")
+        transform = transform.swapaxes(0,1)
+        transform = transform[:,:,::-1]
         img2 = pygame.surfarray.make_surface(transform)
         img2 = img2.convert()
-
         rect2 = img2.get_rect()
         if (rect2[2] > 1920):
             rect2[3] *= 1920/rect2[2]
@@ -57,7 +65,7 @@ def start_display():
         screen = pygame.display.set_mode((rect2[2], rect2[3]))
         screen.blit(img2, rect2)
         if direction == 0:
-            img = pygame.image.load("D:/Maxwell/SpecialRobotStuff/blind-navigation/utils/display/Right5.png")
+            img = pygame.image.load("D:/Maxwell/SpecialRobotStuff/blind-navigation/utils/display/Right6.png")
             img = img.convert_alpha()
             rect = img.get_rect()
             rect[2]/=3
@@ -68,7 +76,7 @@ def start_display():
             rect = rect.move((rect2[2]/2-rect[2]/2, 5/10*rect2[3]))
             screen.blit(img, rect)
         if direction == 1:
-            img = pygame.image.load("D:/Maxwell/SpecialRobotStuff/blind-navigation/utils/display/Right6.png")
+            img = pygame.image.load("D:/Maxwell/SpecialRobotStuff/blind-navigation/utils/display/Right5.png")
             img = img.convert_alpha()
             rect = img.get_rect()
             rect[2]/=3
@@ -76,21 +84,20 @@ def start_display():
             rect[2] *= rect2[2]/varx
             rect[3] *= rect2[3]/vary
             img = pygame.transform.scale(img, (rect[2], rect[3]))
-            rect = rect.move((rect2[2] / 2 - rect[2] / 2, 5 / 10 * rect2[3]))
+            rect = rect.move((rect2[2]/2-rect[2]/2, 5/10*rect2[3]))
             screen.blit(img, rect)
         if direction == 2:
             img = pygame.image.load("D:/Maxwell/SpecialRobotStuff/blind-navigation/utils/display/UpMe2.png")
             img = img.convert_alpha()
             rect = img.get_rect()
-            rect[2]/=3
-            rect[3]/=3
+            rect[2]/=2
+            rect[3]/=2
             rect[2] *= rect2[2]/varx
             rect[3] *= rect2[3]/vary
             img = pygame.transform.scale(img, (rect[2], rect[3]))
             rect = rect.move((rect2[2] / 2 - rect[2] / 2, 5 / 10 * rect2[3]))
             screen.blit(img, rect)
         pygame.display.flip()
-        pygame.display.update()
 #convertImg(("D:/Maxwell/SpecialRobotStuff/blind-navigation/utils/display/UpMe.png"))
 start_display()
 #runfile("D:/Maxwell/SpecialRobotStuff/blind-navigation/utils/display/sidewalk_display.py")
