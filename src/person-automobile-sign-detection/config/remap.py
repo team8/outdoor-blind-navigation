@@ -30,11 +30,13 @@ for label in labels:
             text[line_index][0] = (mappings[index][1])
         except ValueError:
             print("No number to replace")
+            text[line_index] = None
     print("\n\n")
 
     label_file_write = open(file_path, "a")
     for line in text:
-        to_append = ""
-        for i in line:
-            to_append += (i + " ")
-        label_file_write.write(to_append + "\n")
+        if line is not None:
+            to_append = ""
+            for i in line:
+                to_append += (i + " ")
+            label_file_write.write(to_append + "\n")
