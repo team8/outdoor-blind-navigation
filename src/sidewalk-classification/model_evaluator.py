@@ -45,6 +45,8 @@ while True:
     vary = 1000
     events = pygame.event.get()
     direction = 0
+    if state == "Nothing detected":
+        direction = -1
     if state == "Left of Sidewalk":
         direction = 1
     if state == "Middle of Sidewalk":
