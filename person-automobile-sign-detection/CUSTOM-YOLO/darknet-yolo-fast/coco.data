@@ -1,7 +1,0 @@
-classes= 6
-train  = /home/aoberai/programming/python/ml-stuff/testing/darknet/data/coco/trainvalno5k.txt
-valid = /home/aoberai/programming/python/ml-stuff/testing/darknet/data/coco/coco_val_5k.list
-names = ./coco.names
-backup = ./backup
-eval=coco
-

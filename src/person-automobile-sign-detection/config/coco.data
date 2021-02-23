@@ -1,0 +1,9 @@
+classes= 7
+#train  = /home/pjreddie/data/coco/trainvalno5k.txt
+train  = /home/ubuntu/darknet/data/coco/trainvalno5k.txt
+valid  = /home/ubuntu/darknet/data/coco/5k.txt
+#valid = data/coco_val_5k.list
+names = data/coco.names
+backup = /home/ubuntu/darknet/backup
+eval=coco
+
