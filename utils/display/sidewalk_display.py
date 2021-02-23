@@ -44,14 +44,4 @@ def initPics(orig_cap):
     screen = pygame.display.set_mode((rect2[2], rect2[3]))
 
     return ((imgLeft,imgForward,imgRight,screen))
-def start_display(rect2, screen, img, off):
-    varx = 1575
-    vary = 1000
-    rect = img.get_rect()
-    rect[2] *= rect2[2] / varx
-    rect[3] *= rect2[3] / vary
-    img = pygame.transform.scale(img, (rect[2], rect[3]))
-    rect = rect.move((rect2[2] / 2 - rect[2] / 2, 5 / 10 * rect2[3]))
-    screen.blit(img, rect)
-    return screen
 #runfile("D:/Maxwell/SpecialRobotStuff/blind-navigation/utils/display/sidewalk_display.py")

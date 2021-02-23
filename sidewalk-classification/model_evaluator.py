@@ -6,7 +6,7 @@ import tensorflow as tf
 import numpy as np
 import time
 from utils.circularBuffer import CircularBuffer
-from utils.display.sidewalk_display import start_display, initPics
+from utils.display.sidewalk_display import  initPics
 
 classes = ['Left of Sidewalk', 'Middle of Sidewalk', 'Right of Sidewalk']
 model = tf.keras.models.load_model("sidewalk_classification_model100.h5")
@@ -52,11 +52,14 @@ while True:
     img2 = pygame.transform.scale(img2, (rect2[2], rect2[3]))
     screen.blit(img2, rect2)
     if state == "Left of Sidewalk":
-        screen = start_display(rect2, screen, imgLeft, -1)
+        rect = imgLeft.get_rect()
+        screen.blit(imgLeft, rect)
     if state == "Right of Sidewalk":
-        screen = start_display(rect2, screen, imgRight, 1)
+        rect = imgRight.get_rect()
+        screen.blit(imgRight, rect)
     if state == "Middle of Sidewalk":
-        screen = start_display(rect2, screen, imgForward, 0)
+        rect = imgForward.get_rect()
+        screen.blit(imgForward, rect)
     pygame.display.flip()
     pygame.display.update()
 
