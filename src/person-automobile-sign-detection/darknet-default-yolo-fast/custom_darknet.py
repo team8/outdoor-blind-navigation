@@ -24,18 +24,21 @@ width = darknet.network_width(network)
 height = darknet.network_height(network)
 
 while video_capture.isOpened():
+    frame_start_time = time.time()
     frame = video_capture.read()[1]
-    # img_for_detect = darknet.make_image(width, height, 3)
-    # darknet.copy_image_from_bytes(img_for_detect, cv2.resize(frame, (width, height), interpolation=cv2.INTER_LINEAR).tobytes())
-
     preprocessed_frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_LINEAR)
     darknet_image = darknet.make_image(width, height, 3)
     darknet.copy_image_from_bytes(darknet_image, preprocessed_frame.tobytes())
-    print(darknet_image)
     detections = darknet.detect_image(network, class_names, darknet_image, thresh=0.25)
     for detection in detections:
         print(detection)
-        preprocessed_frame = cv2.rectangle(preprocessed_frame, (int(detection[2][0]), int(detection[2][1])), (int(detection[2][2]), int(detection[2][3])), (255, 255, 0), 4)
+        x, y, w, h = detection[2]
+        xmin = int(round(x - (w / 2)))
+        xmax = int(round(x + (w / 2)))
+        ymin = int(round(y - (h / 2)))
+        ymax = int(round(y + (h / 2)))
+        preprocessed_frame = cv2.rectangle(preprocessed_frame, (xmax, ymax), (xmin, ymin), (255, 255, 0), 4)
+    print("FPS: " + str(1/(time.time() - frame_start_time)))
     cv2.imshow("Stream", preprocessed_frame)
     cv2.waitKey(1)
 
