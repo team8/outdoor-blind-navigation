@@ -2,67 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2fd74517-2fa9-4b76-be95-a80faab30992" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/feedback/audio_feedback.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/feedback/audio_interpreter.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/feedback/audio_player.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/feedback/bigboonk.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/feedback/clasppy.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/feedback/clikcy tung.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/feedback/gpio_pins.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/feedback/personahead.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/feedback/personleft.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/feedback/personright.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/feedback/stopsignleft.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/feedback/stopsignmiddle.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/feedback/stopsignright.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/feedback/testAudioPython.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/feedback/testing_audio.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/config/COCO_train2014_000000000025.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/config/coco.data" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/config/coco.names" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/config/coco_original.names" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/config/labels/COCO_train2014_000000000025.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/config/remap.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/config/remap.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/config/yolov4.cfg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/darknet-default-yolo-fast/bad.list" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/darknet-default-yolo-fast/coco.data" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/darknet-default-yolo-fast/custom_darknet.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/darknet-default-yolo-fast/darknet" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/darknet-default-yolo-fast/data/coco.names" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/darknet-default-yolo-fast/yolov3.cfg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/darknet-default-yolo-fast/yolov4.cfg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/process_runner.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/sidewalk-classification/constants.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/sidewalk-classification/model_evaluator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/sidewalk-classification/sidewalk_classification.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/sidewalk-classification/sidewalk_classification_tester.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/display/Left.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/display/Right5.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/blind-navigation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/blind-navigation.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/sidewalk-classification/model_evaluator_tester.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/person-automobile-sign-detection/CUSTOM-YOLO/darknet-yolo-fast/coco.data" beforeDir="false" afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/config/archived-config/coco.data" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/person-automobile-sign-detection/CUSTOM-YOLO/darknet-yolo-fast/coco.names" beforeDir="false" afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/config/archived-config/coco.names" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/person-automobile-sign-detection/CUSTOM-YOLO/darknet-yolo-fast/darknet.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/darknet-default-yolo-fast/darknet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/person-automobile-sign-detection/CUSTOM-YOLO/darknet-yolo-fast/darknet_video.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/darknet-default-yolo-fast/darknet_video.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/person-automobile-sign-detection/CUSTOM-YOLO/darknet-yolo-fast/libdarknet.so" beforeDir="false" afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/darknet-default-yolo-fast/libdarknet.so" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/person-automobile-sign-detection/CUSTOM-YOLO/darknet-yolo-fast/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/person-automobile-sign-detection/CUSTOM-YOLO/darknet-yolo-fast/yolov3.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/config/archived-config/yolov3.cfg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/person-automobile-sign-detection/CUSTOM-YOLO/opencv-yolo-slow/yolo_opencv.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/opencv-default-yolo-slow/yolo_opencv.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/person-automobile-sign-detection/CUSTOM-YOLO/opencv-yolo-slow/yolov3.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/opencv-default-yolo-slow/yolov3.cfg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/person-automobile-sign-detection/CUSTOM-YOLO/opencv-yolo-slow/yolov3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/person-automobile-sign-detection/opencv-default-yolo-slow/yolov3.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sidewalk-classification/model_evaluator.py" beforeDir="false" afterPath="$PROJECT_DIR$/sidewalk-classification/model_evaluator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sidewalk-classification/model_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/sidewalk-classification/model_generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sidewalk-classification/preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/sidewalk-classification/preprocessing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sidewalk-classification/utils/circularBuffer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/sidewalk-classification/utils/circularBuffer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/circularBuffer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sidewalk-classification/model_evaluator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/sidewalk-classification/model_evaluator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/display/sidewalk_display.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/display/sidewalk_display.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/exifOrienter.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/flipDataAugmentation.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/jpgFormatter.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/tests/BufferTests.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,7 +49,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/display-resources" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -113,6 +57,13 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings>
+        <option name="useSoftWraps" value="true" />
+      </console-settings>
+    </option>
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -222,7 +173,8 @@
       <workItem from="1613000702001" duration="6029000" />
       <workItem from="1613086148894" duration="6868000" />
       <workItem from="1613785935081" duration="53092000" />
-      <workItem from="1613972285680" duration="13541000" />
+      <workItem from="1613972285680" duration="15738000" />
+      <workItem from="1614057093068" duration="12133000" />
     </task>
     <servers />
   </component>

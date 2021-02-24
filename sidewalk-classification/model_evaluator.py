@@ -20,6 +20,7 @@ imgLeft = pics[0]
 imgForward = pics[1]
 imgRight = pics[2]
 screen = pics[3]
+var = 0
 while True:
     start_time = time.time()
     orig_cap = vid.read()[1]
