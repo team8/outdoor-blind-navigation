@@ -1,13 +1,9 @@
-import sys
-
 import cv2
-import pygame
 import tensorflow as tf
-import numpy as np
 import time
 from utils.circularBuffer import CircularBuffer
 from display import Display
-
+import numpy as np
 classes = ['Left of Sidewalk', 'Middle of Sidewalk', 'Right of Sidewalk']
 model = tf.keras.models.load_model("sidewalk_classification_model_resnet.h5")
 # vid = cv2.VideoCapture("/home/aoberai/Downloads/Long_Sidewalk.mp4")
@@ -26,7 +22,8 @@ if vid.read()[0] is False:
 
 cb = CircularBuffer(20, minNumPercent = 0.8)
 state = ""
-sidewalk_display = Display()
+sidewalk_display = Display((480,360))
+print(1)
 while True:
     start_time = time.time()
     orig_cap = cv2.resize(cv2.rotate(vid.read()[1], cv2.ROTATE_90_COUNTERCLOCKWISE) if rotate == True else vid.read()[1], (480, 360))
@@ -42,3 +39,5 @@ while True:
     confidence =  max(averaged_prediction) * 100 // 1 if averaged_prediction is not None else None
     print("FPS:", 1/ (end_time - start_time), state, "Confidence:", confidence)
     sidewalk_display.update(state, orig_cap)
+
+#runfile("D:/Maxwell/SpecialRobotStuff/blind-navigation/src/sidewalk-classification/model_evaluator.py")
