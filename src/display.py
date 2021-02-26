@@ -6,9 +6,9 @@ class Display:
 
     def __image_preprocessing(self,size):
         self.screen = pygame.display.set_mode((size[0],size[1]))
-        self.imgLeft = pygame.image.load("../display-resources/Right.png")
-        self.imgForward = pygame.image.load("../display-resources/Forward.png")
-        self.imgRight = pygame.image.load("../display-resources/Left.png")
+        self.imgLeft = pygame.image.load("display-resources/Right.png")
+        self.imgForward = pygame.image.load("display-resources/Forward.png")
+        self.imgRight = pygame.image.load("display-resources/Left.png")
         self.screenSizeXConstant = 1575
         self.screenSizeYConstant = 1000
         self.rectVideo = ((0,0,size[0],size[1]))
