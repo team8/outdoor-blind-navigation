@@ -4,7 +4,7 @@ Class which represents every object detected that is being tracked.
 
 
 
-class Detections:
+class Detection:
     id = -1 # id associated with the object
     bbox = None # detected object position in image
     kalmannFilter = None # kalmann filter object for motion tracking
