@@ -66,9 +66,9 @@ class Detector:
                     print(e)
 
     def get_inference(self):
-        return detections_queue[-1] if len(detections_queue) >= 1 else None
+        return {"label": detections_queue[-1][0], "bbox": detections_queue[-1][1]} if len(detections_queue) >= 1 else None
 
-    def detection_updater(self)
+    def detection_updater(self):
         while video_capture.isOpened():
             threading.Thread(target=capture_processing).start()
             threading.Thread(target=display).start()
