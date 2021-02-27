@@ -59,16 +59,11 @@ class CircularBuffer:
                 maxOccurrences = totalOfInstance
         return modeOut
 
-    def consecutive_count(self, value):
-        count = 0
-        for i in range(-1, -(len(self.queue) - 1))
-            if self.queue[i] == value:
-                count += 1
-            else:
-                break
-        return count
-
-
-
-
-
+    # def consecutive_count(self, value):
+    #     count = 0
+    #     for i in range(-1, -(len(self.queue) - 1))
+    #         if self.queue[i] == value:
+    #             count += 1
+    #         else:
+    #             break
+    #     return count
