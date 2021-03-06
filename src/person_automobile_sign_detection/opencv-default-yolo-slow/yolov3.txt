@@ -1,0 +1,6 @@
+person
+bicycle
+car
+traffic light
+stop sign
+bench
