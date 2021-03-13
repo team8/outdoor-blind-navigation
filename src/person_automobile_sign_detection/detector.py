@@ -9,9 +9,10 @@ import threading
 from utils.circularBuffer import CircularBuffer
 class Detector:
     video_path = 0 #webcam
-    weights_path = "./yolov4-tiny.weights"
-    config_path = "./yolov4-tiny-original.cfg"
-    data_file_path = "./coco_original.data"
+
+    weights_path = "person_automobile_sign_detection/yolov4-tiny.weights"
+    config_path = "person_automobile_sign_detection/yolov4-tiny-original.cfg"
+    data_file_path = "person_automobile_sign_detection/coco_original.data"
 
     video_capture = cv2.VideoCapture(video_path)
     network, class_names, class_colors = darknet.load_network(
@@ -65,23 +66,22 @@ class Detector:
                     print("Displaying Not Working", e)
 
     def get_inference(self):
-        return {"label": self.detections_queue.getLast()[0], "bbox": self.detections_queue.getLast()[1]} if self.detections_queue.size() >= 1 else None
+        return {"label": self.detections_queue.getLast()[0], "bbox": self.detections_queue.getLast()[1]} if self.detections_queue.size() >= 1 and not (None in self.detections_queue.getList()) else None
 
     def detection_starter(self):
         while self.video_capture.isOpened():
             threading.Thread(target=self.capture_processing).start()
-            threading.Thread(target=self.display).start()
-
+            # threading.Thread(target=self.display).start()
+            time.sleep(3)
             while True:
                 try:
-                    print(self.images_queue.size())
                     last_darknet_image = self.images_queue.getLast()[0]
                     last_time = time.time()
                     detections = darknet.detect_image(self.network, self.class_names, last_darknet_image, thresh=0.25)
                     self.detections_queue.add(detections)
-
                     self.fps_queue.add(1/(time.time() - last_time))
                 except Exception as e:
-                    print("Prediction Not Working", e)
+                    print("Prediction Not Working: Last Image", self.images_queue.getLast()[0])
+    
     def __init__(self):
         threading.Thread(target=self.detection_starter).start()

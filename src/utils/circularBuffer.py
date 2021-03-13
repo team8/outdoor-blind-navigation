@@ -1,28 +1,34 @@
+import statistics
 import numpy as np
 
 #Using an inefficient but easy to code implementation
 class CircularBuffer:
-    def __init__(self, capacity, minNumPercent =  0.5):
+    def __init__(self, capacity, noneOverridePercent =  0.5):
         self.capacity = capacity
         self.queue = [None] * capacity
-        self.minNumPercent = minNumPercent
+        self.minNumPercent = noneOverridePercent
 
+
+    #Start out the buffer with given list listIn
     def initQueue(self, listIn):
         temp = listIn.copy()
         temp.reverse()
         for i in temp:
             self.add(i)
 
+    #Push a new item onto the buffer
     def add(self, term):
         del self.queue[-1]
         self.queue.insert(0, term)
 
+    #Writes out everything in the circularBuffer
     def toString(self):
         strOut = ""
         for i in self.queue:
             strOut += str(i)
         return strOut
 
+    #Averages everything in the queue (can't take strings etc). If number of nones is greater than minNumPercent, it returns None
     def mean(self):
         temp = self.queue.copy()
         if temp.count(None) >= self.minNumPercent * self.capacity:
@@ -35,6 +41,7 @@ class CircularBuffer:
             temp = list(filter(None, temp))
             return sum(temp) / len(temp)
 
+    #Sorts a copy of the buffer, then finds the median. Probably doesn't work on strings. If greater than minNumPercent, returns None
     def median(self):
         temp = self.queue.copy()
         if temp.count(None) >= self.minNumPercent * self.capacity:
@@ -46,6 +53,7 @@ class CircularBuffer:
                 return temp[self.capacity // 2 + 1] + [self.capacity // 2] / 2
             return temp[self.capacity // 2 + 1]
 
+    #Finds the thing with the most instances in the lisdt. Same as other 2, returns none if over minNumPercent
     def mode(self):
         temp = self.queue.copy()
         if temp.count(None) >= self.minNumPercent * self.capacity:
@@ -59,9 +67,12 @@ class CircularBuffer:
                 maxOccurrences = totalOfInstance
         return modeOut
 
+    def size(self):
+        return len(self.queue)
 
+    def getLast(self):
+        return self.queue[-1]
 
-
-
-
+    def getList(self):
+        return self.queue
 

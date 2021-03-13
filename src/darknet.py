@@ -179,7 +179,6 @@ def detect_image(network, class_names, image, thresh=.5, hier_thresh=.5, nms=.45
 
 
 #  lib = CDLL("/home/pjreddie/documents/darknet/libdarknet.so", RTLD_GLOBAL)
-#  lib = CDLL("libdarknet.so", RTLD_GLOBAL)
 hasGPU = True
 if os.name == "nt":
     cwd = os.path.dirname(__file__)
@@ -223,6 +222,13 @@ else:
     lib = CDLL(os.path.join(
         os.environ.get('DARKNET_PATH', './'),
         "libdarknet.so"), RTLD_GLOBAL)
+
+
+# lib = CDLL(os.path.join(
+        # os.environ.get('DARKNET_PATH', '../'),
+        # "libdarknet.so"), RTLD_GLOBAL)
+
+
 lib.network_width.argtypes = [c_void_p]
 lib.network_width.restype = c_int
 lib.network_height.argtypes = [c_void_p]

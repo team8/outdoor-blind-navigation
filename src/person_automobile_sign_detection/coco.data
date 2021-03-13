@@ -1,10 +1,8 @@
 /* classes= 80 */
 classes= 7
-train  = /home/pjreddie/data/coco/trainvalno5k.txt
+train  = data/coco/trainvalno5k.txt
 valid  = coco_testdev
-#valid = data/coco_val_5k.list
-/* names = data/coco-original.names */
-names = data/coco.names
-backup = /home/pjreddie/backup/
+names = person_automobile_sign_detection/data/coco.names
+backup = backup/
 eval=coco
 
