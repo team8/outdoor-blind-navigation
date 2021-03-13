@@ -8,13 +8,10 @@ import argparse
 import threading
 from utils.circularBuffer import CircularBuffer
 class Detector:
-    video_path = 0 #webcam
-
     weights_path = "person_automobile_sign_detection/yolov4-tiny.weights"
     config_path = "person_automobile_sign_detection/yolov4-tiny-original.cfg"
     data_file_path = "person_automobile_sign_detection/coco_original.data"
 
-    video_capture = cv2.VideoCapture(video_path)
     network, class_names, class_colors = darknet.load_network(
                 config_path,
                 data_file_path,
@@ -82,6 +79,7 @@ class Detector:
                     self.fps_queue.add(1/(time.time() - last_time))
                 except Exception as e:
                     print("Prediction Not Working: Last Image", self.images_queue.getLast()[0])
-    
-    def __init__(self):
+
+    def __init__(self, vid_source):
+        self.video_capture = cv2.VideoCapture(vid_source)
         threading.Thread(target=self.detection_starter).start()
