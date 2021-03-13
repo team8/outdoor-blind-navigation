@@ -21,6 +21,7 @@ class Display:
         self.textHydrantRect = self.textHydrant.get_rect()
         self.textBench = self.font.render('Bench', True, (200, 100, 200), None)
         self.textBenchRect = self.textBench.get_rect()
+        self.Hashmap = {"Stop Sign" : 1, "Person" : 2, "Car" : 3, "Bike" : 4, "Traffic Light" : 5, "Fire Hydrant": 6, "Bench" : 7}
 
         self.screen = pygame.display.set_mode((size[0],size[1]))
         self.imgLeft = pygame.image.load("D:/Maxwell/SpecialRobotStuff/blind-navigation/src/display-resources/Right.png")
@@ -66,42 +67,43 @@ class Display:
             self.screen.blit(self.imgRight, self.rectRight)
         elif state == "Middle of Sidewalk":
             self.screen.blit(self.imgForward, self.rectForward)
-        for size in range(len(obstacles)):
-            self.displayObjects(obstacles[size])
+        for detection in obstacles:
+            self.displayObjects(detection)
         pygame.display.update()
     def displayObjects(self, RectCords):
-        empty_rect = pygame.Rect(RectCords[1], RectCords[2], RectCords[3]-RectCords[1], RectCords[4]-RectCords[2])
+        #x ave, y ave, w, h
+        empty_rect = pygame.Rect(RectCords[1]-(RectCords[3]/2), RectCords[2]-(RectCords[4]/2), RectCords[3], RectCords[4])
+        pygame.Rect()
         centerX = (RectCords[1] + RectCords[3])/2
         centerY = max(RectCords[2],RectCords[4])+15
         if (centerY + 15 >= 360):
             centerY = min(RectCords[2],RectCords[4])-15
-
-        if (RectCords[0] == 'Stop Sign'):
+        if (self.Hashmap[RectCords[0]] == 1):
             self.textSignRect.center = (centerX,centerY)
             self.screen.blit(self.textSign, self.textSignRect)
             pygame.draw.rect(self.screen, (0, 0, 255), empty_rect, 3)
-        elif (RectCords[0] == 'Car'):
-            self.textCarRect.center = (centerX,centerY)
-            self.screen.blit(self.textCar, self.textCarRect)
-            pygame.draw.rect(self.screen, (255, 0, 0), empty_rect, 3)
-        elif (RectCords[0] == 'Bike'):
-            self.textBikeRect.center = (centerX,centerY)
-            self.screen.blit(self.textBike, self.textBikeRect)
-            pygame.draw.rect(self.screen, (255, 255, 0), empty_rect, 3)
-        elif (RectCords[0] == 'Person'):
+        elif (self.Hashmap[RectCords[0]] == 2):
             self.textHumanRect.center = (centerX,centerY)
             self.screen.blit(self.textHuman, self.textHumanRect)
             pygame.draw.rect(self.screen, (0, 255, 0), empty_rect, 3)
-        elif (RectCords[0] == 'Bench'):
-            self.textBenchRect.center = (centerX,centerY)
-            self.screen.blit(self.textBench, self.textBenchRect)
-            pygame.draw.rect(self.screen, (200, 100, 200), empty_rect, 3)
-        elif (RectCords[0] == 'Fire Hydrant'):
-            self.textHydrantRect.center = (centerX,centerY)
-            self.screen.blit(self.textHydrant, self.textHydrantRect)
-            pygame.draw.rect(self.screen, (0, 255, 255), empty_rect, 3)
-        if (RectCords[0] == 'Traffic Light'):
+        elif (self.Hashmap[RectCords[0]] == 3):
+            self.textCarRect.center = (centerX,centerY)
+            self.screen.blit(self.textCar, self.textCarRect)
+            pygame.draw.rect(self.screen, (255, 0, 0), empty_rect, 3)
+        elif (self.Hashmap[RectCords[0]] == 4):
+            self.textBikeRect.center = (centerX,centerY)
+            self.screen.blit(self.textBike, self.textBikeRect)
+            pygame.draw.rect(self.screen, (255, 255, 0), empty_rect, 3)
+        elif (self.Hashmap[RectCords[0]] == 5):
             self.textLightRect.center = (centerX,centerY)
             self.screen.blit(self.textLight, self.textLightRect)
             pygame.draw.rect(self.screen, (255, 0, 255), empty_rect, 3)
+        elif (self.Hashmap[RectCords[0]] == 6):
+            self.textHydrantRect.center = (centerX,centerY)
+            self.screen.blit(self.textHydrant, self.textHydrantRect)
+            pygame.draw.rect(self.screen, (0, 255, 255), empty_rect, 3)
+        else:
+            self.textBenchRect.center = (centerX,centerY)
+            self.screen.blit(self.textBench, self.textBenchRect)
+            pygame.draw.rect(self.screen, (200, 100, 200), empty_rect, 3)
 

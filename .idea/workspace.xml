@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2fd74517-2fa9-4b76-be95-a80faab30992" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/display.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/sidewalk-classification/display.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sidewalk-classification/display.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/sidewalk-classification/display.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/sidewalk-classification/model_evaluator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/sidewalk-classification/model_evaluator.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -169,6 +169,9 @@
       <workItem from="1613972285680" duration="15738000" />
       <workItem from="1614057093068" duration="12133000" />
       <workItem from="1614226878955" duration="2968000" />
+      <workItem from="1614814676603" duration="4125000" />
+      <workItem from="1615508157236" duration="8564000" />
+      <workItem from="1615566839045" duration="4102000" />
     </task>
     <servers />
   </component>
