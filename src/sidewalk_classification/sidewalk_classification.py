@@ -3,6 +3,7 @@ import threading
 import tensorflow as tf
 import numpy as np
 import time
+import capturer
 from utils.circularBuffer import CircularBuffer
 
 classes = ['Left of Sidewalk', 'Middle of Sidewalk', 'Right of Sidewalk', 'Nothing Detected']
@@ -16,21 +17,21 @@ class SidewalkClassification:
     def capture_processing(self):
         while True:
             try:
-                frame = self.video_capture.read()[1]
+
+                frame = capturer.getImages().getLast()
                 preprocessed_frame = cv2.resize(frame, image_preprocessing_dimens, interpolation=cv2.INTER_LINEAR)
-                self.images_queue.add(np.expand_dims(frame, 0))
+                self.images_queue.add(np.expand_dims(preprocessed_frame, 0))
             except Exception as e:
                 print("Capturing Not Working", e)
 
     def classification_starter(self):
-        while self.video_capture.isOpened():
-            threading.Thread(target=self.capture_processing).start()
-            time.sleep(3)
-            while True:
-                try:
-                    self.perform_inference(self.images_queue.getLast())
-                except Exception as e:
-                    print("Classification Not Working")
+        threading.Thread(target=self.capture_processing).start()
+        time.sleep(3)
+        while True:
+            try:
+                self.perform_inference(self.images_queue.getLast())
+            except Exception as e:
+                print("Classification Not Working", e)
 
 
     def perform_inference(self, image):
@@ -43,11 +44,10 @@ class SidewalkClassification:
     def get_inference(self):
         return self.classifier_queue.getLast()
 
-    def __init__(self, vid_source):
+    def __init__(self):
         self.model = tf.keras.models.load_model(model_path)
         self.readings_buffer = CircularBuffer(readings_buffer_size)
         self.images_queue = CircularBuffer(1)
         self.classifier_queue = CircularBuffer(1)
-        self.video_capture = cv2.VideoCapture(vid_source)
         threading.Thread(target=self.classification_starter).start()
 

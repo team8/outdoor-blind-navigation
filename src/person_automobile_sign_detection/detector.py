@@ -7,6 +7,7 @@ import darknet
 import argparse
 import threading
 from utils.circularBuffer import CircularBuffer
+import capturer
 class Detector:
     weights_path = "person_automobile_sign_detection/yolov4-tiny.weights"
     config_path = "person_automobile_sign_detection/yolov4-tiny-original.cfg"
@@ -29,7 +30,7 @@ class Detector:
     def capture_processing(self):
         while True:
             try:
-                frame = self.video_capture.read()[1]
+                frame = capturer.getImages().getLast()
                 preprocessed_frame = cv2.resize(frame, (self.width, self.height), interpolation=cv2.INTER_LINEAR)
                 darknet_image = darknet.make_image(self.width, self.height, 3)
                 darknet.copy_image_from_bytes(darknet_image, preprocessed_frame.tobytes())
@@ -63,23 +64,22 @@ class Detector:
                     print("Displaying Not Working", e)
 
     def get_inference(self):
-        return {"label": self.detections_queue.getLast()[0], "bbox": self.detections_queue.getLast()[1]} if self.detections_queue.size() >= 1 and not (None in self.detections_queue.getList()) else None
+        return self.detections_queue.getLast()
+        # return {"label": self.detections_queue.getLast()[0], "bbox": self.detections_queue.getLast()[1]} if self.detections_queue.size() >= 1 and not (None in self.detections_queue.getList()) else None
 
     def detection_starter(self):
-        while self.video_capture.isOpened():
-            threading.Thread(target=self.capture_processing).start()
-            # threading.Thread(target=self.display).start()
-            time.sleep(3)
-            while True:
-                try:
-                    last_darknet_image = self.images_queue.getLast()[0]
-                    last_time = time.time()
-                    detections = darknet.detect_image(self.network, self.class_names, last_darknet_image, thresh=0.25)
-                    self.detections_queue.add(detections)
-                    self.fps_queue.add(1/(time.time() - last_time))
-                except Exception as e:
-                    print("Prediction Not Working: Last Image", self.images_queue.getLast()[0])
+        threading.Thread(target=self.capture_processing).start()
+        # threading.Thread(target=self.display).start()
+        time.sleep(3)
+        while True:
+            try:
+                last_darknet_image = self.images_queue.getLast()[0]
+                last_time = time.time()
+                detections = darknet.detect_image(self.network, self.class_names, last_darknet_image, thresh=0.25)
+                self.detections_queue.add(detections)
+                self.fps_queue.add(1/(time.time() - last_time))
+            except Exception as e:
+                print("Prediction Not Working: Last Image", self.images_queue.getLast()[0])
 
-    def __init__(self, vid_source):
-        self.video_capture = cv2.VideoCapture(vid_source)
+    def __init__(self):
         threading.Thread(target=self.detection_starter).start()
