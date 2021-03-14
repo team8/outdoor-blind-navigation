@@ -10,7 +10,7 @@ import time
 threading.Thread(target=capturer.capturer).start()
 time.sleep(1)
 
-sc = StateClassifier()
+# sc = StateClassifier()
 ol = ObjectLocalizer()
 # stream = cv2.VideoCapture(0)
 # stream = cv2.VideoCapture("/home/aoberai/Downloads/Long_Sidewalk_Compressed.mp4")
@@ -18,9 +18,9 @@ counter = 0
 while True:
     capture = (capturer.getImages().getLast())
     capture = cv2.resize(capture, (480, 360))
-    state_classifier_inference = sc.get_inference()
+    # state_classifier_inference = sc.get_inference()
     object_localizer_inference = ol.get_inference()
-    print(state_classifier_inference if counter % 2 == 0 else object_localizer_inference)
+    # print(state_classifier_inference if counter % 2 == 0 else object_localizer_inference)
     cv2.imshow("Stream", capture)
     # cv2.resize(capture, (416, 416)))
     cv2.waitKey(1)

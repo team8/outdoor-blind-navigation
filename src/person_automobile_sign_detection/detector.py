@@ -20,12 +20,12 @@ class Detector:
                 batch_size=1
             )
     detections_queue = CircularBuffer(1)
-    images_queue = CircularBuffer(15)
+    images_queue = CircularBuffer(1)
     fps_queue = CircularBuffer(1)
     width = darknet.network_width(network)
     height = darknet.network_height(network)
     colors = {"person": [255, 255, 0], "car": [100, 0, 0], "stopsign": [100, 100, 0]}
-    detections_average = CircularBuffer(5)
+    detections_average = CircularBuffer(3)
 
     def capture_processing(self):
         while True:
@@ -68,9 +68,7 @@ class Detector:
         # return {"label": self.detections_queue.getLast()[0], "bbox": self.detections_queue.getLast()[1]} if self.detections_queue.size() >= 1 and not (None in self.detections_queue.getList()) else None
 
     def detection_starter(self):
-        threading.Thread(target=self.capture_processing).start()
         # threading.Thread(target=self.display).start()
-        time.sleep(3)
         while True:
             try:
                 last_darknet_image = self.images_queue.getLast()[0]
@@ -78,8 +76,14 @@ class Detector:
                 detections = darknet.detect_image(self.network, self.class_names, last_darknet_image, thresh=0.25)
                 self.detections_queue.add(detections)
                 self.fps_queue.add(1/(time.time() - last_time))
+                # darknet.free_image(last_darknet_image)
             except Exception as e:
-                print("Prediction Not Working: Last Image", self.images_queue.getLast()[0])
+                print("Prediction Not Working: Last Image", e)
 
     def __init__(self):
+        print("Initializing Object Localizer")
+
+        time.sleep(3)
+        threading.Thread(target=self.capture_processing).start()
+        time.sleep(3)
         threading.Thread(target=self.detection_starter).start()
