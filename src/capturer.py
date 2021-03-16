@@ -2,7 +2,7 @@ import cv2
 from utils.circularBuffer import CircularBuffer
 import time
 stream = cv2.VideoCapture(0)
-images_queue = CircularBuffer(3)
+images_queue = CircularBuffer(1)
 
 def capturer():
     print("Capturing Starting")

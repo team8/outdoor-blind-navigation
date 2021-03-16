@@ -74,9 +74,9 @@ class Detector:
                 last_darknet_image = self.images_queue.getLast()[0]
                 last_time = time.time()
                 detections = darknet.detect_image(self.network, self.class_names, last_darknet_image, thresh=0.25)
+                darknet.free_image(last_darknet_image)
                 self.detections_queue.add(detections)
                 self.fps_queue.add(1/(time.time() - last_time))
-                # darknet.free_image(last_darknet_image)
             except Exception as e:
                 print("Prediction Not Working: Last Image", e)
 
