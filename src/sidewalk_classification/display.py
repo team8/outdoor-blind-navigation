@@ -1,10 +1,11 @@
 import pygame
 class Display:
-    def __init__(self,size):
+    def __init__(self):
         pygame.init()
-        self.__image_preprocessing(size)
+        self.size = (480,360)
+        self.__image_preprocessing()
 
-    def __image_preprocessing(self,size):
+    def __image_preprocessing(self):
 
         self.font = pygame.font.Font('freesansbold.ttf', 20)
         self.textSign = self.font.render('Stop Sign', True, (0, 0, 255), None)
@@ -23,13 +24,13 @@ class Display:
         self.textBenchRect = self.textBench.get_rect()
         self.Hashmap = {"Stop Sign" : 1, "Person" : 2, "Car" : 3, "Bike" : 4, "Traffic Light" : 5, "Fire Hydrant": 6, "Bench" : 7}
 
-        self.screen = pygame.display.set_mode((size[0],size[1]))
+        self.screen = pygame.display.set_mode((self.size[0],self.size[1]))
         self.imgLeft = pygame.image.load("D:/Maxwell/SpecialRobotStuff/blind-navigation/src/display-resources/Right.png")
         self.imgForward = pygame.image.load("D:/Maxwell/SpecialRobotStuff/blind-navigation/src/display-resources/Forward.png")
         self.imgRight = pygame.image.load("D:/Maxwell/SpecialRobotStuff/blind-navigation/src/display-resources/Left.png")
         self.screenSizeXConstant = 1575
         self.screenSizeYConstant = 1000
-        self.rectVideo = ((0,0,size[0],size[1]))
+        self.rectVideo = ((0,0,self.size[0],self.size[1]))
 
         self.imgLeft = self.imgLeft.convert_alpha()
         self.rectLeft = self.imgLeft.get_rect()
@@ -57,49 +58,51 @@ class Display:
         self.rectRight[3] *= self.rectVideo[3] / self.screenSizeYConstant
         self.rectRight = self.rectRight.move((self.rectVideo[2] / 2 - self.rectRight[2] / 2 - self.rectVideo[2]/10, 5 / 10 * self.rectVideo[3]))
         self.imgRight = pygame.transform.scale(self.imgRight, (self.rectRight[2], self.rectRight[3]))
-    def update(self,state, orig_cap, obstacles):
+    def putVideoFeed(self,orig_cap):
         orig_cap = orig_cap.swapaxes(0, 1)
         orig_cap = orig_cap[:, :, ::-1]
         pygame.surfarray.blit_array(self.screen, orig_cap)
+    def putSidewalkStates(self, state):
         if state == "Left of Sidewalk":
             self.screen.blit(self.imgLeft, self.rectLeft)
         elif state == "Right of Sidewalk":
             self.screen.blit(self.imgRight, self.rectRight)
         elif state == "Middle of Sidewalk":
             self.screen.blit(self.imgForward, self.rectForward)
+    def putSidewalkObjects(self, obstacles):
         for detection in obstacles:
-            self.displayObjects(detection)
-        pygame.display.update()
-    def displayObjects(self, RectCords):
+            self.__displayObjects(detection)
+    def displayScreen(self):
+        pygame.display.update();
+    def __displayObjects(self, bbox):
         #x ave, y ave, w, h
-        x, y, w, h = RectCords[2]
+        x, y, w, h = bbox[2]
         empty_rect = pygame.Rect(x-(w/2), y-(h/2), w, h)
-        pygame.Rect()
         centerX = x
         centerY = y+(h/2)+15
         if (centerY + 15 >= 360):
             centerY = y-(h/2)-15
-        if (self.Hashmap[RectCords[0]] == 1):
+        if (self.Hashmap[bbox[0]] == 1):
             self.textSignRect.center = (centerX,centerY)
             self.screen.blit(self.textSign, self.textSignRect)
             pygame.draw.rect(self.screen, (0, 0, 255), empty_rect, 3)
-        elif (self.Hashmap[RectCords[0]] == 2):
+        elif (self.Hashmap[bbox[0]] == 2):
             self.textHumanRect.center = (centerX,centerY)
             self.screen.blit(self.textHuman, self.textHumanRect)
             pygame.draw.rect(self.screen, (0, 255, 0), empty_rect, 3)
-        elif (self.Hashmap[RectCords[0]] == 3):
+        elif (self.Hashmap[bbox[0]] == 3):
             self.textCarRect.center = (centerX,centerY)
             self.screen.blit(self.textCar, self.textCarRect)
             pygame.draw.rect(self.screen, (255, 0, 0), empty_rect, 3)
-        elif (self.Hashmap[RectCords[0]] == 4):
+        elif (self.Hashmap[bbox[0]] == 4):
             self.textBikeRect.center = (centerX,centerY)
             self.screen.blit(self.textBike, self.textBikeRect)
             pygame.draw.rect(self.screen, (255, 255, 0), empty_rect, 3)
-        elif (self.Hashmap[RectCords[0]] == 5):
+        elif (self.Hashmap[bbox[0]] == 5):
             self.textLightRect.center = (centerX,centerY)
             self.screen.blit(self.textLight, self.textLightRect)
             pygame.draw.rect(self.screen, (255, 0, 255), empty_rect, 3)
-        elif (self.Hashmap[RectCords[0]] == 6):
+        elif (self.Hashmap[bbox[0]] == 6):
             self.textHydrantRect.center = (centerX,centerY)
             self.screen.blit(self.textHydrant, self.textHydrantRect)
             pygame.draw.rect(self.screen, (0, 255, 255), empty_rect, 3)
