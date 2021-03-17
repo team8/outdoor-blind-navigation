@@ -72,12 +72,13 @@ class Display:
         pygame.display.update()
     def displayObjects(self, RectCords):
         #x ave, y ave, w, h
-        empty_rect = pygame.Rect(RectCords[1]-(RectCords[3]/2), RectCords[2]-(RectCords[4]/2), RectCords[3], RectCords[4])
+        x, y, w, h = RectCords[2]
+        empty_rect = pygame.Rect(x-(w/2), y-(h/2), w, h)
         pygame.Rect()
-        centerX = (RectCords[1] + RectCords[3])/2
-        centerY = max(RectCords[2],RectCords[4])+15
+        centerX = x
+        centerY = y+(h/2)+15
         if (centerY + 15 >= 360):
-            centerY = min(RectCords[2],RectCords[4])-15
+            centerY = y-(h/2)-15
         if (self.Hashmap[RectCords[0]] == 1):
             self.textSignRect.center = (centerX,centerY)
             self.screen.blit(self.textSign, self.textSignRect)
