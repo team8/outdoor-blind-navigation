@@ -30,11 +30,16 @@ class Detector:
     def capture_processing(self):
         while True:
             try:
+                if not self.images_queue.getLastAccessed():
+                    darknet.free_image(self.images_queue.getLast()[0])
                 frame = capturer.getImages().getLast()
                 preprocessed_frame = cv2.resize(frame, (self.width, self.height), interpolation=cv2.INTER_LINEAR)
                 darknet_image = darknet.make_image(self.width, self.height, 3)
                 darknet.copy_image_from_bytes(darknet_image, preprocessed_frame.tobytes())
+
                 self.images_queue.add((darknet_image, preprocessed_frame))
+                # time.sleep(0.5)
+                # darknet.free_image(darknet_image)
             except Exception as e:
                 print("Capturing Not Working", e)
 

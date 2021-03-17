@@ -7,7 +7,7 @@ class CircularBuffer:
         self.capacity = capacity
         self.queue = [None] * capacity
         self.minNumPercent = noneOverridePercent
-
+        self.lastAccessed = False
 
     #Start out the buffer with given list listIn
     def initQueue(self, listIn):
@@ -20,6 +20,7 @@ class CircularBuffer:
     def add(self, term):
         del self.queue[-1]
         self.queue.insert(0, term)
+        self.lastAccessed = False
 
     #Writes out everything in the circularBuffer
     def toString(self):
@@ -71,8 +72,11 @@ class CircularBuffer:
         return len(self.queue)
 
     def getLast(self):
+        self.lastAccessed = True
         return self.queue[-1]
 
     def getList(self):
         return self.queue
 
+    def getLastAccessed(self) -> bool:
+        return self.lastAccessed

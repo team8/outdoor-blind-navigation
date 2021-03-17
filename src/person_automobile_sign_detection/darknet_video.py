@@ -130,4 +130,4 @@ if __name__ == '__main__':
     cap = cv2.VideoCapture(input_path)
     Thread(target=video_capture, args=(frame_queue, darknet_image_queue)).start()
     Thread(target=inference, args=(darknet_image_queue, detections_queue, fps_queue)).start()
-    Thread(target=drawing, args=(frame_queue, detections_queue, fps_queue)).start()
+    # Thread(target=drawing, args=(frame_queue, detections_queue, fps_queue)).start()
