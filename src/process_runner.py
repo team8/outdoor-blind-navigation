@@ -13,8 +13,10 @@ time.sleep(1)
 
 sc = StateClassifier()
 ol = ObjectLocalizer()
-counter = 0
 display = Display()
+
+
+counter = 0
 while True:
     capture = capturer.getImages().getLast()
     capture = cv2.resize(capture, (480, 360))
@@ -22,8 +24,15 @@ while True:
     object_localizer_inference = ol.get_inference()
     # print(object_localizer_inference)
     print(state_classifier_inference if counter % 2 == 0 else object_localizer_inference)
-    print("Object Detection FPS", ol.getFPS())
-    cv2.imshow("Stream", capture)
-    cv2.waitKey(1)
-    display.update(state, orig_cap, obs)
+
+    # print("Object Detection FPS", ol.getFPS()
+
+
+    # display.putVideoFeed(capture)
+    # display.putSidewalkState(state_classifier_inference)
+    # display.putObjects(object_localizer_inference)
+    # display.displayScreen()
+    #
+    # cv2.imshow("Stream", capture)
+    # cv2.waitKey(1)
     counter += 1

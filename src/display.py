@@ -8,26 +8,26 @@ class Display:
     def __image_preprocessing(self):
 
         self.font = pygame.font.Font('freesansbold.ttf', 20)
-        self.textSign = self.font.render('stop sign', True, None)
+        self.textSign = self.font.render('stop sign', True, pygame.Color(0, 0, 0), None)
         self.textSignRect = self.textSign.get_rect()
-        self.textHuman = self.font.render('person', True, None)
+        self.textHuman = self.font.render('person', True,  pygame.Color(0, 0, 0), None)
         self.textHumanRect = self.textHuman.get_rect()
-        self.textCar = self.font.render('car', True,  None)
+        self.textCar = self.font.render('car', True,  pygame.Color(0, 0, 0),  None)
         self.textCarRect = self.textCar.get_rect()
-        self.textBike = self.font.render('bicycle', True, None)
+        self.textBike = self.font.render('bicycle', True,  pygame.Color(0, 0, 0), None)
         self.textBikeRect = self.textBike.get_rect()
-        self.textLight = self.font.render('traffic light', True,  None)
+        self.textLight = self.font.render('traffic light', True,  pygame.Color(0, 0, 0),  None)
         self.textLightRect = self.textLight.get_rect()
-        self.textHydrant = self.font.render('fire hydrant', True,  None)
+        self.textHydrant = self.font.render('fire hydrant', True,  pygame.Color(0, 0, 0),  None)
         self.textHydrantRect = self.textHydrant.get_rect()
-        self.textBench = self.font.render('bench', True,  None)
+        self.textBench = self.font.render('bench', True,  pygame.Color(0, 0, 0),  None)
         self.textBenchRect = self.textBench.get_rect()
-        self.labelToColor = {"stop sign": ((0, 0, 255),self.textSign, self.textSignRect), "person": ((0,255,0),self.textHuman, self.textHumanect), "car": ((255, 0, 0),self.textCar, self.textCarRect), "bicycle": ((255, 255, 0),self.textBike, self.textBikeRect), "traffic light": ((255, 0, 255),self.textLight, self.textLightRect), "fire hydrant": ((0, 255, 255),self.textHydrant, self.textHydrantRectRect), "bench" : ((200, 100, 200),self.textBench, self.textBenchRect)}
+        self.labelToColor = {"stop sign": ((0, 0, 255),self.textSign, self.textSignRect), "person": ((0,255,0),self.textHuman, self.textHumanRect), "car": ((255, 0, 0),self.textCar, self.textCarRect), "bicycle": ((255, 255, 0),self.textBike, self.textBikeRect), "traffic light": ((255, 0, 255),self.textLight, self.textLightRect), "fire hydrant": ((0, 255, 255),self.textHydrant, self.textHydrantRect), "bench" : ((200, 100, 200),self.textBench, self.textBenchRect)}
 
         self.screen = pygame.display.set_mode((self.size[0],self.size[1]))
-        self.imgLeft = pygame.image.load("../display-resources/Right.png")
-        self.imgForward = pygame.image.load("../display-resources/Forward.png")
-        self.imgRight = pygame.image.load("../display-resources/Left.png")
+        self.imgLeft = pygame.image.load("./display_resources/Right.png")
+        self.imgForward = pygame.image.load("./display_resources/Forward.png")
+        self.imgRight = pygame.image.load("./display_resources/Left.png")
         self.screenSizeXConstant = 1575
         self.screenSizeYConstant = 1000
         self.rectVideo = ((0,0,self.size[0],self.size[1]))
@@ -62,14 +62,16 @@ class Display:
         orig_cap = orig_cap.swapaxes(0, 1)
         orig_cap = orig_cap[:, :, ::-1]
         pygame.surfarray.blit_array(self.screen, orig_cap)
-    def putSidewalkStates(self, state):
+    def putSidewalkState(self, state):
         if state == "Left of Sidewalk":
             self.screen.blit(self.imgLeft, self.rectLeft)
         elif state == "Right of Sidewalk":
             self.screen.blit(self.imgRight, self.rectRight)
         elif state == "Middle of Sidewalk":
             self.screen.blit(self.imgForward, self.rectForward)
-    def putSidewalkObjects(self, obstacles):
+    def putObjects(self, obstacles):
+        if obstacles is None:
+            return
         for detection in obstacles:
             self.__displayObjects(detection)
     def displayScreen(self):
@@ -81,7 +83,7 @@ class Display:
         centerY = y+(h/2)+15
         if (centerY + 15 >= 360):
             centerY = y-(h/2)-15
-        self.labelToColor[objectInfo[0]][2].center = (centerX,centerY)
+        (centerX,centerY) = self.labelToColor[objectInfo[0]][2].center
         self.screen.blit(self.labelToColor[objectInfo[0]][1], self.labelToColor[objectInfo[0][2]])
         pygame.draw.rect(self.screen,self.labelToColor[objectInfo[0]][0], empty_rect, 3)
 
