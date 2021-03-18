@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2fd74517-2fa9-4b76-be95-a80faab30992" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/process_runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/process_runner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/sidewalk_classification/display.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/sidewalk_classification/display.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sidewalk_classification/model_evaluator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/sidewalk_classification/model_evaluator.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
