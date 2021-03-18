@@ -13,18 +13,17 @@ time.sleep(1)
 
 sc = StateClassifier()
 ol = ObjectLocalizer()
-# stream = cv2.VideoCapture(0)
-# stream = cv2.VideoCapture("/home/aoberai/Downloads/Long_Sidewalk_Compressed.mp4")
 counter = 0
 display = Display()
 while True:
-    capture = (capturer.getImages().getLast())
+    capture = capturer.getImages().getLast()
     capture = cv2.resize(capture, (480, 360))
     state_classifier_inference = sc.get_inference()
     object_localizer_inference = ol.get_inference()
-    # print(state_classifier_inference if counter % 2 == 0 else object_localizer_inference)
+    # print(object_localizer_inference)
+    print(state_classifier_inference if counter % 2 == 0 else object_localizer_inference)
+    print("Object Detection FPS", ol.getFPS())
     cv2.imshow("Stream", capture)
-    # cv2.resize(capture, (416, 416)))
     cv2.waitKey(1)
     display.update(state, orig_cap, obs)
     counter += 1

@@ -8,6 +8,7 @@ import argparse
 import threading
 from utils.circularBuffer import CircularBuffer
 import capturer
+from queue import Queue
 class Detector:
     weights_path = "person_automobile_sign_detection/yolov4-tiny.weights"
     config_path = "person_automobile_sign_detection/yolov4-tiny-original.cfg"
@@ -19,27 +20,26 @@ class Detector:
                 weights_path,
                 batch_size=1
             )
-    detections_queue = CircularBuffer(1)
-    images_queue = CircularBuffer(1)
+    detections_queue = CircularBuffer(2)
+    images_queue = Queue(maxsize=2)
+    # images_queue = Queue()
+    # fps_queue = Queue(maxsize=3)
     fps_queue = CircularBuffer(1)
     width = darknet.network_width(network)
     height = darknet.network_height(network)
-    colors = {"person": [255, 255, 0], "car": [100, 0, 0], "stopsign": [100, 100, 0]}
-    detections_average = CircularBuffer(3)
-
+    colors = {"person": [255, 255, 0], "car": [100, 0, 0], "stop sign": [100, 100, 0]}
     def capture_processing(self):
         while True:
             try:
-                if not self.images_queue.getLastAccessed():
-                    darknet.free_image(self.images_queue.getLast()[0])
                 frame = capturer.getImages().getLast()
                 preprocessed_frame = cv2.resize(frame, (self.width, self.height), interpolation=cv2.INTER_LINEAR)
                 darknet_image = darknet.make_image(self.width, self.height, 3)
                 darknet.copy_image_from_bytes(darknet_image, preprocessed_frame.tobytes())
-
-                self.images_queue.add((darknet_image, preprocessed_frame))
-                # time.sleep(0.5)
-                # darknet.free_image(darknet_image)
+                # if self.images_queue.size() > 0:
+                # darknet.free_image(self.images_queue.get()[0])
+                self.images_queue.put((darknet_image, preprocessed_frame))
+                # print(self.class_names)
+                # time.sleep(0.3)
             except Exception as e:
                 print("Capturing Not Working", e)
 
@@ -47,7 +47,7 @@ class Detector:
         while True:
             try:
                 last_detection = self.detections_queue.getLast()
-                last_image = self.images_queue.getLast()[1]
+                last_image = self.images_queue.get()[1]
                 fps = self.fps_queue.getLast()
                 for detection in last_detection:
                     # print(detection)
@@ -76,19 +76,24 @@ class Detector:
         # threading.Thread(target=self.display).start()
         while True:
             try:
-                last_darknet_image = self.images_queue.getLast()[0]
+                # while self.images_queue.get()[0] is None: time.sleep(0.1);
+
+                last_darknet_image = self.images_queue.get()[0]
                 last_time = time.time()
                 detections = darknet.detect_image(self.network, self.class_names, last_darknet_image, thresh=0.25)
-                darknet.free_image(last_darknet_image)
                 self.detections_queue.add(detections)
                 self.fps_queue.add(1/(time.time() - last_time))
+                darknet.free_image(last_darknet_image)
             except Exception as e:
                 print("Prediction Not Working: Last Image", e)
+
+    def getFPS(self):
+        return self.fps_queue.getLast()
 
     def __init__(self):
         print("Initializing Object Localizer")
 
-        time.sleep(3)
+        # time.sleep(3)
         threading.Thread(target=self.capture_processing).start()
         time.sleep(3)
         threading.Thread(target=self.detection_starter).start()
