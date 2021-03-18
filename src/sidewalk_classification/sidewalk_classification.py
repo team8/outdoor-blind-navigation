@@ -8,9 +8,9 @@ from utils.circularBuffer import CircularBuffer
 
 classes = ['Left of Sidewalk', 'Middle of Sidewalk', 'Right of Sidewalk', 'Nothing Detected']
 model_path = "./sidewalk_classification/sidewalk_classification_model_resnet.h5"
-readings_buffer_size = 10
+readings_buffer_size = 5
 image_preprocessing_dimens = (100, 100)
-detection_threshold = 0.8
+detection_threshold = 0.7
 
 class SidewalkClassification:
 
@@ -26,7 +26,6 @@ class SidewalkClassification:
 
     def classification_starter(self):
         threading.Thread(target=self.capture_processing).start()
-        time.sleep(3)
         while True:
             try:
                 self.perform_inference(self.images_queue.getLast())

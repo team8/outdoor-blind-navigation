@@ -73,7 +73,9 @@ class Display:
         if obstacles is None:
             return
         for detection in obstacles:
-            self.__displayObjects(detection)
+            #TODO Very temporary - do thresholding within object localizer
+            if int(float(detection[1])) >= 25:
+                self.__displayObjects(detection)
     def displayScreen(self):
         pygame.display.update();
     def __displayObjects(self, objectInfo):
