@@ -28,11 +28,11 @@ while True:
     # print("Object Detection FPS", ol.getFPS()
 
 
-    # display.putVideoFeed(capture)
-    # display.putSidewalkState(state_classifier_inference)
-    # display.putObjects(object_localizer_inference)
-    # display.displayScreen()
-    #
+    display.putVideoFeed(capture)
+    display.putSidewalkState(state_classifier_inference)
+    display.putObjects(object_localizer_inference)
+    display.displayScreen()
+
     # cv2.imshow("Stream", capture)
     # cv2.waitKey(1)
     counter += 1

@@ -83,7 +83,10 @@ class Display:
         centerY = y+(h/2)+15
         if (centerY + 15 >= 360):
             centerY = y-(h/2)-15
-        (centerX,centerY) = self.labelToColor[objectInfo[0]][2].center
-        self.screen.blit(self.labelToColor[objectInfo[0]][1], self.labelToColor[objectInfo[0][2]])
+        print(self.labelToColor[objectInfo[0]][2])
+        # (centerX,centerY) = self.labelToColor[objectInfo[0]][2]
+
+
+        self.screen.blit(self.labelToColor[objectInfo[0]][1], self.labelToColor[objectInfo[0]][2])
         pygame.draw.rect(self.screen,self.labelToColor[objectInfo[0]][0], empty_rect, 3)
 
