@@ -2,7 +2,7 @@ import pygame
 class Display:
     def __init__(self):
         pygame.init()
-        self.size = (480, 360)
+        self.size = (480,360)
         self.__image_preprocessing()
 
     def __image_preprocessing(self):

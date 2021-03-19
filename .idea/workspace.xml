@@ -4,6 +4,7 @@
     <list default="true" id="2fd74517-2fa9-4b76-be95-a80faab30992" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/src/person_automobile_sign_detection/archived/darknet-plain/build/darknet/x64/backup/tmp.txt" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/person_automobile_sign_detection/archived/darknet-plain/build/darknet/x64/results/tmp.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/darknet" beforeDir="false" afterPath="$PROJECT_DIR$/src/darknet" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/darknet.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/darknet.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/libdarknet.so" beforeDir="false" afterPath="$PROJECT_DIR$/src/libdarknet.so" afterDir="false" />
