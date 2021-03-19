@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2fd74517-2fa9-4b76-be95-a80faab30992" name="Default Changelist" comment="">
+<<<<<<< HEAD
       <change afterPath="$PROJECT_DIR$/src/person_automobile_sign_detection/archived/darknet-plain/build/darknet/x64/backup/tmp.txt" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/person_automobile_sign_detection/archived/darknet-plain/build/darknet/x64/results/tmp.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
@@ -343,6 +344,10 @@
       <change beforePath="$PROJECT_DIR$/src/sidewalk_classification/sidewalk_classification.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/sidewalk_classification/sidewalk_classification.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/sidewalk_classification/utils/circularBuffer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/sidewalk_classification/utils/circularBuffer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/circularBuffer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/circularBuffer.py" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/display.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/display.py" afterDir="false" />
+>>>>>>> 021862e... added scaling for the x and y such that the boxes represent the correct object in the correct area.
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -384,7 +389,6 @@
     <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/display-resources" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -511,6 +515,7 @@
       <workItem from="1615508157236" duration="8564000" />
       <workItem from="1615566839045" duration="4701000" />
       <workItem from="1615993127416" duration="1398000" />
+      <workItem from="1616122115700" duration="5727000" />
     </task>
     <servers />
   </component>
@@ -541,11 +546,11 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/blind_navigation$message_system_display.coverage" NAME="message_system_display Coverage Results" MODIFIED="1614903040697" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/sidewalk-classification" />
     <SUITE FILE_PATH="coverage/blind_navigation$model_evaluator.coverage" NAME="model_evaluator Coverage Results" MODIFIED="1614385130088" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/sidewalk-classification" />
     <SUITE FILE_PATH="coverage/blind_navigation$testing_audio.coverage" NAME="testing_audio Coverage Results" MODIFIED="1614385085699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/feedback" />
     <SUITE FILE_PATH="coverage/blind_navigation$display.coverage" NAME="display Coverage Results" MODIFIED="1614384419655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
-    <SUITE FILE_PATH="coverage/blind_navigation$circularBuffer.coverage" NAME="circularBuffer Coverage Results" MODIFIED="1612832931778" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/training" />
     <SUITE FILE_PATH="coverage/blind_navigation$circular_buffer_check.coverage" NAME="circular_buffer_check Coverage Results" MODIFIED="1613093037032" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/training" />
-    <SUITE FILE_PATH="coverage/blind_navigation$message_system_display.coverage" NAME="message_system_display Coverage Results" MODIFIED="1614903040697" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/sidewalk-classification" />
+    <SUITE FILE_PATH="coverage/blind_navigation$circularBuffer.coverage" NAME="circularBuffer Coverage Results" MODIFIED="1612832931778" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/training" />
   </component>
 </project>

@@ -1,8 +1,9 @@
 import pygame
+import cv2
 class Display:
     def __init__(self):
         pygame.init()
-        self.size = (480,360)
+        self.size = (900, 1000)
         self.__image_preprocessing()
 
     def __image_preprocessing(self):
@@ -22,6 +23,8 @@ class Display:
         self.textHydrantRect = self.textHydrant.get_rect()
         self.textBench = self.font.render('bench', True,  pygame.Color(0, 0, 0),  None)
         self.textBenchRect = self.textBench.get_rect()
+        self.stretchXValue = self.size[0]/416
+        self.shrinkYValue = self.size[1]/416
         self.labelToColor = {"stop sign": ((0, 0, 255),self.textSign, self.textSignRect), "person": ((0,255,0),self.textHuman, self.textHumanRect), "car": ((255, 0, 0),self.textCar, self.textCarRect), "bicycle": ((255, 255, 0),self.textBike, self.textBikeRect), "traffic light": ((255, 0, 255),self.textLight, self.textLightRect), "fire hydrant": ((0, 255, 255),self.textHydrant, self.textHydrantRect), "bench" : ((200, 100, 200),self.textBench, self.textBenchRect)}
 
         self.screen = pygame.display.set_mode((self.size[0],self.size[1]))
@@ -59,6 +62,7 @@ class Display:
         self.rectRight = self.rectRight.move((self.rectVideo[2] / 2 - self.rectRight[2] / 2 - self.rectVideo[2]/10, 5 / 10 * self.rectVideo[3]))
         self.imgRight = pygame.transform.scale(self.imgRight, (self.rectRight[2], self.rectRight[3]))
     def putVideoFeed(self,orig_cap):
+        orig_cap = cv2.resize(orig_cap, self.size)
         orig_cap = orig_cap.swapaxes(0, 1)
         orig_cap = orig_cap[:, :, ::-1]
         pygame.surfarray.blit_array(self.screen, orig_cap)
@@ -80,15 +84,18 @@ class Display:
         pygame.display.update();
     def __displayObjects(self, objectInfo):
         x, y, w, h = objectInfo[2]
+        x *= self.stretchXValue
+        y *= self.shrinkYValue
+        w *= self.stretchXValue
+        h *= self.shrinkYValue
         empty_rect = pygame.Rect(x-(w/2), y-(h/2), w, h)
         centerX = x
         centerY = y+(h/2)+15
-        if (centerY + 15 >= 360):
+        if (centerY + 15 >= self.size[1]):
             centerY = y-(h/2)-15
         print(self.labelToColor[objectInfo[0]][2])
-        # (centerX,centerY) = self.labelToColor[objectInfo[0]][2]
-
-
-        self.screen.blit(self.labelToColor[objectInfo[0]][1], self.labelToColor[objectInfo[0]][2])
+        textRect = self.labelToColor[objectInfo[0]][2]
+        textRect.center = (centerX,centerY)
+        self.screen.blit(self.labelToColor[objectInfo[0]][1], textRect)
         pygame.draw.rect(self.screen,self.labelToColor[objectInfo[0]][0], empty_rect, 3)
 
