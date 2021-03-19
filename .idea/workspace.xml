@@ -4,6 +4,7 @@
     <list default="true" id="2fd74517-2fa9-4b76-be95-a80faab30992" name="Default Changelist" comment="">
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       <change afterPath="$PROJECT_DIR$/src/person_automobile_sign_detection/archived/darknet-plain/build/darknet/x64/backup/tmp.txt" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/person_automobile_sign_detection/archived/darknet-plain/build/darknet/x64/results/tmp.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
@@ -357,6 +358,10 @@
 =======
       <change beforePath="$PROJECT_DIR$/src/display_tester.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/display_tester.py" afterDir="false" />
 >>>>>>> 6e217a3... changed the scaling for x and y
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/display.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/display.py" afterDir="false" />
+>>>>>>> 021862e... added scaling for the x and y such that the boxes represent the correct object in the correct area.
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -524,7 +529,11 @@
       <workItem from="1615508157236" duration="8564000" />
       <workItem from="1615566839045" duration="4701000" />
       <workItem from="1615993127416" duration="1398000" />
+<<<<<<< HEAD
       <workItem from="1616122115700" duration="6806000" />
+=======
+      <workItem from="1616122115700" duration="5727000" />
+>>>>>>> 021862e... added scaling for the x and y such that the boxes represent the correct object in the correct area.
     </task>
     <servers />
   </component>
