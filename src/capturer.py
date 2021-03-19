@@ -17,7 +17,7 @@ def capturer():
     while True:
         if stream.isOpened():
             images_queue.add(stream.read()[1])
-            time.sleep(0.01)
+            time.sleep(0.1)
 
 def getImages():
     return images_queue
