@@ -351,8 +351,12 @@
 >>>>>>> 021862e... added scaling for the x and y such that the boxes represent the correct object in the correct area.
 =======
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/src/display.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/display.py" afterDir="false" />
 >>>>>>> 021862e... added scaling for the x and y such that the boxes represent the correct object in the correct area.
+=======
+      <change beforePath="$PROJECT_DIR$/src/display_tester.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/display_tester.py" afterDir="false" />
+>>>>>>> 6e217a3... changed the scaling for x and y
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -520,7 +524,7 @@
       <workItem from="1615508157236" duration="8564000" />
       <workItem from="1615566839045" duration="4701000" />
       <workItem from="1615993127416" duration="1398000" />
-      <workItem from="1616122115700" duration="5727000" />
+      <workItem from="1616122115700" duration="6806000" />
     </task>
     <servers />
   </component>
