@@ -3,7 +3,7 @@ import cv2
 class Display:
     def __init__(self, videoSize=(416,416)):
         pygame.init()
-        self.size = (900, 1000)
+        self.size = (680, 420)
         self.videoSize = videoSize
         self.__image_preprocessing()
 
