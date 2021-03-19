@@ -1,9 +1,10 @@
 import pygame
 import cv2
 class Display:
-    def __init__(self):
+    def __init__(self, videoSize=(416,416)):
         pygame.init()
         self.size = (900, 1000)
+        self.videoSize = videoSize
         self.__image_preprocessing()
 
     def __image_preprocessing(self):
@@ -23,8 +24,8 @@ class Display:
         self.textHydrantRect = self.textHydrant.get_rect()
         self.textBench = self.font.render('bench', True,  pygame.Color(0, 0, 0),  None)
         self.textBenchRect = self.textBench.get_rect()
-        self.stretchXValue = self.size[0]/416
-        self.shrinkYValue = self.size[1]/416
+        self.stretchXValue = self.size[0]/self.videoSize[0]
+        self.shrinkYValue = self.size[1]/self.videoSize[1]
         self.labelToColor = {"stop sign": ((0, 0, 255),self.textSign, self.textSignRect), "person": ((0,255,0),self.textHuman, self.textHumanRect), "car": ((255, 0, 0),self.textCar, self.textCarRect), "bicycle": ((255, 255, 0),self.textBike, self.textBikeRect), "traffic light": ((255, 0, 255),self.textLight, self.textLightRect), "fire hydrant": ((0, 255, 255),self.textHydrant, self.textHydrantRect), "bench" : ((200, 100, 200),self.textBench, self.textBenchRect)}
 
         self.screen = pygame.display.set_mode((self.size[0],self.size[1]))
