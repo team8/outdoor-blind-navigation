@@ -22,10 +22,8 @@ while True:
     capture = cv2.resize(capture, (480, 360))
     state_classifier_inference = sc.get_inference()
     object_localizer_inference = ol.get_inference()
-    # print(object_localizer_inference)
-    print(state_classifier_inference if counter % 2 == 0 else object_localizer_inference)
-
-    # print("Object Detection FPS", ol.getFPS()
+    # print(state_classifier_inference if counter % 2 == 0 else object_localizer_inference)
+    print("Object Detection FPS", ol.getFPS())
 
 
     display.putVideoFeed(capture)

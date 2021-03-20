@@ -79,7 +79,7 @@ class Display:
             return
         for detection in obstacles:
             #TODO Very temporary - do thresholding within object localizer
-            if int(float(detection[1])) >= 25:
+            if int(float(detection[1])) >= 25 and detection[0] in self.labelToColor.keys():
                 self.__displayObjects(detection)
     def displayScreen(self):
         pygame.display.update();
@@ -94,7 +94,6 @@ class Display:
         centerY = y+(h/2)+15
         if (centerY + 15 >= self.size[1]):
             centerY = y-(h/2)-15
-        print(self.labelToColor[objectInfo[0]][2])
         textRect = self.labelToColor[objectInfo[0]][2]
         textRect.center = (centerX,centerY)
         self.screen.blit(self.labelToColor[objectInfo[0]][1], textRect)

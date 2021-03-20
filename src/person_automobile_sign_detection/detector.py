@@ -14,7 +14,8 @@ class Detector:
     # weights_path = "person_automobile_sign_detection/yolov4.weights"
     config_path = "person_automobile_sign_detection/yolov4-original.cfg"
     # config_path = "person_automobile_sign_detection/yolov4-original.cfg"
-    data_file_path = "person_automobile_sign_detection/coco.data"
+    data_file_path = "person_automobile_sign_detection/coco_original.data"
+    # data_file_path = "person_automobile_sign_detection/coco.data"
 
     network, class_names, class_colors = darknet.load_network(
                 config_path,

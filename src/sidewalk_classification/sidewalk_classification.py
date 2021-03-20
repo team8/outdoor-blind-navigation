@@ -19,8 +19,9 @@ class SidewalkClassification:
             try:
 
                 frame = capturer.getImages().getLast()
-                preprocessed_frame = cv2.resize(frame, image_preprocessing_dimens, interpolation=cv2.INTER_LINEAR)
-                self.images_queue.add(np.expand_dims(preprocessed_frame, 0))
+                if frame is not None:
+                    preprocessed_frame = cv2.resize(frame, image_preprocessing_dimens, interpolation=cv2.INTER_LINEAR)
+                    self.images_queue.add(np.expand_dims(preprocessed_frame, 0))
             except Exception as e:
                 print("Capturing Not Working", e)
 
