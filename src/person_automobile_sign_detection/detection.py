@@ -48,4 +48,4 @@ class Detection:
             self.consecutiveNotSeenCount += 1
             self.lastSeen = False
     def evaluateRemove(self) -> bool:
-        return True if self.frames_passed > 15 or self.consecutiveNotSeenCount > 4 else False# finish
+        return True if self.consecutiveNotSeenCount > 7 else False# finish

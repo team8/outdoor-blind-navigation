@@ -83,8 +83,9 @@ class Detector:
         inference = []
 
         for detection in self.running_detections:
-            if detection.countSeen > 2:
+            if detection.countSeen >= 7:
                 inference.append((detection.label, 0, detection.bbox))
+        print(inference)
         return inference
         # return self.detections_queue.getLast()
 
@@ -117,15 +118,16 @@ class Detector:
                         idSeen.append(detection.object_id)
                         detection.update(raw_detection[2])
                         found_match = True
-                        print("Associated BB", raw_detection[0])
+                        # print("Associated BB", raw_detection[0])
                 if found_match is False:
-                    print("Adding new detection", raw_detection[0])
+                    # print("Adding new detection", raw_detection[0])
                     self.id_index += 1
                     self.running_detections.append(Detection(raw_detection[0], self.id_index, raw_detection[2]))
 
         indexToDelete = []
         # for detection in self.running_detections:
         for i in range(0, len(self.running_detections)):
+            # print("Seen", self.running_detections[i].label, self.running_detections[i].countSeen, "times")
             if self.running_detections[i].object_id not in idSeen:
                 self.running_detections[i].update(None)
             if self.running_detections[i].evaluateRemove():
