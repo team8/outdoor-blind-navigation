@@ -15,7 +15,8 @@ class Detection:
     lastSeen = True
 
 
-    def __init__(self, object_id, bbox):
+    def __init__(self, label, object_id, bbox):
+        self.label = label
         self.bbox = bbox
         self.object_id = object_id
         # self.kalmannFilter = KalmannFilter()
@@ -31,7 +32,12 @@ class Detection:
     #
     # def getPosition(self):
         # return kalmannFilter.predict()
-    def seenOrNot(self, is_seen: bool):
+    def update(self, bbox):
+        if bbox is not None:
+            self.bbox = bbox
+            is_seen = True
+        else:
+            is_seen = False
 
         self.frames_passed+=1
         if is_seen:
