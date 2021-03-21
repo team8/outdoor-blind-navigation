@@ -24,6 +24,7 @@ class Detector:
                 batch_size=1
             )
     detections_queue = CircularBuffer(2)
+    prev_detections_queue = CircularBuffer(2)
     images_queue = Queue(maxsize=2)
     # images_queue = Queue()
     # fps_queue = Queue(maxsize=3)
@@ -84,6 +85,8 @@ class Detector:
                 last_darknet_image = self.images_queue.get()[0]
                 last_time = time.time()
                 detections = darknet.detect_image(self.network, self.class_names, last_darknet_image, thresh=0.25)
+
+                self.prev_detections_queue.add(self.detections_queue.getLast())
                 self.detections_queue.add(detections)
                 self.fps_queue.add(1/(time.time() - last_time))
                 darknet.free_image(last_darknet_image)
@@ -100,3 +103,4 @@ class Detector:
         threading.Thread(target=self.capture_processing).start()
         time.sleep(3)
         threading.Thread(target=self.detection_starter).start()
+
