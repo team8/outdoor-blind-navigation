@@ -9,8 +9,8 @@ import threading
 from utils.circularBuffer import CircularBuffer
 import capturer
 from queue import Queue
-from detection import Detection
-import object_filter
+from person_automobile_sign_detection.detection import Detection
+import person_automobile_sign_detection.object_filter as of
 
 class Detector:
     weights_path = "person_automobile_sign_detection/yolov4.weights"
@@ -80,8 +80,13 @@ class Detector:
                     print("Displaying Not Working", e)
 
     def get_inference(self):
-        return self.detections_queue.getLast()
-        # return {"label": self.detections_queue.getLast()[0], "bbox": self.detections_queue.getLast()[1]} if self.detections_queue.size() >= 1 and not (None in self.detections_queue.getList()) else None
+        inference = []
+
+        for detection in self.running_detections:
+            if detection.countSeen > 2:
+                inference.append((detection.label, 0, detection.bbox))
+        return inference
+        # return self.detections_queue.getLast()
 
     def detection_starter(self):
         # threading.Thread(target=self.display).start()
@@ -95,6 +100,7 @@ class Detector:
 
                 self.prev_detections_queue.add(self.detections_queue.getLast())
                 self.detections_queue.add(detections)
+                self.update_running_detections(detections)
                 self.fps_queue.add(1/(time.time() - last_time))
                 darknet.free_image(last_darknet_image)
             except Exception as e:
@@ -104,20 +110,22 @@ class Detector:
     def update_running_detections(self, raw_detections_list):
         idSeen = []
         for raw_detection in raw_detections_list:
-            if raw_detection[1] > self.min_confidence:
+            if float(raw_detection[1]) > self.min_confidence:
                 found_match = False
                 for detection in self.running_detections:
-                    if raw_detection[0] == detection.label and object_filter.compute_iou(detection.bbox, raw_detection[2]) > self.min_iou:
+                    if raw_detection[0] == detection.label and of.compute_iou(detection.bbox, raw_detection[2]) > self.min_iou:
                         idSeen.append(detection.object_id)
                         found_match = True
+                        print("Associated BB", raw_detection[0])
                 if found_match is False:
+                    print("Adding new detection", raw_detection[0])
                     self.id_index += 1
                     self.running_detections.append(Detection(self.id_index, raw_detection[2]))
 
         indexToDelete = []
         # for detection in self.running_detections:
         for i in range(0, len(self.running_detections)):
-            if self.running_detections[i].id in idSeen:
+            if self.running_detections[i].object_id in idSeen:
                 self.running_detections[i].seenOrNot(True)
             else:
                 self.running_detections[i].seenOrNot(False)

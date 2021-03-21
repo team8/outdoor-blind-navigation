@@ -20,15 +20,15 @@ class Detection:
         self.object_id = object_id
         # self.kalmannFilter = KalmannFilter()
 
-    def update(self, seen: bool):
-        self.frames_passed+=1;
-        self.countSeen = self.countSeen + 1 if seen is True else self.countSeen
-        if seen is False and self.lastSeen is False:
-            self.consecutiveNotSeenCount += 1
-        else:
-            self.consecutiveNotSeenCount = 0
-        self.lastSeen = seen
-
+    # def update(self, seen: bool):
+    #     self.frames_passed+=1;
+    #     self.countSeen = self.countSeen + 1 if seen is True else self.countSeen
+    #     if seen is False and self.lastSeen is False:
+    #         self.consecutiveNotSeenCount += 1
+    #     else:
+    #         self.consecutiveNotSeenCount = 0
+    #     self.lastSeen = seen
+    #
     # def getPosition(self):
         # return kalmannFilter.predict()
     def seenOrNot(self, is_seen: bool):
