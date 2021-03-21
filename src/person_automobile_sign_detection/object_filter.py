@@ -8,7 +8,7 @@ def frame_object_mapper(prev_detections, new_detections):
                 compute_iou(i[2], j[2])
 
 
-def compute_iou(orig_bbox, new_bbox):
+def compute_iou(orig_bbox, new_bbox): # should also look at general shape to see if they match
     x1, y1, w1, h1 = orig_bbox
     x2, y2, w2, h2 = new_bbox
 

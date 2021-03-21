@@ -3,7 +3,8 @@ Class which represents every object detected that is being tracked.
 """
 
 class Detection:
-    id = -1 # id associated with the object
+    object_id = -1 # id associated with the object
+    label = ""
     bbox = None # detected object position in image
     kalmannFilter = None # kalmann filter object for motion tracking
 
@@ -14,9 +15,9 @@ class Detection:
     lastSeen = True
 
 
-    def __init__(self, id, bbox):
+    def __init__(self, object_id, bbox):
         self.bbox = bbox
-        self.id = id
+        self.object_id = object_id
         # self.kalmannFilter = KalmannFilter()
 
     def update(self, seen: bool):
@@ -30,6 +31,15 @@ class Detection:
 
     # def getPosition(self):
         # return kalmannFilter.predict()
+    def seenOrNot(self, is_seen: bool):
 
-    def evaluateStatus(self) -> bool:
-        return True if self.frames_passed > 7 or self.consecutiveNotSeenCount > 8 # finish
+        self.frames_passed+=1
+        if is_seen:
+            self.consecutiveNotSeenCount=0
+            self.countSeen+=1
+            self.lastSeen = True
+        else:
+            self.consecutiveNotSeenCount += 1
+            self.lastSeen = False
+    def evaluateRemove(self) -> bool:
+        return True if self.frames_passed > 15 or self.consecutiveNotSeenCount > 4 else False# finish

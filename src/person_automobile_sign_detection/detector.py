@@ -9,6 +9,9 @@ import threading
 from utils.circularBuffer import CircularBuffer
 import capturer
 from queue import Queue
+from detection import Detection
+import object_filter
+
 class Detector:
     weights_path = "person_automobile_sign_detection/yolov4.weights"
     # weights_path = "person_automobile_sign_detection/yolov4.weights"
@@ -23,6 +26,7 @@ class Detector:
                 weights_path,
                 batch_size=1
             )
+    running_detections = []
     detections_queue = CircularBuffer(2)
     prev_detections_queue = CircularBuffer(2)
     images_queue = Queue(maxsize=2)
@@ -30,6 +34,9 @@ class Detector:
     # fps_queue = Queue(maxsize=3)
     fps_queue = CircularBuffer(1)
     width = darknet.network_width(network)
+    min_confidence = 25
+    min_iou = 30 # min iou percentage for id'ing
+    id_index = 0 # keeps raising per new object identified
     height = darknet.network_height(network)
     colors = {"person": [255, 255, 0], "car": [100, 0, 0], "stop sign": [100, 100, 0]}
     def capture_processing(self):
@@ -92,6 +99,33 @@ class Detector:
                 darknet.free_image(last_darknet_image)
             except Exception as e:
                 print("Prediction Not Working: Last Image", e)
+
+
+    def update_running_detections(self, raw_detections_list):
+        idSeen = []
+        for raw_detection in raw_detections_list:
+            if raw_detection[1] > self.min_confidence:
+                found_match = False
+                for detection in self.running_detections:
+                    if raw_detection[0] == detection.label and object_filter.compute_iou(detection.bbox, raw_detection[2]) > self.min_iou:
+                        idSeen.append(detection.object_id)
+                        found_match = True
+                if found_match is False:
+                    self.id_index += 1
+                    self.running_detections.append(Detection(self.id_index, raw_detection[2]))
+
+        indexToDelete = []
+        # for detection in self.running_detections:
+        for i in range(0, len(self.running_detections)):
+            if self.running_detections[i].id in idSeen:
+                self.running_detections[i].seenOrNot(True)
+            else:
+                self.running_detections[i].seenOrNot(False)
+            if self.running_detections[i].evaluateRemove():
+                indexToDelete.append(i)
+        for i in indexToDelete:
+            del self.running_detections[i]
+
 
     def getFPS(self):
         return self.fps_queue.getLast()
