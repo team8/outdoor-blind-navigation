@@ -10,7 +10,7 @@ from utils.circularBuffer import CircularBuffer
 import capturer
 from queue import Queue
 from person_automobile_sign_detection.detection import Detection
-import person_automobile_sign_detection.object_filter as of
+import person_automobile_sign_detection.object_filter_util as ofu
 
 class Detector:
     weights_path = "person_automobile_sign_detection/yolov4.weights"
@@ -35,7 +35,8 @@ class Detector:
     fps_queue = CircularBuffer(1)
     width = darknet.network_width(network)
     min_confidence = 25
-    min_iou = 10 # min iou percentage for id'ing
+    min_iou = 25 # min iou percentage for id'ing
+    min_box_area = 300
     id_index = 0 # keeps raising per new object identified
     height = darknet.network_height(network)
     colors = {"person": [255, 255, 0], "car": [100, 0, 0], "stop sign": [100, 100, 0]}
@@ -111,10 +112,10 @@ class Detector:
     def update_running_detections(self, raw_detections_list):
         idSeen = []
         for raw_detection in raw_detections_list:
-            if float(raw_detection[1]) > self.min_confidence:
+            if float(raw_detection[1]) > self.min_confidence and raw_detection[2][2] * raw_detection[2][3] > self.min_box_area:
                 found_match = False
                 for detection in self.running_detections:
-                    if raw_detection[0] == detection.label and of.compute_iou(detection.bbox, raw_detection[2]) > self.min_iou:
+                    if raw_detection[0] == detection.label and ofu.compute_iou(detection.bbox, raw_detection[2]) > self.min_iou:
                         idSeen.append(detection.object_id)
                         detection.update(raw_detection[2])
                         found_match = True

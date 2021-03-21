@@ -27,7 +27,7 @@ while True:
 
 
     display.putVideoFeed(capture)
-    # display.putSidewalkState(state_classifier_inference)
+    display.putSidewalkState(state_classifier_inference)
     display.putObjects(object_localizer_inference)
     display.displayScreen()
 
