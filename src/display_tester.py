@@ -48,5 +48,6 @@ obs = [('person', '30.26', (250.02488708496094, 85.19881439208984, 62.9639511108
 while True:
     display.putVideoFeed(capture)
     display.putObjects(obs)
+    display.drawArrow((0, 0), (150, 150))
     display.displayScreen()
     time.sleep(1)

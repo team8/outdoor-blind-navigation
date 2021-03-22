@@ -104,4 +104,22 @@ class Display:
         textRect.center = (centerX, centerY)
         self.screen.blit(font.render(self.labelToColor[objectInfo[0]][1], textRect))
         pygame.draw.rect(self.screen, self.labelToColor[objectInfo[0]][0], self.empty_rect, 3)"""
+    def drawArrow(self,point1,point2):
+        slope = ((point1[1]-point2[1])/(point1[0]-point2[0]))
+        point3 = ()
+        slopePerp = -1/slope
+        if (10*slope <= 10):
+            point3 = (point2[0]-10, point2[1]-10*slope)
+        else:
+            point3 = (point2[0] + 10*slopePerp, point2[1] - 10)
+        point4 = ()
+        point5 = ()
+        if (7*slopePerp <= 7):
+            point4 = (point3[0]-7, point3[1]-7*slopePerp)
+            point5 = (point3[0] +7, point3[1] + 7 * slopePerp)
+        else:
+            point4 = (point3[0] + 7*slope, point3[1] - 7)
+            point5 = (point3[0] - 7 * slope, point3[1] + 7)
+        pygame.draw.polygon(self.screen, (255, 0, 0), (point1, point2,point4,point5,point2,point1))
+        pygame.draw.line(self.screen, (255, 0, 0), point1, point2, 3)
 
