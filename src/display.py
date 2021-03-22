@@ -89,14 +89,19 @@ class Display:
         y *= self.shrinkYValue
         w *= self.stretchXValue
         h *= self.shrinkYValue
-        empty_rect = pygame.Rect(x-(w/2), y-(h/2), w, h)
+        self.empty_rect = pygame.Rect(x-(w/2), y-(h/2), w, h)
         centerX = x
         centerY = y+(h/2)+15
         if (centerY + 15 >= self.size[1]):
             centerY = y-(h/2)-15
         print(self.labelToColor[objectInfo[0]][2])
-        textRect = self.labelToColor[objectInfo[0]][2]
-        textRect.center = (centerX,centerY)
-        self.screen.blit(self.labelToColor[objectInfo[0]][1], textRect)
-        pygame.draw.rect(self.screen,self.labelToColor[objectInfo[0]][0], empty_rect, 3)
+        text = self.font.render("ID: " + objectInfo[0] + " Conf Level: " + objectInfo[1], True, pygame.Color(0, 0, 0), None)
+        textRect = text.get_rect();
+        textRect.center = (centerX, centerY)
+        self.screen.blit(text, textRect)
+        pygame.draw.rect(self.screen, self.labelToColor[objectInfo[0]][0], self.empty_rect, 3)
+        """textRect = self.labelToColor[objectInfo[0]][2]
+        textRect.center = (centerX, centerY)
+        self.screen.blit(font.render(self.labelToColor[objectInfo[0]][1], textRect))
+        pygame.draw.rect(self.screen, self.labelToColor[objectInfo[0]][0], self.empty_rect, 3)"""
 
