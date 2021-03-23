@@ -85,7 +85,8 @@ class Detector:
 
         for detection in self.running_detections:
             if detection.countSeen >= 7:
-                inference.append((detection.label, 0, detection.bbox, detection.object_id, ofu.get_direction_vector(detection.bbox_history.getList())))
+                # inference.append((detection.label, 0, detection.bbox, detection.object_id, ofu.get_direction_vector(detection.bbox_history.getList())))
+                inference.append((detection.label, 0, detection.bbox, detection.object_id, ofu.get_direction_vector(detection.bbox_history)))
         # print(inference)
         return inference
         # return self.detections_queue.getLast()

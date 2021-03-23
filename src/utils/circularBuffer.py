@@ -43,16 +43,17 @@ class CircularBuffer:
             return sum(temp) / len(temp)
 
     #Sorts a copy of the buffer, then finds the median. Probably doesn't work on strings. If greater than minNumPercent, returns None
-    def median(self):
-        temp = self.queue.copy()
+    def median(self, initIndex = 0, finIndex = None):
+        finIndex = self.capacity if finIndex is None else finIndex
+        temp = self.queue[initIndex:finIndex].copy()
         if temp.count(None) >= self.minNumPercent * self.capacity:
             return None
         else:
             temp = list(filter(None, temp))
             temp.sort()
-            if(self.capacity % 2 == 0):
-                return temp[self.capacity // 2 + 1] + [self.capacity // 2] / 2
-            return temp[self.capacity // 2 + 1]
+            # if(self.capacity % 2 == 0):
+                # return (temp[self.capacity // 2 + 1] + [self.capacity // 2]) / 2
+            return temp[(finIndex - initIndex)// 2 + 1]
 
     #Finds the thing with the most instances in the lisdt. Same as other 2, returns none if over minNumPercent
     def mode(self):

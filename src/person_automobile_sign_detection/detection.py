@@ -7,7 +7,8 @@ class Detection:
     object_id = -1 # id associated with the object
     label = ""
     bbox = None # detected object position in image
-    bbox_history = CircularBuffer(5)
+    bbox_history_size = 45
+    bbox_history = CircularBuffer(bbox_history_size)
     kalmannFilter = None # kalmann filter object for motion tracking
 
     # Lines 13 to 16 should be replaced with circular buffer
@@ -20,6 +21,7 @@ class Detection:
     def __init__(self, label, object_id, bbox):
         self.label = label
         self.bbox = bbox
+        self.bbox_history.initQueue([None]*self.bbox_history_size)
         self.bbox_history.add(self.bbox)
         self.object_id = object_id
         # self.kalmannFilter = KalmannFilter()
