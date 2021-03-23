@@ -35,7 +35,7 @@ class Detector:
     fps_queue = CircularBuffer(1)
     width = darknet.network_width(network)
     min_confidence = 25
-    min_iou = 25 # min iou percentage for id'ing
+    min_iou = 15 # min iou percentage for id'ing
     min_box_area = 300
     id_index = 0 # keeps raising per new object identified
     height = darknet.network_height(network)
@@ -85,7 +85,7 @@ class Detector:
 
         for detection in self.running_detections:
             if detection.countSeen >= 7:
-                inference.append((detection.label, 0, detection.bbox, detection.object_id))
+                inference.append((detection.label, 0, detection.bbox, detection.object_id, ofu.get_direction_vector(detection.bbox_history.getList())))
         # print(inference)
         return inference
         # return self.detections_queue.getLast()
@@ -93,20 +93,20 @@ class Detector:
     def detection_starter(self):
         # threading.Thread(target=self.display).start()
         while True:
-            try:
+            # try:
                 # while self.images_queue.get()[0] is None: time.sleep(0.1);
 
-                last_darknet_image = self.images_queue.get()[0]
-                last_time = time.time()
-                detections = darknet.detect_image(self.network, self.class_names, last_darknet_image, thresh=0.25)
+            last_darknet_image = self.images_queue.get()[0]
+            last_time = time.time()
+            detections = darknet.detect_image(self.network, self.class_names, last_darknet_image, thresh=0.25)
 
-                self.prev_detections_queue.add(self.detections_queue.getLast())
-                self.detections_queue.add(detections)
-                self.update_running_detections(detections)
-                self.fps_queue.add(1/(time.time() - last_time))
-                darknet.free_image(last_darknet_image)
-            except Exception as e:
-                print("Prediction Not Working: Last Image", e)
+            self.prev_detections_queue.add(self.detections_queue.getLast())
+            self.detections_queue.add(detections)
+            self.update_running_detections(detections)
+            self.fps_queue.add(1/(time.time() - last_time))
+            darknet.free_image(last_darknet_image)
+            # except Exception as e:
+                # print("Prediction Not Working: Last Image", e)
 
 
     def update_running_detections(self, raw_detections_list):
@@ -133,8 +133,8 @@ class Detector:
                 self.running_detections[i].update(None)
             if self.running_detections[i].evaluateRemove():
                 indexToDelete.append(i)
-        for i in indexToDelete:
-            del self.running_detections[i]
+        for i in range(len(indexToDelete) - 1, -1):
+            del self.running_detections[indexToDelete[i]]
 
 
     def getFPS(self):

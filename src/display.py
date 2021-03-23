@@ -1,4 +1,5 @@
 import pygame
+import sys
 import cv2
 class Display:
     def __init__(self, videoSize=(416,416)):
@@ -81,7 +82,7 @@ class Display:
             if detection[0] in self.labelToColor.keys():
                 self.__displayObjects(detection)
     def displayScreen(self):
-        pygame.display.update();
+        pygame.display.flip();
     def __displayObjects(self, objectInfo):
         x, y, w, h = objectInfo[2]
         x *= self.stretchXValue
@@ -99,24 +100,35 @@ class Display:
         textRect.center = (centerX, centerY)
         self.screen.blit(text, textRect)
         pygame.draw.rect(self.screen, self.labelToColor[objectInfo[0]][0], self.empty_rect, 3)
+        self.drawArrow((x, y), (x + objectInfo[4][0], y + objectInfo[4][1]))
+        # self.drawArrow((x, y), (x + 50, y + 50))
+        # self.drawArrow((50, 50),(400,400))
         """textRect = self.labelToColor[objectInfo[0]][2]
         textRect.center = (centerX, centerY)
         self.screen.blit(font.render(self.labelToColor[objectInfo[0]][1], textRect))
         pygame.draw.rect(self.screen, self.labelToColor[objectInfo[0]][0], self.empty_rect, 3)"""
     def drawArrow(self,point1,point2):
-        slope = ((point1[1]-point2[1])/(point1[0]-point2[0]))
+
+        # slope = ((point1[1]-point2[1])/(0.000001 if (point1[0]-point2[0]) == 0 else (point1[0]-point2[0])))
+
+        slope = sys.maxsize
+        if (point1[0]-point2[0] != 0):
+            slope = ((point1[1]-point2[1])/(point1[0]-point2[0]))
         point3 = ()
-        slopePerp = -1/slope
-        if (10*slope <= 10):
-            point3 = (point2[0]-10, point2[1]-10*slope)
+        slopePerp  = 10000000
+        if (slope != 0):
+            slopePerp = -1/slope
+        if (abs(10*slope) <= 10):
+            point3 = (point2[0] - 10, point2[1]-10*slope)
         else:
             point3 = (point2[0] + 10*slopePerp, point2[1] - 10)
         point4 = ()
         point5 = ()
-        if (7*slopePerp <= 7):
-            point4 = (point3[0]-7, point3[1]-7*slopePerp)
-            point5 = (point3[0] +7, point3[1] + 7 * slopePerp)
+        if (abs(7*slopePerp) <= 7):
+            point4 = (point3[0] - 7, point3[1]-7*slopePerp)
+            point5 = (point3[0] + 7, point3[1] + 7 * slopePerp)
         else:
-            point4 = (point3[0] + 7*slope, point3[1] - 7)
+            point4 = (point3[0] + 7 * slope, point3[1] - 7)
             point5 = (point3[0] - 7 * slope, point3[1] + 7)
-        pygame.draw.polygon(self.screen, (255, 0, 0), (point1, point2,point4,point5,point2,point1))
+        pygame.draw.polygon(self.screen, (0, 100, 100), (point1,point2,point4,point5,point2,point1))
+        pygame.draw.line(self.screen, (0, 100, 100), point1, point2, 3)
