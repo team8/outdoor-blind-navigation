@@ -1,3 +1,4 @@
+from utils.circularBuffer import CircularBuffer
 """
 Class which represents every object detected that is being tracked.
 """
@@ -6,6 +7,7 @@ class Detection:
     object_id = -1 # id associated with the object
     label = ""
     bbox = None # detected object position in image
+    bbox_history = CircularBuffer(5)
     kalmannFilter = None # kalmann filter object for motion tracking
 
     # Lines 13 to 16 should be replaced with circular buffer
@@ -18,6 +20,7 @@ class Detection:
     def __init__(self, label, object_id, bbox):
         self.label = label
         self.bbox = bbox
+        self.bbox_history.add(self.bbox)
         self.object_id = object_id
         # self.kalmannFilter = KalmannFilter()
 
@@ -35,6 +38,7 @@ class Detection:
     def update(self, bbox):
         if bbox is not None:
             self.bbox = bbox
+            self.bbox_history.add(self.bbox)
             is_seen = True
         else:
             is_seen = False
