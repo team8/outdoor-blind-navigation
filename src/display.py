@@ -3,7 +3,7 @@ import cv2
 class Display:
     def __init__(self, videoSize=(416,416)):
         pygame.init()
-        self.size = (900, 1000)
+        self.size = (480, 360)
         self.videoSize = videoSize
         self.__image_preprocessing()
 
@@ -105,16 +105,26 @@ class Display:
         self.screen.blit(font.render(self.labelToColor[objectInfo[0]][1], textRect))
         pygame.draw.rect(self.screen, self.labelToColor[objectInfo[0]][0], self.empty_rect, 3)"""
     def drawArrow(self,point1,point2):
-        slope = ((point1[1]-point2[1])/(point1[0]-point2[0]))
+        slope = 1000000000
+        if (point1[0]-point2[0] != 0):
+            slope = ((point1[1]-point2[1])/(point1[0]-point2[0]))
         point3 = ()
-        slopePerp = -1/slope
-        if (10*slope <= 10):
-            point3 = (point2[0]-10, point2[1]-10*slope)
+        slopePerp  = 10000000
+        if (slope != 0):
+            slopePerp = -1/slope
+        if (10*slope <= 10 and 10*slope >= -10):
+            if (point1[0] < point2[0]):
+                point3 = (point2[0]-10, point2[1]-10*slope)
+            else:
+                point3 = (point2[0] + 10, point2[1] + 10 * slope)
         else:
-            point3 = (point2[0] + 10*slopePerp, point2[1] - 10)
+            if (point1[0] < point2[0]):
+                point3 = (point2[0] - 10*slopePerp, point2[1] + 10)
+            else:
+                point3 = (point2[0] + 10*slopePerp, point2[1] - 10)
         point4 = ()
         point5 = ()
-        if (7*slopePerp <= 7):
+        if (7*slopePerp <= 7 and 7*slopePerp >= -7):
             point4 = (point3[0]-7, point3[1]-7*slopePerp)
             point5 = (point3[0] +7, point3[1] + 7 * slopePerp)
         else:
