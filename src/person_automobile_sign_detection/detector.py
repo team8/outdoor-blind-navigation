@@ -133,8 +133,14 @@ class Detector:
                 self.running_detections[i].update(None)
             if self.running_detections[i].evaluateRemove():
                 indexToDelete.append(i)
-        for i in range(len(indexToDelete) - 1, -1):
-            del self.running_detections[indexToDelete[i]]
+        print(len(self.running_detections))
+        print(indexToDelete)
+
+        self.running_detections = [i for j, i in enumerate(self.running_detections) if j not in indexToDelete]
+        # for i in range(len(indexToDelete) - 1, -1):
+            # del self.running_detections[indexToDelete[i]]
+
+        print(len(self.running_detections))
 
 
     def getFPS(self):

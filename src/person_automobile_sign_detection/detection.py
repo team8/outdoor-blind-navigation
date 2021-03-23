@@ -52,4 +52,4 @@ class Detection:
             self.consecutiveNotSeenCount += 1
             self.lastSeen = False
     def evaluateRemove(self) -> bool:
-        return True if self.consecutiveNotSeenCount > 7 else False# finish
+        return True if self.consecutiveNotSeenCount > 4 else False # finish
