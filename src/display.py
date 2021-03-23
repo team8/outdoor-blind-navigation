@@ -88,13 +88,35 @@ class Display:
         y *= self.shrinkYValue
         w *= self.stretchXValue
         h *= self.shrinkYValue
-        empty_rect = pygame.Rect(x-(w/2), y-(h/2), w, h)
+        self.empty_rect = pygame.Rect(x-(w/2), y-(h/2), w, h)
         centerX = x
         centerY = y+(h/2)+15
         if (centerY + 15 >= self.size[1]):
             centerY = y-(h/2)-15
-        textRect = self.labelToColor[objectInfo[0]][2]
-        textRect.center = (centerX,centerY)
-        self.screen.blit(self.labelToColor[objectInfo[0]][1], textRect)
-        pygame.draw.rect(self.screen,self.labelToColor[objectInfo[0]][0], empty_rect, 3)
-
+        # print(self.labelToColor[objectInfo[0]][2])
+        text = self.font.render(objectInfo[0] + " ID: " + str(objectInfo[3]), True, pygame.Color(0, 0, 0), None)
+        textRect = text.get_rect();
+        textRect.center = (centerX, centerY)
+        self.screen.blit(text, textRect)
+        pygame.draw.rect(self.screen, self.labelToColor[objectInfo[0]][0], self.empty_rect, 3)
+        """textRect = self.labelToColor[objectInfo[0]][2]
+        textRect.center = (centerX, centerY)
+        self.screen.blit(font.render(self.labelToColor[objectInfo[0]][1], textRect))
+        pygame.draw.rect(self.screen, self.labelToColor[objectInfo[0]][0], self.empty_rect, 3)"""
+    def drawArrow(self,point1,point2):
+        slope = ((point1[1]-point2[1])/(point1[0]-point2[0]))
+        point3 = ()
+        slopePerp = -1/slope
+        if (10*slope <= 10):
+            point3 = (point2[0]-10, point2[1]-10*slope)
+        else:
+            point3 = (point2[0] + 10*slopePerp, point2[1] - 10)
+        point4 = ()
+        point5 = ()
+        if (7*slopePerp <= 7):
+            point4 = (point3[0]-7, point3[1]-7*slopePerp)
+            point5 = (point3[0] +7, point3[1] + 7 * slopePerp)
+        else:
+            point4 = (point3[0] + 7*slope, point3[1] - 7)
+            point5 = (point3[0] - 7 * slope, point3[1] + 7)
+        pygame.draw.polygon(self.screen, (255, 0, 0), (point1, point2,point4,point5,point2,point1))

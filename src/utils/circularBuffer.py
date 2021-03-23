@@ -73,7 +73,7 @@ class CircularBuffer:
 
     def getLast(self):
         self.lastAccessed = True
-        return self.queue[-1]
+        return self.queue[0]
 
     def getList(self):
         return self.queue
