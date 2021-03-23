@@ -3,7 +3,7 @@ import numpy as np
 
 #Using an inefficient but easy to code implementation
 class CircularBuffer:
-    def __init__(self, capacity, noneOverridePercent =  0.5):
+    def __init__(self, capacity, noneOverridePercent =  0.8):
         self.capacity = capacity
         self.queue = [None] * capacity
         self.minNumPercent = noneOverridePercent
@@ -53,7 +53,7 @@ class CircularBuffer:
             temp.sort()
             # if(self.capacity % 2 == 0):
                 # return (temp[self.capacity // 2 + 1] + [self.capacity // 2]) / 2
-            return temp[(finIndex - initIndex)// 2 + 1]
+            return temp[(finIndex - initIndex - 1)// 2 + 1]
 
     #Finds the thing with the most instances in the lisdt. Same as other 2, returns none if over minNumPercent
     def mode(self):

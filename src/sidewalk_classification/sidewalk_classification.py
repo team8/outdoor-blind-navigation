@@ -46,7 +46,7 @@ class SidewalkClassification:
 
     def __init__(self):
         self.model = tf.keras.models.load_model(model_path)
-        self.readings_buffer = CircularBuffer(readings_buffer_size)
+        self.readings_buffer = CircularBuffer(readings_buffer_size, noneOverridePercent=0.5)
         self.images_queue = CircularBuffer(1)
         self.classifier_queue = CircularBuffer(1)
         threading.Thread(target=self.classification_starter).start()

@@ -100,7 +100,11 @@ class Display:
         textRect.center = (centerX, centerY)
         self.screen.blit(text, textRect)
         pygame.draw.rect(self.screen, self.labelToColor[objectInfo[0]][0], self.empty_rect, 3)
-        self.drawArrow((x, y), (x + objectInfo[4][0] * 0.1, y + objectInfo[4][1] * 0.1))
+        lineLengthWeightage = 0.1
+        if objectInfo[4][0] * lineLengthWeightage != 0 and objectInfo[4][1] * lineLengthWeightage != 0:
+            self.drawArrow((x, y), (x + objectInfo[4][0] * 0.1, y + objectInfo[4][1] * 0.1))
+        else:
+            pygame.draw.circle(self.screen, (0, 100, 100), (x, y), 6)
         # print(x, x + objectInfo[4][0] * 0.1)
         # self.drawArrow((x, y), (x + 50, y + 50))
         # self.drawArrow((50, 50),(400,400))
