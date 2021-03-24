@@ -1,3 +1,3 @@
-![Screenshot](src/Blind Navigation Code Diagram.png)
+![CodeDiagramNotShown](src/Blind_Navigation_Code_Diagram.png)
 
 
