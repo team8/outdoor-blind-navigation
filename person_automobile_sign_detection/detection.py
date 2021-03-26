@@ -7,7 +7,7 @@ class Detection:
     object_id = -1 # id associated with the object
     label = ""
     bbox = None # detected object position in image
-    bbox_history_size = 45
+    bbox_history_size = 10 
     bbox_history = CircularBuffer(bbox_history_size)
     kalmannFilter = None # kalmann filter object for motion tracking
 

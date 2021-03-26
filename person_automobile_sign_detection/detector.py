@@ -114,14 +114,22 @@ class Detector:
         idSeen = []
         for raw_detection in raw_detections_list:
             if float(raw_detection[1]) > self.min_confidence and raw_detection[2][2] * raw_detection[2][3] > self.min_box_area:
-                found_match = False
-                for detection in self.running_detections:
-                    if raw_detection[0] == detection.label and ofu.compute_iou(detection.bbox, raw_detection[2]) > self.min_iou:
-                        idSeen.append(detection.object_id)
-                        detection.update(raw_detection[2])
-                        found_match = True
-                        # print("Associated BB", raw_detection[0])
-                if found_match is False:
+                largest_iou = -1
+                largest_iou_index = -1
+                largest_iou_bbox = None
+                for detection_index in range(0, len(self.running_detections)):
+
+                    iou = ofu.compute_iou(self.running_detections[detection_index].bbox, raw_detection[2])
+                    if raw_detection[0] == self.running_detections[detection_index].label and iou > self.min_iou and iou > largest_iou:
+                        largest_iou = iou
+                        largest_iou_index = detection_index
+                        largest_iou_bbox = raw_detection[2]
+
+                if largest_iou != -1:
+                    idSeen.append(self.running_detections[largest_iou_index].object_id)
+                    self.running_detections[largest_iou_index].update(largest_iou_bbox)
+                   # print("Associated BB", raw_detection[0])
+                else:
                     # print("Adding new detection", raw_detection[0])
                     self.id_index += 1
                     self.running_detections.append(Detection(raw_detection[0], self.id_index, raw_detection[2]))
@@ -134,14 +142,14 @@ class Detector:
                 self.running_detections[i].update(None)
             if self.running_detections[i].evaluateRemove():
                 indexToDelete.append(i)
-        print(len(self.running_detections))
-        print(indexToDelete)
+        # print(len(self.running_detections))
+        # print(indexToDelete)
 
         self.running_detections = [i for j, i in enumerate(self.running_detections) if j not in indexToDelete]
         # for i in range(len(indexToDelete) - 1, -1):
             # del self.running_detections[indexToDelete[i]]
 
-        print(len(self.running_detections))
+        # print(len(self.running_detections))
 
 
     def getFPS(self):
