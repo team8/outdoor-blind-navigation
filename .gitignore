@@ -2,6 +2,7 @@
 *.png
 *.mov
 *.h5
-idea/
+.idea/
+.vs/
 venv/
 *.weights

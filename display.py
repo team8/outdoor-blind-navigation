@@ -1,6 +1,7 @@
 import pygame
 import sys
 import cv2
+import math
 class Display:
     def __init__(self, videoSize=(416,416)):
         pygame.init()
@@ -94,15 +95,17 @@ class Display:
         centerY = y+(h/2)+15
         if (centerY + 15 >= self.size[1]):
             centerY = y-(h/2)-15
+
+        lineLengthWeightage = 0.05
+        if objectInfo[4][2] > 0:
+            self.drawArrow((x, y), ((self.size[0]//2 - x) * lineLengthWeightage + x,  self.size[1] * lineLengthWeightage + y))
+
         # print(self.labelToColor[objectInfo[0]][2])
         text = self.font.render(objectInfo[0].replace("sign", "") + " ID: " + str(objectInfo[3]), True, pygame.Color(255, 255, 255), None)
         textRect = text.get_rect();
         textRect.center = (centerX, centerY)
         self.screen.blit(text, textRect)
         pygame.draw.rect(self.screen, self.labelToColor[objectInfo[0]][0], self.empty_rect, 3)
-        lineLengthWeightage = 0.05
-        if objectInfo[4][2] > 0:
-            self.drawArrow((x, y), ((self.size[0]//2 - x) * lineLengthWeightage + x,  self.size[1] * lineLengthWeightage + y))
         # else:
             # self.drawArrow((x, y), (x, y + 25))
         # if objectInfo[4][0] * lineLengthWeightage != 0 and objectInfo[4][1] * lineLengthWeightage != 0:
@@ -124,8 +127,8 @@ class Display:
         else:
             slopeVector = (-(point1[0] - point2[0]) / magnitude, -(point1[1] - point2[1]) / magnitude)
         slopePerpVector = (-slopeVector[1], slopeVector[0])
-        triPoint1 = (point2[0] + slopeVector[0] * 15, point2[1] + slopeVector[1] * 15)
-        triPoint2 = (point2[0] + slopePerpVector[0] * 10, point2[1] + slopePerpVector[1] * 10)
-        triPoint3 = (point2[0] - slopePerpVector[0] * 10, point2[1] - slopePerpVector[1] * 10)
+        triPoint1 = (point2[0] + slopeVector[0] * 10, point2[1] + slopeVector[1] * 10)
+        triPoint2 = (point2[0] + slopePerpVector[0] * 5, point2[1] + slopePerpVector[1] * 5)
+        triPoint3 = (point2[0] - slopePerpVector[0] * 5, point2[1] - slopePerpVector[1] * 5)
         pygame.draw.polygon(self.screen, (0, 100, 100), (triPoint1, triPoint2, triPoint3))
         pygame.draw.line(self.screen, (0, 100, 100), point1, point2, 3)
