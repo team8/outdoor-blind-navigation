@@ -35,8 +35,8 @@ class Detector:
     fps_queue = CircularBuffer(1)
     width = darknet.network_width(network)
     min_confidence = 25
-    min_iou = 15 # min iou percentage for id'ing
-    min_box_area = 300
+    min_iou = 10 # min iou percentage for id'ing
+    min_box_area = 700
     id_index = 0 # keeps raising per new object identified
     height = darknet.network_height(network)
     colors = {"person": [255, 255, 0], "car": [100, 0, 0], "stop sign": [100, 100, 0]}

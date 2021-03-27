@@ -1,20 +1,25 @@
 
 # provides psuedo direction vector
 def get_direction_vector(bbox_buffer):
-    bbox_list = bbox_buffer.getList()
-    if None not in bbox_list:
+    bbox_list = [x for x in bbox_buffer.getList() if x is not None]
+    # print(bbox_list)
+    # if None not in bbox_list:
         # base_position = bbox_list.median()
         # bbox_current_pos = bbox_list.median(bbox_list.size() - 5, bbox_list.size())
         # print(base_position)
         # print(bbox_current_pos)
         # summation_direction_vector = (bbox_current_pos[0] - base_position[0], bbox_current_pos[1] - base_position[1])
-        weighting = 0.1
-        base_position = (bbox_list[0][0], bbox_list[0][1])
-        summation_direction_vector = (0, 0)
-        for i in range(1,(len(bbox_list))):
-            summation_direction_vector = ((bbox_list[i][0] - base_position[0])*weighting + summation_direction_vector[0], (bbox_list[i][1] - base_position[1])*weighting + summation_direction_vector[1])
-        return summation_direction_vector
-    return (0, 0)
+    weighting = 0.1
+    base_position = (bbox_list[0][0], bbox_list[0][1])
+    base_area = bbox_list[0][2] * bbox_list[0][3]
+    new_area = bbox_list[-1][2] * bbox_list[-1][3]
+
+    summation_direction_vector = (0, 0, new_area - base_area)
+    for i in range(1,(len(bbox_list))):
+        summation_direction_vector = ((bbox_list[i][0] - base_position[0])*weighting + summation_direction_vector[0], (bbox_list[i][1] - base_position[1])*weighting + summation_direction_vector[1], 100)
+
+    return summation_direction_vector
+    # return (0, 0, 0)
 
 
 

@@ -95,16 +95,20 @@ class Display:
         if (centerY + 15 >= self.size[1]):
             centerY = y-(h/2)-15
         # print(self.labelToColor[objectInfo[0]][2])
-        text = self.font.render(objectInfo[0] + " ID: " + str(objectInfo[3]), True, pygame.Color(0, 0, 0), None)
+        text = self.font.render(objectInfo[0].replace("sign", "") + " ID: " + str(objectInfo[3]), True, pygame.Color(255, 255, 255), None)
         textRect = text.get_rect();
         textRect.center = (centerX, centerY)
         self.screen.blit(text, textRect)
         pygame.draw.rect(self.screen, self.labelToColor[objectInfo[0]][0], self.empty_rect, 3)
-        lineLengthWeightage = 0.1
+        lineLengthWeightage = 0.05
+        if objectInfo[4][2] > 0:
+            self.drawArrow((x, y), ((self.size[0]//2 - x) * lineLengthWeightage + x,  self.size[1] * lineLengthWeightage + y))
+        # else:
+            # self.drawArrow((x, y), (x, y + 25))
         # if objectInfo[4][0] * lineLengthWeightage != 0 and objectInfo[4][1] * lineLengthWeightage != 0:
             # self.drawArrow((x, y), (x + objectInfo[4][0] * 0.3, y + objectInfo[4][1] * 0.3))
         # else:
-        pygame.draw.circle(self.screen, (0, 100, 100), (x, y), 6)
+        pygame.draw.circle(self.screen, (255, 255, 255), (x, y), 3)
         # print(x, x + objectInfo[4][0] * 0.1)
         # self.drawArrow((x, y), (x + 50, y + 50))
         # self.drawArrow((50, 50),(400,400))
@@ -138,5 +142,6 @@ class Display:
         else:
             point4 = (point3[0] + 7 * slope, point3[1] - 7)
             point5 = (point3[0] - 7 * slope, point3[1] + 7)
-        pygame.draw.polygon(self.screen, (0, 100, 100), (point1,point2,point4,point5,point2,point1))
-        pygame.draw.line(self.screen, (0, 100, 100), point1, point2, 3)
+
+        pygame.draw.line(self.screen, (0,0,0), point1, point2, 2)
+        pygame.draw.polygon(self.screen, (255,255,255), (point1,point2,point4,point5,point2,point1))

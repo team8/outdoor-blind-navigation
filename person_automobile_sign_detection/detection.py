@@ -7,7 +7,7 @@ class Detection:
     object_id = -1 # id associated with the object
     label = ""
     bbox = None # detected object position in image
-    bbox_history_size = 10 
+    bbox_history_size = 15 
     bbox_history = CircularBuffer(bbox_history_size)
     kalmannFilter = None # kalmann filter object for motion tracking
 
@@ -54,4 +54,4 @@ class Detection:
             self.consecutiveNotSeenCount += 1
             self.lastSeen = False
     def evaluateRemove(self) -> bool:
-        return True if self.consecutiveNotSeenCount > 4 else False # finish
+        return True if self.consecutiveNotSeenCount > 6 else False # finish
