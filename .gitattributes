@@ -1,3 +1,6 @@
 # to change language of repo from Javascript to Python
 	*.c linguist-language=Python
 	*.h linguist-language=Python
+person_automobile_sign_detection/yolov4.weights filter=lfs diff=lfs merge=lfs -text
+person_automobile_sign_detection/yolov4-tiny.weights filter=lfs diff=lfs merge=lfs -text
+sidewalk_classification/sidewalk_classification_model_resnet.h5 filter=lfs diff=lfs merge=lfs -text
