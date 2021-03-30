@@ -1,0 +1,3 @@
+# to change language of repo from Javascript to Python
+	*.c linguist-language=Python
+	*.h linguist-language=Python

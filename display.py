@@ -5,7 +5,8 @@ import math
 class Display:
     def __init__(self, videoSize=(416,416)):
         pygame.init()
-        self.size = (680, 420)
+        # self.size = (680, 420)
+        self.size = (780, 520)
         self.videoSize = videoSize
         self.__image_preprocessing()
 
@@ -83,7 +84,7 @@ class Display:
             if detection[0] in self.labelToColor.keys():
                 self.__displayObjects(detection)
     def displayScreen(self):
-        pygame.display.flip();
+        pygame.display.update();
     def __displayObjects(self, objectInfo):
         x, y, w, h = objectInfo[2]
         x *= self.stretchXValue
