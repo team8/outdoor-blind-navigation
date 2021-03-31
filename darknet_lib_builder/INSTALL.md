@@ -9,3 +9,6 @@ Copy the libdarknet.so file created to the root folder of the project.
 For Windows:
 
 TODO: Someone fill this out
+
+
+Credit goes for Alexey AB for the yolo library generation code
