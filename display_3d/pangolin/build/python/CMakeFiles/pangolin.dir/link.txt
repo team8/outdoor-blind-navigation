@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -std=c++14 -Wall -Wextra  -fPIC -O3 -DNDEBUG  -shared  -o ../../pangolin.cpython-38-x86_64-linux-gnu.so CMakeFiles/pangolin.dir/pangolin.cpp.o  -flto ../src/lib_pangolin.a -lGL -lGLU -lGLEW -lSM -lICE -lX11 -lXext -lrt -lpthread -lpython3.8 -ldc1394 -lpng -lz -ljpeg -ltiff -lIlmImf 

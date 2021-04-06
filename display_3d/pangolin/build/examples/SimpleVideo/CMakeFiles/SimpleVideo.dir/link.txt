@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++14 -Wall -Wextra  -fPIC -O3 -DNDEBUG  -rdynamic CMakeFiles/SimpleVideo.dir/main.cpp.o  -o SimpleVideo  ../../src/lib_pangolin.a -lGL -lGLU -lGLEW -lSM -lICE -lX11 -lXext -lrt -lpthread -lpython3.8 -ldc1394 -lpng -lz -ljpeg -ltiff -lIlmImf 
