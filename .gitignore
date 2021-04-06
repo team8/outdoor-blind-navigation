@@ -6,3 +6,5 @@
 .vs/
 venv/
 *.weights
+__pycache__
+libdarknet.so
