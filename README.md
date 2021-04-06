@@ -1,9 +1,10 @@
 # Blind Navigation
 
+## Detection Demo
+![](Sidewalk_Demo.gif)
 
 ## Blind Navigation Code Diagram
-
-![](Blind_Navigation_Code_Diagram.png)
+![](Code_Diagram.png)
 
 ## File Description
 
