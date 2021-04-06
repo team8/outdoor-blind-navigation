@@ -1,5 +1,6 @@
 import sys
 sys.path.append('./Pangolin/build/src/libpangolin.so')
+# sys.path.append('./Pangolin/build/src')
 
 import numpy as np
 import OpenGL.GL as gl

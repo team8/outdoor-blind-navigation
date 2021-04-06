@@ -1,1 +1,0 @@
-/usr/bin/c++  -std=c++14 -Wall -Wextra  -fPIC -O3 -DNDEBUG  -rdynamic CMakeFiles/VideoJsonPrint.dir/main-print.cpp.o  -o VideoJsonPrint  ../../src/lib_pangolin.a -lGL -lGLU -lGLEW -lSM -lICE -lX11 -lXext -lrt -lpthread -lpython3.8 -ldc1394 -lpng -lz -ljpeg -ltiff -lIlmImf 
