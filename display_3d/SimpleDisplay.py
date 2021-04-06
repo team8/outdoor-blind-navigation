@@ -15,11 +15,15 @@ def main():
     win = pango.CreateWindowAndBind("pySimpleDisplay", 640, 480)
     glEnable(GL_DEPTH_TEST)
 
+
+   # Define Projection and initial ModelView matrix
+
     pm = pango.ProjectionMatrix(640, 480, 420, 420, 320, 240, 0.1, 1000)
     mv = pango.ModelViewLookAt(-0, 0.5, -3, 0, 0, 0, pango.AxisY)
     s_cam = pango.OpenGlRenderState(pm, mv)
 
     ui_width = 180
+    # Create Interactive View in window
 
     handler = pango.Handler3D(s_cam)
     d_cam = (
@@ -50,6 +54,7 @@ def main():
     pango.RegisterKeyPressCallback(ctrl + ord("a"), a_callback)
 
     while not pango.ShouldQuit():
+        # Clear screen and activate view to render into
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         if var_ui.a_checkbox:
@@ -58,7 +63,11 @@ def main():
         var_ui.an_int_no_input = var_ui.an_int
 
         d_cam.Activate(s_cam)
+
+        # Render OpenGL Cube
         pango.glDrawColouredCube()
+
+        # Swap Frames and Process Events
         pango.FinishFrame()
 
 
