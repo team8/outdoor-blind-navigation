@@ -4,7 +4,7 @@ from OpenGL.GL import *
 import cv2
 
 def main():
-    win = pango.CreateWindowAndBind("pySimpleDisplay", 640, 480)
+    win = pango.CreateWindowAndBind("Visualization Tool 3d", 640, 480)
     glEnable(GL_DEPTH_TEST)
 
 
@@ -13,11 +13,13 @@ def main():
     # last param is like movement speed, find second last parameter meaning
     pm = pango.ProjectionMatrix(640, 480, 420, 420, 320, 240, 0.2, 100)
 
-    # This allows changing of "camera" angle
-    mv = pango.ModelViewLookAt(0, -10, -8,
+    # This allows changing of "camera" angle : glulookat style model view matrix (x, y, z, lx, ly, lz, AxisDirection Up) Forward is -z and up is +y
+    mv = pango.ModelViewLookAt(-3, 0, -8,
                              0, 0, 0,
                              0, -1, 0)
-
+    # mv = pango.ModelViewLookAt(10, 10, 20,
+                             # 0, 0, 0,
+                             # 0, -1, 0)
     # This is normal view of object
     # mv = pango.ModelViewLookAt(-0, 0.05, -3, 0, 0, 0, pango.AxisY) ## TODO: what is axis y and axis x
     s_cam = pango.OpenGlRenderState(pm, mv)
@@ -92,53 +94,53 @@ def main():
         #     for cubeVertex in cubeQuad:
         #         glVertex3fv(cubeVertices[cubeVertex])
         # glTexCoord2f(0.0, 0.0)
-        glVertex3f(-0.5, -0.5, 0.05)
-        # glTexCoord2f(0.5, 0.0)
-        glVertex3f(0.5, -0.5,  0.05)
-        # glTexCoord2f(0.5, 0.5)
-        glVertex3f(0.5,  0.5,  0.05)
-        # glTexCoord2f(0.0, 0.5)
-        glVertex3f(-0.5,  0.5, 0.05)
-        glTexCoord2f(0.5, 0.0)
-        glVertex3f(-0.5, -0.5, -0.05)
-        glTexCoord2f(0.5, 0.5)
-        glVertex3f(-0.5,  0.5, -0.05)
-        glTexCoord2f(0.0, 0.5)
-        glVertex3f(0.5,  0.5, -0.05)
+        glVertex3f(-2, -2, 0.05)
+        # glTexCoord2f(2, 0.0)
+        glVertex3f(2, -2,  0.05)
+        # glTexCoord2f(2, 2)
+        glVertex3f(2,  2,  0.05)
+        # glTexCoord2f(0.0, 2)
+        glVertex3f(-2,  2, 0.05)
+        glTexCoord2f(2, 0.0)
+        glVertex3f(-2, -2, -0.05)
+        glTexCoord2f(2, 2)
+        glVertex3f(-2,  2, -0.05)
+        glTexCoord2f(0.0, 2)
+        glVertex3f(2,  2, -0.05)
         glTexCoord2f(0.0, 0.0)
-        glVertex3f(0.5, -0.5, -0.05)
-        # glTexCoord2f(0.0, 0.5)
-        glVertex3f(-0.5,  0.5, -0.05)
+        glVertex3f(2, -2, -0.05)
+        # glTexCoord2f(0.0, 2)
+        glVertex3f(-2,  2, -0.05)
         # glTexCoord2f(0.0, 0.0)
-        glVertex3f(-0.5,  0.5,  0.05)
-        # glTexCoord2f(0.5, 0.0)
-        glVertex3f(0.5,  0.5,  0.05)
-        # glTexCoord2f(0.5, 0.5)
-        glVertex3f(0.5,  0.5, -0.05)
-        # glTexCoord2f(0.5, 0.5)
-        glVertex3f(-0.5, -0.5, -0.05)
-        # glTexCoord2f(0.0, 0.5)
-        glVertex3f(0.5, -0.5, -0.05)
+        glVertex3f(-2,  2,  0.05)
+        # glTexCoord2f(2, 0.0)
+        glVertex3f(2,  2,  0.05)
+        # glTexCoord2f(2, 2)
+        glVertex3f(2,  2, -0.05)
+        # glTexCoord2f(2, 2)
+        glVertex3f(-2, -2, -0.05)
+        # glTexCoord2f(0.0, 2)
+        glVertex3f(2, -2, -0.05)
         # glTexCoord2f(0.0, 0.0)
-        glVertex3f(0.5, -0.5, 0.05)
-        # glTexCoord2f(0.5, 0.0)
-        glVertex3f(-0.5, -0.5, 0.05)
-        # glTexCoord2f(0.5, 0.0)
-        glVertex3f(0.5, -0.5, -0.05)
-        # glTexCoord2f(0.5, 0.5)
-        glVertex3f(0.5,  0.5, -0.05)
-        # glTexCoord2f(0.0, 0.5)
-        glVertex3f(0.5,  0.5, 0.05)
+        glVertex3f(2, -2, 0.05)
+        # glTexCoord2f(2, 0.0)
+        glVertex3f(-2, -2, 0.05)
+        # glTexCoord2f(2, 0.0)
+        glVertex3f(2, -2, -0.05)
+        # glTexCoord2f(2, 2)
+        glVertex3f(2,  2, -0.05)
+        # glTexCoord2f(0.0, 2)
+        glVertex3f(2,  2, 0.05)
         # glTexCoord2f(0.0, 0.0)
-        glVertex3f(0.5, -0.5, 0.05)
+        glVertex3f(2, -2, 0.05)
         # glTexCoord2f(0.0, 0.0)
-        glVertex3f(-0.5, -0.5, -0.05)
-        # glTexCoord2f(0.5, 0.0)
-        glVertex3f(-0.5, -0.5, 0.05)
-        # glTexCoord2f(0.5, 0.5)
-        glVertex3f(-0.5,  0.5, 0.05)
-        # glTexCoord2f(0.0, 0.5)
-        glVertex3f(-0.5,  0.5, -0.05)
+        glVertex3f(-2, -2, -0.05)
+        # glTexCoord2f(2, 0.0)
+        glVertex3f(-2, -2, 0.05)
+        # glTexCoord2f(2, 2)
+        glVertex3f(-2,  2, 0.05)
+        # glTexCoord2f(0.0, 2)
+        glVertex3f(-2,  2, -0.05)
         glEnd()
         # glBegin(GL_LINES)
         # for cubeEdge in cubeEdges:
@@ -146,7 +148,7 @@ def main():
         #         glVertex3fv(cubeVertices[cubeVertex])
         # glEnd()
 
-        # glColor3f(0.5.05.0.05.0)
+        # glColor3f(2.05.0.05.0)
         # Render OpenGL Cube
         # pango.glDrawColouredCube(5)
 
