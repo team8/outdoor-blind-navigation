@@ -45,17 +45,18 @@ def main():
     # ctrl = -96
     # pango.RegisterKeyPressCallback(ctrl + ord("a"), a_callback)
 
-    # textureSurface = pygame.image.load('test_image.png')
-    # textureData = pygame.image.tostring(textureSurface, "RGBA", 1)
-    # width = textureSurface.get_width()
-    # height = textureSurface.get_height()
-    vid = cv2.VideoCapture("/home/aoberai/Downloads/Long_Sidewalk_Compressed.mp4")
-    textureData = vid.read()[1]
+    textureSurface = pygame.image.load('test_image.jpg')
+    textureData = pygame.image.tostring(textureSurface, "RGBA", 1)
+    width = textureSurface.get_width()
+    height = textureSurface.get_height()
+    # vid = cv2.VideoCapture("/home/aoberai/Downloads/Long_Sidewalk_Compressed.mp4")
+    # textureData = vid.read()[1]
+    # textureData = cv2.resize(cv2.imread("test_image.jpg"), (500, 500))
     glEnable(GL_TEXTURE_2D)
     texid = glGenTextures(1)
 
     glBindTexture(GL_TEXTURE_2D, texid)
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureData.shape[0], textureData.shape[1],
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,width, height,
                  0, GL_RGBA, GL_UNSIGNED_BYTE, textureData)
 
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
@@ -134,7 +135,7 @@ def main():
         #         glVertex3fv(cubeVertices[cubeVertex])
         # glEnd()
 
-        glColor3f(1.0,1.0,1.0)
+        # glColor3f(1.0,1.0,1.0)
         # Render OpenGL Cube
         # pango.glDrawColouredCube(5)
 
