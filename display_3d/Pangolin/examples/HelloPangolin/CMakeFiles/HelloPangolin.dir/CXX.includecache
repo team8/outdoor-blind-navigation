@@ -1,0 +1,12 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/aoberai/programming/python/blind-navigation/display_3d/Pangolin/examples/HelloPangolin/main.cpp
+pangolin/pangolin.h
+-
+
