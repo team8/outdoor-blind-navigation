@@ -1,12 +1,15 @@
 import pygame
 import pypangolin as pango
 from OpenGL.GL import *
+import numpy as np
+import PIL
 import cv2
+from PIL import Image
+
 
 def main():
     win = pango.CreateWindowAndBind("Visualization Tool 3d", 640, 480)
     glEnable(GL_DEPTH_TEST)
-
 
     # Define Projection and initial ModelView matrix
 
@@ -55,28 +58,29 @@ def main():
     # ctrl = -96
     # pango.RegisterKeyPressCallback(ctrl + ord("a"), a_callback)
 
-    textureSurface = pygame.image.load('test_image.jpg')
-    textureData = pygame.image.tostring(textureSurface, "RGBA", 1)
-    width = textureSurface.get_width()
-    height = textureSurface.get_height()
-    # vid = cv2.VideoCapture("/home/aoberai/Downloads/Long_Sidewalk_Compressed.mp4")
-    # textureData = vid.read()[1]
-    # textureData = cv2.resize(cv2.imread("test_image.jpg"), (500, 500))
-    glEnable(GL_TEXTURE_2D)
-    texid = glGenTextures(1)
-
-    glBindTexture(GL_TEXTURE_2D, texid)
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,width, height,
-                 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData)
-
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+    vid = cv2.VideoCapture("test.mp4")
+    # texture_data = vid.read()[1]
 
     while not pango.ShouldQuit():
         # Clear screen and activate view to render into
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+        ret, texture_data = vid.read()
+        texture_data = cv2.cvtColor(texture_data, cv2.COLOR_BGR2RGBA)
+        texture_data = cv2.flip(texture_data, 1)
+        height, width, _ = texture_data.shape
+
+        glEnable(GL_TEXTURE_2D)
+        texid = glGenTextures(1)
+
+        glBindTexture(GL_TEXTURE_2D, texid)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
+                     0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
+
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
 
         # if var_ui.a_checkbox:
         # var_ui.an_int = var_ui.a_double
@@ -154,6 +158,8 @@ def main():
 
         # Swap Frames and Process Events
         pango.FinishFrame()
+
+        glDeleteTextures(texid)
 
 
 if __name__ == "__main__":
