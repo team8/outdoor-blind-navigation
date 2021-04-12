@@ -66,8 +66,7 @@ def main():
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         ret, texture_data = vid.read()
-        texture_data = cv2.cvtColor(texture_data, cv2.COLOR_BGR2RGBA)
-        texture_data = cv2.flip(texture_data, 1)
+        texture_data = cv2.flip(cv2.cvtColor(cv2.resize(texture_data, (1400, 1400)), cv2.COLOR_BGR2RGBA), 1)
         height, width, _ = texture_data.shape
 
         glEnable(GL_TEXTURE_2D)
@@ -82,16 +81,7 @@ def main():
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
 
-        # if var_ui.a_checkbox:
-        # var_ui.an_int = var_ui.a_double
-        #
-        # var_ui.an_int_no_input = var_ui.an_int
-
         d_cam.Activate(s_cam)
-        cubeVertices = ((1,1,1),(1,1,-1),(1,-1,-1),(1,-1,1),(-1,1,1),(-1,-1,-1),(-1,-1,1),(-1, 1,-1))
-        cubeEdges = ((0.05),(0,3),(0,4),(1,2),(1,7),(2,5),(2,3),(3,6),(4,6),(4,7),(5,6),(5,7))
-        cubeQuads = ((0,3,6,4),(2,5,6,3),(1,2,5,7),(1,0,4,7),(7,4,6,5),(2,3,0.05))
-
 
         glBegin(GL_QUADS)
         # for cubeQuad in cubeQuads:
@@ -113,37 +103,20 @@ def main():
         glVertex3f(2,  2, -0.05)
         glTexCoord2f(0.0, 0.0)
         glVertex3f(2, -2, -0.05)
-        # glTexCoord2f(0.0, 2)
         glVertex3f(-2,  2, -0.05)
-        # glTexCoord2f(0.0, 0.0)
         glVertex3f(-2,  2,  0.05)
-        # glTexCoord2f(2, 0.0)
         glVertex3f(2,  2,  0.05)
-        # glTexCoord2f(2, 2)
         glVertex3f(2,  2, -0.05)
-        # glTexCoord2f(2, 2)
-        glVertex3f(-2, -2, -0.05)
-        # glTexCoord2f(0.0, 2)
         glVertex3f(2, -2, -0.05)
-        # glTexCoord2f(0.0, 0.0)
         glVertex3f(2, -2, 0.05)
-        # glTexCoord2f(2, 0.0)
         glVertex3f(-2, -2, 0.05)
-        # glTexCoord2f(2, 0.0)
         glVertex3f(2, -2, -0.05)
-        # glTexCoord2f(2, 2)
         glVertex3f(2,  2, -0.05)
-        # glTexCoord2f(0.0, 2)
         glVertex3f(2,  2, 0.05)
-        # glTexCoord2f(0.0, 0.0)
         glVertex3f(2, -2, 0.05)
-        # glTexCoord2f(0.0, 0.0)
         glVertex3f(-2, -2, -0.05)
-        # glTexCoord2f(2, 0.0)
         glVertex3f(-2, -2, 0.05)
-        # glTexCoord2f(2, 2)
         glVertex3f(-2,  2, 0.05)
-        # glTexCoord2f(0.0, 2)
         glVertex3f(-2,  2, -0.05)
         glEnd()
         # glBegin(GL_LINES)
