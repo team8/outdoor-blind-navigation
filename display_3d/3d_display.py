@@ -1,30 +1,39 @@
 import pygame
 import pypangolin as pango
 from OpenGL.GL import *
+import numpy as np
+import PIL
 import cv2
+from PIL import Image
+
 
 def main():
     win = pango.CreateWindowAndBind("Visualization Tool 3d", 640, 480)
     glEnable(GL_DEPTH_TEST)
 
-
     # Define Projection and initial ModelView matrix
 
 
     #   ProjectionMatrix (int w, int h, double fu, double fv, double u0, double v0, double zNear, double zFar)
-    pm = pango.ProjectionMatrix(640*2, 480*2, 420, 420, 320, 240, 0.5, 100)
+    pm = pango.ProjectionMatrix(640, 480, 420, 420, 320, 240, 0.5, 100)
 
     # This allows changing of "camera" angle : glulookat style model view matrix (x, y, z, lx, ly, lz, AxisDirection Up) Forward is -z and up is +y
-
-    # Left click drag to move orientation relative to object
-    mv = pango.ModelViewLookAt(-3, 0, -10,
-                                0, 0, 0,
-                             0, -1, 0) # inference that last row has something to do with scaling or coord system type? that would make sense for why it can be replced with pango.AxisY
-    # mv = pango.ModelViewLookAt(10, 10, 50,
+   # mv = pango.ModelViewLookAt(-1, 2, -2,
+                             # 0, 1, 0,
+                             # 0, -1, 0)
+    # mv = pango.ModelViewLookAt(10, 10, 20,
                              # 0, 0, 0,
                              # 0, -1, 0)
     # This is normal view of object
-    # mv = pango.ModelViewLookAt(-0, 0.05, -3, 0, 0, 0, pango.AxisY) # TODO: what is axis y and axis x
+    # mv = pango.ModelViewLookAt(-1, 0, 5, 0, 0, 0, pango.AxisY) ## TODO: what is axis y and axis x
+    mv = pango.ModelViewLookAt(-1.5, 0, -1,
+                               0.25, 0.75, 0,
+                               0, -1, 0)
+
+    '''
+    The gluLookAt function provides an easy and intuitive way to set the camera position and orientation. Basically it has three groups of parameters, each one is composed of 3 floating point values. The first three values indicate the camera position. The second set of values defines the point we’re looking at. Actually it can be any point in our line of sight.The last group indicates the up vector, this is usually set to (0.0, 1.0, 0.0), meaning that the camera’s is not tilted. If you want to tilt the camera just play with these values. For example, to see everything upside down try (0.0, -1.0, 0.0).
+    '''
+
     s_cam = pango.OpenGlRenderState(pm, mv)
 
     # Create Interactive View in window
@@ -56,92 +65,68 @@ def main():
     # ctrl = -96
     # pango.RegisterKeyPressCallback(ctrl + ord("a"), a_callback)
 
-    textureSurface = pygame.image.load('test_image.jpg')
-    textureData = pygame.image.tostring(textureSurface, "RGBA", 1)
-    width = textureSurface.get_width()
-    height = textureSurface.get_height()
-    # vid = cv5.VideoCapture("/home/aoberai/Downloads/Long_Sidewalk_Compressed.mp4")
-    # textureData = vid.read()[1]
-    # textureData = cv5.resize(cv5.imread("test_image.jpg"), (500, 500))
-    glEnable(GL_TEXTURE_2D)
-    texid = glGenTextures(1)
-
-    glBindTexture(GL_TEXTURE_2D, texid)
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,width, height,
-                 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData)
-
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+    vid = cv2.VideoCapture("../Sidewalk.mp4")
+    # texture_data = vid.read()[1]
 
     while not pango.ShouldQuit():
         # Clear screen and activate view to render into
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        # if var_ui.a_checkbox:
-        # var_ui.an_int = var_ui.a_double
-        #
-        # var_ui.an_int_no_input = var_ui.an_int
+        ret, texture_data = vid.read()
+        texture_data = cv2.flip(cv2.cvtColor(cv2.resize(texture_data, (1400, 1400)), cv2.COLOR_BGR2RGBA), 1)
+        height, width, _ = texture_data.shape
+
+        glEnable(GL_TEXTURE_2D)
+        texid = glGenTextures(1)
+
+        glBindTexture(GL_TEXTURE_2D, texid)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
+                     0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
+
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
 
         d_cam.Activate(s_cam)
-        cubeVertices = ((1,1,1),(1,1,-1),(1,-1,-1),(1,-1,1),(-1,1,1),(-1,-1,-1),(-1,-1,1),(-1, 1,-1))
-        cubeEdges = ((0.01),(0,3),(0,4),(1,5),(1,7),(5,5),(5,3),(3,6),(4,6),(4,7),(5,6),(5,7))
-        cubeQuads = ((0,3,6,4),(5,5,6,3),(1,5,5,7),(1,0,4,7),(7,4,6,5),(5,3,0.01))
-
 
         glBegin(GL_QUADS)
         # for cubeQuad in cubeQuads:
         #     for cubeVertex in cubeQuad:
         #         glVertex3fv(cubeVertices[cubeVertex])
         # glTexCoord2f(0.0, 0.0)
-        glVertex3f(-5, -5, 0.01)
-        # glTexCoord2f(5, 0.0)
-        glVertex3f(5, -5,  0.01)
-        # glTexCoord5f(5, 5)
-        glVertex3f(5,  5,  0.01)
-        # glTexCoord5f(0.0, 5)
-        glVertex3f(-5,  5, 0.01)
-        glTexCoord2f(5, 0.0)
-        glVertex3f(-5, -5, -0.01)
-        glTexCoord2f(5, 5)
-        glVertex3f(-5,  5, -0.01)
-        glTexCoord2f(0.0, 5)
-        glVertex3f(5,  5, -0.01)
-        glTexCoord2f(0.0, 0.0)
-        glVertex3f(5, -5, -0.01)
-        # glTexCoord5f(0.0, 5)
-        glVertex3f(-5,  5, -0.01)
-        # glTexCoord5f(0.0, 0.0)
-        glVertex3f(-5,  5,  0.01)
-        # glTexCoord5f(5, 0.0)
-        glVertex3f(5,  5,  0.01)
-        # glTexCoord5f(5, 5)
-        glVertex3f(5,  5, -0.01)
-        # glTexCoord5f(5, 5)
-        glVertex3f(-5, -5, -0.01)
-        # glTexCoord5f(0.0, 5)
-        glVertex3f(5, -5, -0.01)
-        # glTexCoord5f(0.0, 0.0)
-        glVertex3f(5, -5, 0.01)
-        # glTexCoord5f(5, 0.0)
-        glVertex3f(-5, -5, 0.01)
-        # glTexCoord5f(5, 0.0)
-        glVertex3f(5, -5, -0.01)
-        # glTexCoord5f(5, 5)
-        glVertex3f(5,  5, -0.01)
-        # glTexCoord5f(0.0, 5)
-        glVertex3f(5,  5, 0.01)
-        # glTexCoord5f(0.0, 0.0)
-        glVertex3f(5, -5, 0.01)
-        # glTexCoord5f(0.0, 0.0)
-        glVertex3f(-5, -5, -0.01)
-        # glTexCoord5f(5, 0.0)
-        glVertex3f(-5, -5, 0.01)
-        # glTexCoord5f(5, 5)
-        glVertex3f(-5,  5, 0.01)
-        # glTexCoord5f(0.0, 5)
-        glVertex3f(-5,  5, -0.01)
+
+        # TODO: Clean this up
+        glVertex3f(-4, -4, 0.05)
+        # glTexCoord4f(4, 0.0)
+        glVertex3f(4, -4,  0.05)
+        # glTexCoord4f(4, 4)
+        glVertex3f(4,  4,  0.05)
+        # glTexCoord4f(0.0, 4)
+        glVertex3f(-4,  4, 0.05)
+        glTexCoord2f(4, -4)
+        glVertex3f(-4, -4, -0.05)
+        glTexCoord2f(4, 4)
+        glVertex3f(-4,  4, -0.05)
+        glTexCoord2f(-4, 4)
+        glVertex3f(4,  4, -0.05)
+        glTexCoord2f(-4, -4)
+        glVertex3f(4, -4, -0.05)
+        glVertex3f(-4,  4, -0.05)
+        glVertex3f(-4,  4,  0.05)
+        glVertex3f(4,  4,  0.05)
+        glVertex3f(4,  4, -0.05)
+        glVertex3f(4, -4, -0.05)
+        glVertex3f(4, -4, 0.05)
+        glVertex3f(-4, -4, 0.05)
+        glVertex3f(4, -4, -0.05)
+        glVertex3f(4,  4, -0.05)
+        glVertex3f(4,  4, 0.05)
+        glVertex3f(4, -4, 0.05)
+        glVertex3f(-4, -4, -0.05)
+        glVertex3f(-4, -4, 0.05)
+        glVertex3f(-4,  4, 0.05)
+        glVertex3f(-4,  4, -0.05)
         glEnd()
         # glBegin(GL_LINES)
         # for cubeEdge in cubeEdges:
@@ -149,12 +134,10 @@ def main():
         #         glVertex3fv(cubeVertices[cubeVertex])
         # glEnd()
 
-        # glColor3f(5.05.0.01.0)
-        # Render OpenGL Cube
-        # pango.glDrawColouredCube(5)
-
         # Swap Frames and Process Events
         pango.FinishFrame()
+
+        glDeleteTextures(texid)
 
 
 if __name__ == "__main__":
