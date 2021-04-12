@@ -17,14 +17,22 @@ def main():
     pm = pango.ProjectionMatrix(640, 480, 420, 420, 320, 240, 0.2, 100)
 
     # This allows changing of "camera" angle : glulookat style model view matrix (x, y, z, lx, ly, lz, AxisDirection Up) Forward is -z and up is +y
-    mv = pango.ModelViewLookAt(-3, 0, -8,
-                             0, 0, 0,
-                             0, -1, 0)
+    # mv = pango.ModelViewLookAt(-1, 2, -2,
+                             # 0, 1, 0,
+                             # 0, -1, 0)
     # mv = pango.ModelViewLookAt(10, 10, 20,
                              # 0, 0, 0,
                              # 0, -1, 0)
     # This is normal view of object
-    # mv = pango.ModelViewLookAt(-0, 0.05, -3, 0, 0, 0, pango.AxisY) ## TODO: what is axis y and axis x
+    # mv = pango.ModelViewLookAt(-1, 0, 5, 0, 0, 0, pango.AxisY) ## TODO: what is axis y and axis x
+    mv = pango.ModelViewLookAt(-1.5, 0, -1,
+                               0.25, 0.75, 0,
+                               0, -1, 0)
+
+    '''
+    The gluLookAt function provides an easy and intuitive way to set the camera position and orientation. Basically it has three groups of parameters, each one is composed of 3 floating point values. The first three values indicate the camera position. The second set of values defines the point we’re looking at. Actually it can be any point in our line of sight.The last group indicates the up vector, this is usually set to (0.0, 1.0, 0.0), meaning that the camera’s is not tilted. If you want to tilt the camera just play with these values. For example, to see everything upside down try (0.0, -1.0, 0.0).
+    '''
+
     s_cam = pango.OpenGlRenderState(pm, mv)
 
     ui_width = 180
@@ -88,36 +96,36 @@ def main():
         #     for cubeVertex in cubeQuad:
         #         glVertex3fv(cubeVertices[cubeVertex])
         # glTexCoord2f(0.0, 0.0)
-        glVertex3f(-2, -2, 0.05)
-        # glTexCoord2f(2, 0.0)
-        glVertex3f(2, -2,  0.05)
-        # glTexCoord2f(2, 2)
-        glVertex3f(2,  2,  0.05)
-        # glTexCoord2f(0.0, 2)
-        glVertex3f(-2,  2, 0.05)
-        glTexCoord2f(2, 0.0)
-        glVertex3f(-2, -2, -0.05)
-        glTexCoord2f(2, 2)
-        glVertex3f(-2,  2, -0.05)
-        glTexCoord2f(0.0, 2)
-        glVertex3f(2,  2, -0.05)
-        glTexCoord2f(0.0, 0.0)
-        glVertex3f(2, -2, -0.05)
-        glVertex3f(-2,  2, -0.05)
-        glVertex3f(-2,  2,  0.05)
-        glVertex3f(2,  2,  0.05)
-        glVertex3f(2,  2, -0.05)
-        glVertex3f(2, -2, -0.05)
-        glVertex3f(2, -2, 0.05)
-        glVertex3f(-2, -2, 0.05)
-        glVertex3f(2, -2, -0.05)
-        glVertex3f(2,  2, -0.05)
-        glVertex3f(2,  2, 0.05)
-        glVertex3f(2, -2, 0.05)
-        glVertex3f(-2, -2, -0.05)
-        glVertex3f(-2, -2, 0.05)
-        glVertex3f(-2,  2, 0.05)
-        glVertex3f(-2,  2, -0.05)
+        glVertex3f(-4, -4, 0.05)
+        # glTexCoord4f(4, 0.0)
+        glVertex3f(4, -4,  0.05)
+        # glTexCoord4f(4, 4)
+        glVertex3f(4,  4,  0.05)
+        # glTexCoord4f(0.0, 4)
+        glVertex3f(-4,  4, 0.05)
+        glTexCoord2f(4, -4)
+        glVertex3f(-4, -4, -0.05)
+        glTexCoord2f(4, 4)
+        glVertex3f(-4,  4, -0.05)
+        glTexCoord2f(-4, 4)
+        glVertex3f(4,  4, -0.05)
+        glTexCoord2f(-4, -4)
+        glVertex3f(4, -4, -0.05)
+        glVertex3f(-4,  4, -0.05)
+        glVertex3f(-4,  4,  0.05)
+        glVertex3f(4,  4,  0.05)
+        glVertex3f(4,  4, -0.05)
+        glVertex3f(4, -4, -0.05)
+        glVertex3f(4, -4, 0.05)
+        glVertex3f(-4, -4, 0.05)
+        glVertex3f(4, -4, -0.05)
+        glVertex3f(4,  4, -0.05)
+        glVertex3f(4,  4, 0.05)
+        glVertex3f(4, -4, 0.05)
+        glVertex3f(-4, -4, -0.05)
+        glVertex3f(-4, -4, 0.05)
+        glVertex3f(-4,  4, 0.05)
+        glVertex3f(-4,  4, -0.05)
         glEnd()
         # glBegin(GL_LINES)
         # for cubeEdge in cubeEdges:
@@ -125,7 +133,7 @@ def main():
         #         glVertex3fv(cubeVertices[cubeVertex])
         # glEnd()
 
-        # glColor3f(2.05.0.05.0)
+        # glColor3f(4.05.0.05.0)
         # Render OpenGL Cube
         # pango.glDrawColouredCube(5)
 
