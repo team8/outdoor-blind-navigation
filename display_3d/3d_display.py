@@ -91,18 +91,12 @@ def main():
         d_cam.Activate(s_cam)
 
         glBegin(GL_QUADS)
-        # for cubeQuad in cubeQuads:
-        #     for cubeVertex in cubeQuad:
-        #         glVertex3fv(cubeVertices[cubeVertex])
-        # glTexCoord2f(0.0, 0.0)
+
 
         # TODO: Clean this up
         glVertex3f(-4, -4, 0.05)
-        # glTexCoord4f(4, 0.0)
         glVertex3f(4, -4,  0.05)
-        # glTexCoord4f(4, 4)
         glVertex3f(4,  4,  0.05)
-        # glTexCoord4f(0.0, 4)
         glVertex3f(-4,  4, 0.05)
         glTexCoord2f(4, -4)
         glVertex3f(-4, -4, -0.05)
