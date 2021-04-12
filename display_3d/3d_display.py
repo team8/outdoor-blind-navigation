@@ -58,7 +58,7 @@ def main():
     # ctrl = -96
     # pango.RegisterKeyPressCallback(ctrl + ord("a"), a_callback)
 
-    vid = cv2.VideoCapture("test.mp4")
+    vid = cv2.VideoCapture("../Sidewalk.mp4")
     # texture_data = vid.read()[1]
 
     while not pango.ShouldQuit():
