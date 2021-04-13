@@ -89,7 +89,10 @@ def main():
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
 
         d_cam.Activate(s_cam)
-
+        glBegin(GL_LINES)
+        glVertex3f(1, 1, 1)
+        glVertex3f(0, 0, 0)
+        glEnd()
         glBegin(GL_QUADS)
 
 
