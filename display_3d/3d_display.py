@@ -1,5 +1,5 @@
 import pygame
-import pypangolin as pango
+import pangolin as pango
 from OpenGL.GL import *
 import numpy as np
 import PIL
