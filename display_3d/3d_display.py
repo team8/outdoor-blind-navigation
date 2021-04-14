@@ -67,16 +67,16 @@ def main():
 
     vid = cv2.VideoCapture("../Sidewalk.mp4")
     # texture_data = vid.read()[1]
-    trajectory = [[0, -6, 6]]
-    for i in range(300):
-        trajectory.append(trajectory[-1] + np.random.random(3)-0.5)
-    trajectory = np.array(trajectory)
     while not pango.ShouldQuit():
         # Clear screen and activate view to render into
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         glLineWidth(5)
-        pango.DrawLine(trajectory)   # consecutive
+        pango.DrawLine([[-1, 1, 0], [-1, 1, -10]]) # down is positive y, right is positive x - this does bottom left
+        pango.DrawLine([[0, 0, 0], [0, 0, -10]]) # top right
+        pango.DrawLine([[-1, 0, 0], [-1, 0, -10]]) # top left
+        pango.DrawLine([[0, 1, 0], [0, 1, -10]]) # bottom right
+
         ret, texture_data = vid.read()
         texture_data = cv2.flip(cv2.cvtColor(cv2.resize(texture_data, (1400, 1400)), cv2.COLOR_BGR2RGBA), 1)
         height, width, _ = texture_data.shape
@@ -94,13 +94,10 @@ def main():
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
 
         d_cam.Activate(s_cam)
-        glBegin(GL_LINES)
-        glVertex3f(1, 1, 1)
-        glVertex3f(0, 0, 0)
-        glEnd()
+
+
+
         glBegin(GL_QUADS)
-
-
         # TODO: Clean this up
         glVertex3f(-4, -4, 0.05)
         glVertex3f(4, -4,  0.05)
