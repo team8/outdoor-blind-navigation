@@ -48,7 +48,7 @@ TODO:
 * [ ] Add more capabilities such as more sidewalk states, when to turn, when it is safe to cross the street, etc.
 * [ ] Adding GPS + ML in order to make it easier to get to the destination
 * [ ] Add more aids such as text recognition
-* [ ] Full monocular point slam to get entire surrounding point distance map
+* [ ] Monocular point slam
 
 ## How to contribute
 1. Create a fork of this repository on github

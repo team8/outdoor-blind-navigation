@@ -67,11 +67,16 @@ def main():
 
     vid = cv2.VideoCapture("../Sidewalk.mp4")
     # texture_data = vid.read()[1]
-
+    trajectory = [[0, -6, 6]]
+    for i in range(300):
+        trajectory.append(trajectory[-1] + np.random.random(3)-0.5)
+    trajectory = np.array(trajectory)
     while not pango.ShouldQuit():
         # Clear screen and activate view to render into
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
+        glLineWidth(5)
+        pango.DrawLine(trajectory)   # consecutive
         ret, texture_data = vid.read()
         texture_data = cv2.flip(cv2.cvtColor(cv2.resize(texture_data, (1400, 1400)), cv2.COLOR_BGR2RGBA), 1)
         height, width, _ = texture_data.shape
@@ -125,11 +130,17 @@ def main():
         glVertex3f(-4,  4, 0.05)
         glVertex3f(-4,  4, -0.05)
         glEnd()
+
+
+
+
         # glBegin(GL_LINES)
         # for cubeEdge in cubeEdges:
         #     for cubeVertex in cubeEdge:
         #         glVertex3fv(cubeVertices[cubeVertex])
         # glEnd()
+        #
+
 
         # Swap Frames and Process Events
         pango.FinishFrame()
