@@ -5,11 +5,6 @@ import math
 import numpy as np
 from PIL import Image, ImageOps
 
-
-def showFoward(src):
-    pass
-
-
 class Display:
     def pilToOpenCV(self, pil_image):
         open_cv_image = np.array(pil_image)
