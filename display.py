@@ -101,18 +101,16 @@ class Display:
         if state == 0:
             self.showLeft(src)
         if state == 1:
-            showFoward(src)
+            self.showFoward(src)
         if(state == 2):
             self.showRight(src)
         # nolan this is yours
-<<
-
-def displayScreen(self):
-        if self.dimension == 3:
-            print("pangolin texture update")
-            # pangolin texture update
-        else:
-            # nolan just do cv2 imshow
-            cv2.imshow(self.frame)
-            cv2.waitKey(1)
-        # just use cv2.imshow here nolan
+    def displayScreen(self):
+            if self.dimension == 3:
+                print("pangolin texture update")
+                # pangolin texture update
+            else:
+                # nolan just do cv2 imshow
+                cv2.imshow(self.frame)
+                cv2.waitKey(1)
+            # just use cv2.imshow here nolan
