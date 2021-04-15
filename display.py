@@ -91,13 +91,13 @@ class Display:
         self.frame = cv2.resize(orig_cap, (720, 540))
     def putSidewalkState(self, state):
         # nolan this is yours
-    def putObjects(self, obstacles):
-        # this is yours as well
 
-    def displayScreen(self):
+def displayScreen(self):
         if self.dimension == 3:
+            print("pangolin texture update")
             # pangolin texture update
         else:
             # nolan just do cv2 imshow
-            cv2.imshow()
+            cv2.imshow(self.frame)
+            cv2.waitKey(1)
         # just use cv2.imshow here nolan
