@@ -1,9 +1,21 @@
 import sys
 import cv2
 import math
+
+import numpy as np
 from PIL import Image, ImageOps
 
+
+def showFoward(src):
+    pass
+
+
 class Display:
+    def pilToOpenCV(self, pil_image):
+        open_cv_image = np.array(pil_image)
+        # Convert RGB to BGR
+        open_cv_image = open_cv_image[:, :, ::-1].copy()
+
     def transposeImageSrc(self, src, path):
         img = Image.open(path)
         img = img.resize(src.size)
@@ -33,6 +45,7 @@ class Display:
         font = cv2.FONT_HERSHEY_SIMPLEX
         shownText = objectInfo[0].replace("sign", "") + " ID: " + str(objectInfo[3])
         cv2.putText(src, shownText(centerX, centerY), font, 4, (255, 255, 255), 2, cv2.LINE_AA)
+        return src
 
     def putObjects(self, obstacles):
         if obstacles is None:
@@ -89,8 +102,15 @@ class Display:
             raise Exception("Dimension for viewing tool must be either 2 or 3")
     def putVideoFrame(self,orig_cap):
         self.frame = cv2.resize(orig_cap, (720, 540))
-    def putSidewalkState(self, state):
+    def putSidewalkState(self, state, src):
+        if state == 0:
+            self.showLeft(src)
+        if state == 1:
+            showFoward(src)
+        if(state == 2):
+            self.showRight(src)
         # nolan this is yours
+<<
 
 def displayScreen(self):
         if self.dimension == 3:
