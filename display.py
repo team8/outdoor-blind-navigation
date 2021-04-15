@@ -1,7 +1,46 @@
 import sys
 import cv2
 import math
+from PIL import Image, ImageOps
+
 class Display:
+    def transposeImageSrc(self, src, path):
+        img = Image.open(path)
+        img = img.resize(src.size)
+        return Image.alpha_composite(src, img)
+
+    def showLeft(self, src):
+        return self.transposeImageSrc(src, "./display_resources/LeftExpanded.png")
+
+    def showForward(self, src):
+        return self.transposeImageSrc(src, "./display_resources/ForwardExpanded.png")
+
+    def showRight(self,src):
+        return self.transposeImageSrc(src, "./display_resources/RightExpanded.png")
+
+    def __displayObjects(self, objectInfo, src):
+        x, y, w, h = objectInfo[2]
+        x *= self.stretchXValue
+        y *= self.shrinkYValue
+        w *= self.stretchXValue
+        h *= self.shrinkYValue
+        lineLengthWeightage = 2
+        centerX = x
+        centerY = y + (h / 2) + 15
+        if (centerY + 15 >= self.size[1]):
+            centerY = y - (h / 2) - 15
+        self.rect = cv2.rectangle(src, (x - (w / 2), y - (h / 2), (255, 255, 0), lineLengthWeightage))
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        shownText = objectInfo[0].replace("sign", "") + " ID: " + str(objectInfo[3])
+        cv2.putText(src, shownText(centerX, centerY), font, 4, (255, 255, 255), 2, cv2.LINE_AA)
+
+    def putObjects(self, obstacles):
+        if obstacles is None:
+            return
+        for detection in obstacles:
+            if detection[0] in self.labelToColor.keys():
+                self.__displayObjects(detection)
+
     # dimension can be 3d or 2d
     def __init__(self, dimension=3):
         self.dimension = dimension
@@ -60,4 +99,5 @@ class Display:
             # pangolin texture update
         else:
             # nolan just do cv2 imshow
+            cv2.imshow()
         # just use cv2.imshow here nolan
