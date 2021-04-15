@@ -1,18 +1,19 @@
 
 from display import Display
 import cv2
-display = Display()
+display = Display(2)
 
-video = cv2.VideoCapture('~/Downloads/ChoreographWalking.mp4')
+video = cv2.VideoCapture('./Sidewalk.mp4')
 capture = video.read(0)[1]
 
 counter = 0
-obs = [('person', '30.26', (250.02488708496094, 85.19881439208984, 62.963951110839844, 129.86805725097656))]
+obs = [('car', 0, (550.4058227539062, 30.374237060546875, 76.12239837646484, 40.111534118652344), 1, (-60.89201354980469, 7.749721336364747, 100)), ('car', 0, (473.62353515625, 26.943071365356445, 29.894922256469727, 42.88824462890625), 2, (-60.89201354980469, 7.749721336364747, 100))]
 
 while True:
-    display.putVideoFeed(capture)
+    capture = video.read(0)[1]
+    display.putVideoFrame(capture)
     display.putObjects(obs)
-    obs[0][2][0] -= 3
+    display.putSidewalkState(1)
+    #obs[0][2][0] -= 3
 
     display.displayScreen()
-    time.sleep(1)
