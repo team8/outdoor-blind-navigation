@@ -68,7 +68,7 @@ class Display:
             return
         for detection in obstacles:
             if detection[0] in self.labelToColor.keys():
-                self.__displayObjects(detection)
+                self.frame = self.__displayObjects(detection)
 
     # dimension can be 3d or 2d
     def __init__(self, dimension=3):
