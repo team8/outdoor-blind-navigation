@@ -15,11 +15,10 @@ class Display:
     leftArrow = Image.open("./display_resources/LeftExpanded.png")
     forwardArrow = Image.open("./display_resources/ForwardExpanded.png")
     def pilToOpenCV(self, pil_image):
-        open_cv_image = np.array(pil_image)
+        # open_cv_image = np.array(pil_image)
         # Convert RGB to BGR
-        open_cv_image = open_cv_image[:, :, ::-1].copy()
-        return open_cv_image
-
+        # opencvImage = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
+        return cv2.cvtColor(np.array(pil_image), cv2.COLOR_BGR2RGB)
     def openCVToPil(self, cv_image):
         # You may need to convert the color.
         img = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGBA)
@@ -48,15 +47,15 @@ class Display:
     def __displayObjects(self, objectInfo):
         x, y, w, h = objectInfo[2]
         x *= self.stretchXValue
-        y *= self.shrinkYValue
+        y *= self.stretchYValue
         w *= self.stretchXValue
-        h *= self.shrinkYValue
+        h *= self.stretchYValue
         lineLengthWeightage = 2
         centerX = x
         centerY = y + (h / 2) + 15
         if (centerY + 15 >= self.size[1]):
             centerY = y - (h / 2) - 15
-        self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))), (int(x + (w / 2)), int(y + (h / 2))), (255, 255, 0), int(lineLengthWeightage))
+        self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))), (int(x + (w / 2)), int(y + (h / 2))), self.labelToColor[objectInfo[0]], lineLengthWeightage)
         font = cv2.FONT_HERSHEY_SIMPLEX
         shownText = objectInfo[0].replace("sign", "") + " ID: " + str(objectInfo[3])
         textsize = cv2.getTextSize(shownText, font, 0.5, 2)[0]
@@ -76,7 +75,7 @@ class Display:
         self.size = (720, 540)
         self.bbox_inference_coord_size = (416, 416)
         self.stretchXValue = self.size[0]/self.bbox_inference_coord_size[0]
-        self.shrinkYValue = self.size[1]/self.bbox_inference_coord_size[1]
+        self.stretchYValue = self.size[1]/self.bbox_inference_coord_size[1]
         self.labelToColor = {"stop sign": ((0, 0, 255)),
                              "person": ((0, 255, 0)),
                              "car": ((255, 0, 0)),
@@ -123,8 +122,6 @@ class Display:
             glLineWidth(5)
             glPointSize(15)
         elif self.dimension == 2:
-            self.stretchXValue = self.size[0] / self.videoSize[0]
-            self.shrinkYValue = self.size[1] / self.videoSize[1]
             # initialize cv2 2d viewer
             print("Initializing cv2 2d viewer")
         else:
