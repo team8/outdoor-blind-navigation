@@ -13,7 +13,7 @@ time.sleep(1)
 
 sc = StateClassifier()
 ol = ObjectLocalizer()
-display = Display(dimension=2)
+display = Display(dimension=3)
 
 
 counter = 0

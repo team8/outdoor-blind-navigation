@@ -18,7 +18,7 @@ class Display:
         # open_cv_image = np.array(pil_image)
         # Convert RGB to BGR
         # opencvImage = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
-        return cv2.cvtColor(np.array(pil_image), cv2.COLOR_BGR2RGB)
+        return cv2.cvtColor(np.array(pil_image), cv2.COLOR_BGR2RGBA)
     def openCVToPil(self, cv_image):
         # You may need to convert the color.
         img = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGBA)
@@ -73,6 +73,7 @@ class Display:
     def __init__(self, dimension=3):
         self.dimension = dimension
         self.size = (720, 540)
+        # self.size = (416, 416)
         self.bbox_inference_coord_size = (416, 416)
         self.stretchXValue = self.size[0]/self.bbox_inference_coord_size[0]
         self.stretchYValue = self.size[1]/self.bbox_inference_coord_size[1]
@@ -151,7 +152,7 @@ class Display:
                     pango.DrawLine([[0, 1, 0], [0, 1, -1]]) # bottom right
                     pango.DrawPoints([[-1, 1, -1], [0, 0, -1], [-1, 0, -1], [0, 1, -1]])
 
-                    texture_data = cv2.flip(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA), 1)
+                    texture_data = cv2.flip(cv2.resize(self.frame, (800, 800)), 1)
                     height, width, _ = texture_data.shape
 
                     glEnable(GL_TEXTURE_2D)
@@ -159,7 +160,7 @@ class Display:
 
                     glBindTexture(GL_TEXTURE_2D, texid)
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
-                                 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
+                                 0, GL_BGRA, GL_UNSIGNED_BYTE, texture_data)
 
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER)
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER)
