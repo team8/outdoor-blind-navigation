@@ -130,9 +130,6 @@ def main():
         glVertex3f(-4,  4, -0.05)
         glEnd()
 
-
-
-
         # glBegin(GL_LINES)
         # for cubeEdge in cubeEdges:
         #     for cubeVertex in cubeEdge:

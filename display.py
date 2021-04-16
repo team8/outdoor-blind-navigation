@@ -1,9 +1,13 @@
 import sys
 import cv2
 import math
-
+import pygame
+import pangolin as pango
+from OpenGL.GL import *
 import numpy as np
-from PIL import Image, ImageOps
+import PIL
+import cv2
+from PIL import Image
 
 class Display:
     #Load to lower compuational cost of opening and reading a bunch
@@ -70,7 +74,9 @@ class Display:
     def __init__(self, dimension=3):
         self.dimension = dimension
         self.size = (720, 540)
-        self.videoSize = (720, 540)
+        self.bbox_inference_coord_size = (416, 416)
+        self.stretchXValue = self.size[0]/self.bbox_inference_coord_size[0]
+        self.shrinkYValue = self.size[1]/self.bbox_inference_coord_size[1]
         self.labelToColor = {"stop sign": ((0, 0, 255)),
                              "person": ((0, 255, 0)),
                              "car": ((255, 0, 0)),
@@ -81,41 +87,41 @@ class Display:
         if self.dimension == 3:
             # initialize pangolin opengl 3d viewer
             print("Initializing pangolin opengl 3d viewer")
-            #
-            # win = pango.CreateWindowAndBind("Visualization Tool 3d", 640, 480)
-            # glEnable(GL_DEPTH_TEST)
-            #
-            # # Define Projection and initial ModelView matrix
-            #
-            # #   ProjectionMatrix (int w, int h, double fu, double fv, double u0, double v0, double zNear, double zFar)
-            # pm = pango.ProjectionMatrix(640, 480, 420, 420, 320, 240, 0.5, 100)
-            #
-            # # This allows changing of "camera" angle : glulookat style model view matrix (x, y, z, lx, ly, lz, AxisDirection Up) Forward is -z and up is +y
-            # mv = pango.ModelViewLookAt(-1.5, 0, -1,
-            #                            0.25, 0.75, 0,
-            #                            0, -1, 0)
-            #
-            # '''
-            # The gluLookAt function provides an easy and intuitive way to set the camera position and orientation. Basically it has three groups of parameters, each one is composed of 3 floating point values. The first three values indicate the camera position. The second set of values defines the point we’re looking at. Actually it can be any point in our line of sight.The last group indicates the up vector, this is usually set to (0.0, 1.0, 0.0), meaning that the camera’s is not tilted. If you want to tilt the camera just play with these values. For example, to see everything upside down try (0.0, -1.0, 0.0).
-            # '''
-            #
-            # s_cam = pango.OpenGlRenderState(pm, mv)
-            #
-            # # Create Interactive View in window
-            # handler = pango.Handler3D(s_cam)
-            # d_cam = (
-            #     pango.CreateDisplay()
-            #     .SetBounds(
-            #         pango.Attach(0),
-            #         pango.Attach(1),
-            #         pango.Attach.Pix(1), # side bar which can be used for notification system
-            #         pango.Attach(1),
-            #         -640.0 / 480.0,
-            #     )
-            #     .SetHandler(handler)
-            # )
-            # glLineWidth(5)
-            # glPointSize(15)
+
+            self.win = pango.CreateWindowAndBind("Visualization Tool 3d", 640, 480)
+            glEnable(GL_DEPTH_TEST)
+
+            # Define Projection and initial ModelView matrix
+
+            #   ProjectionMatrix (int w, int h, double fu, double fv, double u0, double v0, double zNear, double zFar)
+            self.pm = pango.ProjectionMatrix(640, 480, 420, 420, 320, 240, 0.5, 100)
+
+            # This allows changing of "camera" angle : glulookat style model view matrix (x, y, z, lx, ly, lz, AxisDirection Up) Forward is -z and up is +y
+            self.mv = pango.ModelViewLookAt(-1.5, 0, -1,
+                                       0.25, 0.75, 0,
+                                       0, -1, 0)
+
+            '''
+            The gluLookAt function provides an easy and intuitive way to set the camera position and orientation. Basically it has three groups of parameters, each one is composed of 3 floating point values. The first three values indicate the camera position. The second set of values defines the point we’re looking at. Actually it can be any point in our line of sight.The last group indicates the up vector, this is usually set to (0.0, 1.0, 0.0), meaning that the camera’s is not tilted. If you want to tilt the camera just play with these values. For example, to see everything upside down try (0.0, -1.0, 0.0).
+            '''
+
+            self.s_cam = pango.OpenGlRenderState(self.pm, self.mv)
+
+            # Create Interactive View in window
+            self.handler = pango.Handler3D(self.s_cam)
+            self.d_cam = (
+                pango.CreateDisplay()
+                .SetBounds(
+                    pango.Attach(0),
+                    pango.Attach(1),
+                    pango.Attach.Pix(1), # side bar which can be used for notification system
+                    pango.Attach(1),
+                    -640.0 / 480.0,
+                )
+                .SetHandler(self.handler)
+            )
+            glLineWidth(5)
+            glPointSize(15)
         elif self.dimension == 2:
             self.stretchXValue = self.size[0] / self.videoSize[0]
             self.shrinkYValue = self.size[1] / self.videoSize[1]
@@ -126,16 +132,91 @@ class Display:
     def putVideoFrame(self,orig_cap):
         self.frame = cv2.resize(orig_cap, self.size)
     def putSidewalkState(self, state):
-        if state == 0:
+        if state == "Left of Sidewalk":
             self.showLeft()
-        if state == 1:
+        if state == "Middle of Sidewalk":
             self.showForward()
-        if(state == 2):
+        if(state == "Right of Sidewalk"):
             self.showRight()
         # nolan this is yours
     def displayScreen(self):
             if self.dimension == 3:
                 print("pangolin texture update")
+                if not pango.ShouldQuit():
+                    # Clear screen and activate view to render into
+                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+                    glLineWidth(5)
+                    glPointSize(15)
+                    pango.DrawLine([[-1, 1, 0], [-1, 1, -1]]) # down is positive y, right is positive x - this does bottom left
+                    pango.DrawLine([[0, 0, 0], [0, 0, -1]]) # top right
+                    pango.DrawLine([[-1, 0, 0], [-1, 0, -1]]) # top left
+                    pango.DrawLine([[0, 1, 0], [0, 1, -1]]) # bottom right
+                    pango.DrawPoints([[-1, 1, -1], [0, 0, -1], [-1, 0, -1], [0, 1, -1]])
+
+                    texture_data = cv2.flip(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA), 1)
+                    height, width, _ = texture_data.shape
+
+                    glEnable(GL_TEXTURE_2D)
+                    texid = glGenTextures(1)
+
+                    glBindTexture(GL_TEXTURE_2D, texid)
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
+                                 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
+
+                    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER)
+                    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER)
+                    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+                    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+
+                    self.d_cam.Activate(self.s_cam)
+
+
+
+                    glBegin(GL_QUADS)
+                    # TODO: Clean this up
+                    glVertex3f(-4, -4, 0.05)
+                    glVertex3f(4, -4,  0.05)
+                    glVertex3f(4,  4,  0.05)
+                    glVertex3f(-4,  4, 0.05)
+                    glTexCoord2f(4, -4)
+                    glVertex3f(-4, -4, -0.05)
+                    glTexCoord2f(4, 4)
+                    glVertex3f(-4,  4, -0.05)
+                    glTexCoord2f(-4, 4)
+                    glVertex3f(4,  4, -0.05)
+                    glTexCoord2f(-4, -4)
+                    glVertex3f(4, -4, -0.05)
+                    glVertex3f(-4,  4, -0.05)
+                    glVertex3f(-4,  4,  0.05)
+                    glVertex3f(4,  4,  0.05)
+                    glVertex3f(4,  4, -0.05)
+                    glVertex3f(4, -4, -0.05)
+                    glVertex3f(4, -4, 0.05)
+                    glVertex3f(-4, -4, 0.05)
+                    glVertex3f(4, -4, -0.05)
+                    glVertex3f(4,  4, -0.05)
+                    glVertex3f(4,  4, 0.05)
+                    glVertex3f(4, -4, 0.05)
+                    glVertex3f(-4, -4, -0.05)
+                    glVertex3f(-4, -4, 0.05)
+                    glVertex3f(-4,  4, 0.05)
+                    glVertex3f(-4,  4, -0.05)
+                    glEnd()
+
+                    # glBegin(GL_LINES)
+                    # for cubeEdge in cubeEdges:
+                    #     for cubeVertex in cubeEdge:
+                    #         glVertex3fv(cubeVertices[cubeVertex])
+                    # glEnd()
+                    #
+
+
+                    # Swap Frames and Process Events
+                    pango.FinishFrame()
+
+                    glDeleteTextures(texid)
+
                 # pangolin texture update
             else:
                 # nolan just do cv2 imshow

@@ -13,7 +13,7 @@ time.sleep(1)
 
 sc = StateClassifier()
 ol = ObjectLocalizer()
-display = Display((608, 608))
+display = Display()
 
 
 counter = 0
@@ -26,7 +26,7 @@ while True:
     # print("Object Detection FPS", ol.getFPS())
 
 
-    display.putVideoFeed(capture)
+    display.putVideoFrame(capture)
     display.putSidewalkState(state_classifier_inference)
     display.putObjects(object_localizer_inference)
     display.displayScreen()
