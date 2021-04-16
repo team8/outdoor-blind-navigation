@@ -6,6 +6,10 @@ import numpy as np
 from PIL import Image, ImageOps
 
 class Display:
+    #Load to lower compuational cost of opening and reading a bunch
+    rightArrow = Image.open("./display_resources/RightExpanded.png")
+    leftArrow = Image.open("./display_resources/LeftExpanded.png")
+    forwardArrow = Image.open("./display_resources/ForwardExpanded.png")
     def pilToOpenCV(self, pil_image):
         open_cv_image = np.array(pil_image)
         # Convert RGB to BGR
@@ -19,23 +23,23 @@ class Display:
         return im_pil
 
 
-    def transposeImageSrc(self, src, path):
-        img = cv2.imread(path, 0)
-        #img = Image.open(path)
-        #img = img.resize(self.openCVToPil(src).size)
-        #img = self.openCVToPil(self.pilToOpenCV(img))
-        #print(type(img))
-        cv2.imshow("2d visualizer", img)
-        #return Image.alpha_composite(self.openCVToPil(src), img)
+    def transposeImageSrc(self, arrow):
+        src = self.openCVToPil(self.frame)
+        img = arrow.resize(src.size)
+        img = Image.alpha_composite(src, img)
+        imcv = self.pilToOpenCV(img)
+        # cv2.imshow(img)
+        # print(imcv)
+        return imcv
 
-    def showLeft(self, src):
-        return self.transposeImageSrc(src, "./display_resources/LeftExpanded.png")
+    def showLeft(self):
+        self.frame = self.transposeImageSrc(self.leftArrow)
 
-    def showForward(self, src):
-        return self.transposeImageSrc(src, "./display_resources/ForwardExpanded.png")
+    def showForward(self):
+        self.frame = self.transposeImageSrc(self.forwardArrow)
 
-    def showRight(self,src):
-        return self.transposeImageSrc(src, "./display_resources/RightExpanded.png")
+    def showRight(self):
+        self.frame = self.transposeImageSrc(self.rightArrow)
 
     def __displayObjects(self, objectInfo):
         x, y, w, h = objectInfo[2]
@@ -123,11 +127,11 @@ class Display:
         self.frame = cv2.resize(orig_cap, self.size)
     def putSidewalkState(self, state):
         if state == 0:
-            self.showLeft(self.frame)
+            self.showLeft()
         if state == 1:
-            self.showForward(self.frame)
+            self.showForward()
         if(state == 2):
-            self.showRight(self.frame)
+            self.showRight()
         # nolan this is yours
     def displayScreen(self):
             if self.dimension == 3:
