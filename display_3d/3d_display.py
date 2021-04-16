@@ -13,17 +13,16 @@ def main():
 
     # Define Projection and initial ModelView matrix
 
-
     #   ProjectionMatrix (int w, int h, double fu, double fv, double u0, double v0, double zNear, double zFar)
     pm = pango.ProjectionMatrix(640, 480, 420, 420, 320, 240, 0.5, 100)
 
     # This allows changing of "camera" angle : glulookat style model view matrix (x, y, z, lx, ly, lz, AxisDirection Up) Forward is -z and up is +y
-   # mv = pango.ModelViewLookAt(-1, 2, -2,
-                             # 0, 1, 0,
-                             # 0, -1, 0)
+    # mv = pango.ModelViewLookAt(-1, 2, -2,
+    # 0, 1, 0,
+    # 0, -1, 0)
     # mv = pango.ModelViewLookAt(10, 10, 20,
-                             # 0, 0, 0,
-                             # 0, -1, 0)
+    # 0, 0, 0,
+    # 0, -1, 0)
     # This is normal view of object
     # mv = pango.ModelViewLookAt(-1, 0, 5, 0, 0, 0, pango.AxisY) ## TODO: what is axis y and axis x
     mv = pango.ModelViewLookAt(-1.5, 0, -1,
@@ -40,14 +39,14 @@ def main():
     handler = pango.Handler3D(s_cam)
     d_cam = (
         pango.CreateDisplay()
-        .SetBounds(
+            .SetBounds(
             pango.Attach(0),
             pango.Attach(1),
-            pango.Attach.Pix(1), # side bar which can be used for notification system
+            pango.Attach.Pix(1),  # side bar which can be used for notification system
             pango.Attach(1),
             -640.0 / 480.0,
         )
-        .SetHandler(handler)
+            .SetHandler(handler)
     )
 
     # pango.CreatePanel("ui").SetBounds(
@@ -73,14 +72,14 @@ def main():
         glClearColor(0.1, 0.3, 0.3, 0.0)
         glLineWidth(5)
         glPointSize(15)
-        pango.DrawLine([[-1, 1, 0], [-1, 1, -1]]) # down is positive y, right is positive x - this does bottom left
-        pango.DrawLine([[0, 0, 0], [0, 0, -1]]) # top right
-        pango.DrawLine([[-1, 0, 0], [-1, 0, -1]]) # top left
-        pango.DrawLine([[0, 1, 0], [0, 1, -1]]) # bottom right
+        pango.DrawLine([[-1, 1, 0], [-1, 1, -1]])  # down is positive y, right is positive x - this does bottom left
+        pango.DrawLine([[0, 0, 0], [0, 0, -1]])  # top right
+        pango.DrawLine([[-1, 0, 0], [-1, 0, -1]])  # top left
+        pango.DrawLine([[0, 1, 0], [0, 1, -1]])  # bottom right
         pango.DrawPoints([[-1, 1, -1], [0, 0, -1], [-1, 0, -1], [0, 1, -1]])
 
         ret, texture_data = vid.read()
-        texture_data = cv2.flip(cv2.cvtColor(cv2.resize(texture_data, (1400, 1400)), cv2.COLOR_BGR2RGBA), 1)
+        texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(texture_data, (1400, 1400)), cv2.COLOR_BGR2RGBA), cv2.ROTATE_180)
         height, width, _ = texture_data.shape
 
         glEnable(GL_TEXTURE_2D)
@@ -90,44 +89,49 @@ def main():
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
                      0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
 
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER)
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER)
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
 
         d_cam.Activate(s_cam)
 
-
-
         glBegin(GL_QUADS)
-        # TODO: Clean this up
-        glVertex3f(-1, -1, 0.05)
-        glVertex3f(1, -1,  0.05)
-        glVertex3f(1,  1,  0.05)
-        glVertex3f(-1,  1, 0.05)
-        glTexCoord2f(1, -1)
-        glVertex3f(-1, -1, -0.05)
-        glTexCoord2f(1, 1)
-        glVertex3f(-1,  1, -0.05)
-        glTexCoord2f(-1, 1)
-        glVertex3f(1,  1, -0.05)
-        glTexCoord2f(-1, -1)
-        glVertex3f(1, -1, -0.05)
-        glVertex3f(-1,  1, -0.05)
-        glVertex3f(-1,  1,  0.05)
-        glVertex3f(1,  1,  0.05)
-        glVertex3f(1,  1, -0.05)
-        glVertex3f(1, -1, -0.05)
-        glVertex3f(1, -1, 0.05)
-        glVertex3f(-1, -1, 0.05)
-        glVertex3f(1, -1, -0.05)
-        glVertex3f(1,  1, -0.05)
-        glVertex3f(1,  1, 0.05)
-        glVertex3f(1, -1, 0.05)
-        glVertex3f(-1, -1, -0.05)
-        glVertex3f(-1, -1, 0.05)
-        glVertex3f(-1,  1, 0.05)
-        glVertex3f(-1,  1, -0.05)
+
+        glVertex3f(1.0, 1.0, -0.05)
+        glVertex3f(-1.0, 1.0, -0.05)
+        glVertex3f(-1.0, 1.0, 0.05)
+        glVertex3f(1.0, 1.0, 0.05)
+
+        glVertex3f(1.0, -1.0, -0.05)
+        glVertex3f(-1.0, -1.0, -0.05)
+        glVertex3f(-1.0, -1.0, 0.05)
+        glVertex3f(1.0, -1.0, 0.05)
+
+        glVertex3f(1.0, 1.0, 0.05)
+        glVertex3f(-1.0, 1.0, 0.05)
+        glVertex3f(-1.0, -1.0, 0.05)
+        glVertex3f(1.0, -1.0, 0.05)
+
+        glTexCoord2f(0.0, 1.0)
+        glVertex3f(1.0, -1.0, -0.05)
+        glTexCoord2f(1.0, 1.0)
+        glVertex3f(-1.0, -1.0, -0.05)
+        glTexCoord2f(1.0, 0.0)
+        glVertex3f(-1.0, 1.0, -0.05)
+        glTexCoord2f(0.0, 0.0)
+        glVertex3f(1.0, 1.0, -0.05)
+
+        glVertex3f(-1.0, 1.0, 0.05)
+        glVertex3f(-1.0, 1.0, -0.05)
+        glVertex3f(-1.0, -1.0, -0.05)
+        glVertex3f(-1.0, -1.0, 0.05)
+
+        glVertex3f(1.0, 1.0, 0.05)
+        glVertex3f(1.0, 1.0, -0.05)
+        glVertex3f(1.0, -1.0, -0.05)
+        glVertex3f(1.0, -1.0, 0.05)
+
         glEnd()
 
         # glBegin(GL_LINES)
@@ -136,7 +140,6 @@ def main():
         #         glVertex3fv(cubeVertices[cubeVertex])
         # glEnd()
         #
-
 
         # Swap Frames and Process Events
         pango.FinishFrame()
