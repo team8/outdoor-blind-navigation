@@ -164,11 +164,16 @@ class Display:
                 pango.FinishFrame()
 
                 glDeleteTextures(self.texid)
-
         else:
-            print(self.frame)
             cv2.imshow("2d visualizer", self.frame)
             cv2.waitKey(1)
+
+    def putObjects(self, obstacles):
+        if obstacles is None:
+            return
+        for detection in obstacles:
+            if detection[0] in self.labelToColor.keys():
+                self.frame = self.__displayObjects(detection)
 
     def __displayObjects(self, objectInfo):
         x, y, w, h = objectInfo[2]
@@ -181,19 +186,12 @@ class Display:
         centerY = y + (h / 2) + 15
         if (centerY + 15 >= self.size[1]):
             centerY = y - (h / 2) - 15
-            self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))), (int(x + (w / 2)), int(y + (h / 2))), self.labelToColor[objectInfo[0]], lineLengthWeightage)
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            shownText = objectInfo[0].replace("sign", "") + " ID: " + str(objectInfo[3])
-            textsize = cv2.getTextSize(shownText, font, 0.5, 2)[0]
-            cv2.putText(self.frame, shownText, (int(centerX - (textsize[0]/2)), int(centerY)), font, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
-            return self.frame
-
-    def putObjects(self, obstacles):
-        if obstacles is None:
-            return
-        for detection in obstacles:
-            if detection[0] in self.labelToColor.keys():
-                self.frame = self.__displayObjects(detection)
+        self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))), (int(x + (w / 2)), int(y + (h / 2))), self.labelToColor[objectInfo[0]], lineLengthWeightage)
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        shownText = objectInfo[0].replace("sign", "") + " ID: " + str(objectInfo[3])
+        textsize = cv2.getTextSize(shownText, font, 0.5, 2)[0]
+        cv2.putText(self.frame, shownText, (int(centerX - (textsize[0]/2)), int(centerY)), font, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
+        return self.frame
 
 
     def pilToOpenCV(self, pil_image):
