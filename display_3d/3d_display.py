@@ -8,7 +8,7 @@ from PIL import Image
 
 
 def main():
-    win = pango.CreateWindowAndBind("Visualization Tool 3d", 640, 480)
+    win = pango.CreateWindowAndBind("Visualization Tool 3d", 640*2, 480*2)
     glEnable(GL_DEPTH_TEST)
 
     # Define Projection and initial ModelView matrix
@@ -25,9 +25,9 @@ def main():
     # 0, -1, 0)
     # This is normal view of object
     # mv = pango.ModelViewLookAt(-1, 0, 5, 0, 0, 0, pango.AxisY) ## TODO: what is axis y and axis x
-    mv = pango.ModelViewLookAt(-1.5, 0, -1,
-                               0.25, 0.75, 0,
-                               0, -1, 0)
+    mv = pango.ModelViewLookAt(0.3, 0, -2.5,
+                               0, 0, 0,
+                               0, -0.5, 0)
 
     '''
     The gluLookAt function provides an easy and intuitive way to set the camera position and orientation. Basically it has three groups of parameters, each one is composed of 3 floating point values. The first three values indicate the camera position. The second set of values defines the point we’re looking at. Actually it can be any point in our line of sight.The last group indicates the up vector, this is usually set to (0.0, 1.0, 0.0), meaning that the camera’s is not tilted. If you want to tilt the camera just play with these values. For example, to see everything upside down try (0.0, -1.0, 0.0).

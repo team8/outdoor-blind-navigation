@@ -72,7 +72,7 @@ class Display:
     # dimension can be 3d or 2d
     def __init__(self, dimension=3):
         self.dimension = dimension
-        self.size = (720, 540)
+        self.size = (720*2, 540*2)
         # self.size = (416, 416)
         self.bbox_inference_coord_size = (416, 416)
         self.stretchXValue = self.size[0]/self.bbox_inference_coord_size[0]
@@ -88,7 +88,7 @@ class Display:
             # initialize pangolin opengl 3d viewer
             print("Initializing pangolin opengl 3d viewer")
 
-            self.win = pango.CreateWindowAndBind("Visualization Tool 3d", 640, 480)
+            self.win = pango.CreateWindowAndBind("Visualization Tool 3d", self.size[0], self.size[1])
             glEnable(GL_DEPTH_TEST)
 
             # Define Projection and initial ModelView matrix
@@ -97,10 +97,9 @@ class Display:
             self.pm = pango.ProjectionMatrix(640, 480, 420, 420, 320, 240, 0.5, 100)
 
             # This allows changing of "camera" angle : glulookat style model view matrix (x, y, z, lx, ly, lz, AxisDirection Up) Forward is -z and up is +y
-            self.mv = pango.ModelViewLookAt(-1.5, 0, -1,
-                                       0.25, 0.75, 0,
+            self.mv = pango.ModelViewLookAt(0.3, 0, -2.5,
+                                       0, 0, 0,
                                        0, -1, 0)
-
             '''
             The gluLookAt function provides an easy and intuitive way to set the camera position and orientation. Basically it has three groups of parameters, each one is composed of 3 floating point values. The first three values indicate the camera position. The second set of values defines the point we’re looking at. Actually it can be any point in our line of sight.The last group indicates the up vector, this is usually set to (0.0, 1.0, 0.0), meaning that the camera’s is not tilted. If you want to tilt the camera just play with these values. For example, to see everything upside down try (0.0, -1.0, 0.0).
             '''
@@ -142,14 +141,15 @@ class Display:
                 print("pangolin texture update")
                 if not pango.ShouldQuit():
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-                    glClearColor(0.1, 0.3, 0.3, 0.0)
+                    glClearColor(0.5, 0.7, 0.7, 0.0)
                     glLineWidth(5)
                     glPointSize(15)
-                    pango.DrawLine([[-1, 1, 0], [-1, 1, -1]])  # down is positive y, right is positive x - this does bottom left
-                    pango.DrawLine([[1, -1, 0], [1, -1, -1]])  # top right
-                    pango.DrawLine([[-1, -1, 0], [-1, -1, -1]])  # top left
-                    pango.DrawLine([[1, 1, 0], [1, 1, -1]])  # bottom right
-                    pango.DrawPoints([[-1, 1, -1], [1, -1, -1], [-1, -1, -1], [1, 1, -1]])
+                    # z axis (+)  is toward self
+                    pango.DrawLine([[-1, 1, 0], [-1, 1, -0.3]])  # down is positive y, right is positive x - this does bottom left
+                    pango.DrawLine([[1, -1, 0], [1, -1, -0.3]])  # top right
+                    pango.DrawLine([[-1, -1, 0], [-1, -1, -0.3]])  # top left
+                    pango.DrawLine([[1, 1, 0], [1, 1, -0.3]])  # bottom right
+                    pango.DrawPoints([[-1, 1, -0.3], [1, -1, -0.3], [-1, -1, -0.3], [1, 1, -0.3]])
 
                     texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA), cv2.ROTATE_180)
                     height, width, _ = texture_data.shape
