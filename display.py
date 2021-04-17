@@ -72,7 +72,7 @@ class Display:
     # dimension can be 3d or 2d
     def __init__(self, dimension=3):
         self.dimension = dimension
-        self.size = (720*2, 540*2)
+        self.size = (720, 540)
         # self.size = (416, 416)
         # for yolo tiny
         # self.bbox_inference_coord_size = (416, 416)

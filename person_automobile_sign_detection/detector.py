@@ -14,9 +14,9 @@ import person_automobile_sign_detection.object_filter_util as ofu
 
 class Detector:
     weights_path = "person_automobile_sign_detection/yolov4.weights"
-    # weights_path = "person_automobile_sign_detection/yolov4.weights"
+    # weights_path = "person_automobile_sign_detection/yolov4-tiny.weights"
     config_path = "person_automobile_sign_detection/yolov4-original.cfg"
-    # config_path = "person_automobile_sign_detection/yolov4-original.cfg"
+    # config_path = "person_automobile_sign_detection/yolov4-tiny-original.cfg"
     data_file_path = "person_automobile_sign_detection/coco_original.data"
     # data_file_path = "person_automobile_sign_detection/coco.data"
 
