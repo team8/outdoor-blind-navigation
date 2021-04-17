@@ -30,9 +30,9 @@ class Display:
                              "bench": ((200, 100, 200))}
 
         #Load to lower compuational cost of opening and reading a bunch
-        self.rightArrow = (Image.open("./display_resources/RightExpanded.png"))
-        self.leftArrow = (Image.open("./display_resources/LeftExpanded.png"))
-        self.forwardArrow = self.pilRGB2BGR(Image.open("./display_resources/ForwardExpanded.png"))
+        self.rightArrow = Image.open("./display_resources/RightExpanded.png")
+        self.leftArrow = Image.open("./display_resources/LeftExpanded.png")
+        self.forwardArrow = Image.open("./display_resources/ForwardExpanded.png")
         if self.dimension == 3:
             #     # initialize pangolin opengl 3d viewer
             print("Initializing pangolin opengl 3d viewer")
@@ -219,9 +219,3 @@ class Display:
 
     def showRight(self):
         self.frame = self.transposeImageSrc(self.rightArrow)
-    def pilRGB2BGR(self, image):
-        print(self.pilToOpenCV(image))
-        r, g, b, a = image.split()
-        image = Image.merge("RGBA", (b, g, r, a))
-        return image
-
