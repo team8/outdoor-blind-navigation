@@ -74,7 +74,10 @@ class Display:
         self.dimension = dimension
         self.size = (720*2, 540*2)
         # self.size = (416, 416)
-        self.bbox_inference_coord_size = (416, 416)
+        # for yolo tiny
+        # self.bbox_inference_coord_size = (416, 416)
+        # for yolo full
+        self.bbox_inference_coord_size = (618, 618)
         self.stretchXValue = self.size[0]/self.bbox_inference_coord_size[0]
         self.stretchYValue = self.size[1]/self.bbox_inference_coord_size[1]
         self.labelToColor = {"stop sign": ((0, 0, 255)),
