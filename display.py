@@ -79,11 +79,11 @@ class Display:
         self.frame = cv2.resize(orig_cap, self.size)
     def putSidewalkState(self, state): #fix this - should use correct function based on state
         if state == "Left of Sidewalk":
-            self.showLeft()
+            self.showWhenLeft()
         if state == "Middle of Sidewalk":
-            self.showForward()
+            self.showWhenForward()
         if(state == "Right of Sidewalk"):
-            self.showRight()
+            self.showWhenRight()
         # nolan this is yours
     def displayScreen(self):
         if self.dimension == 3:
@@ -209,11 +209,11 @@ class Display:
         imcv = self.pilToOpenCV(img)
         return imcv
 
-    def showLeft(self):
-        self.frame = self.transposeImageSrc(self.leftArrow)
+    def showWhenLeft(self):
+        self.frame = self.transposeImageSrc(self.rightArrow)
 
-    def showForward(self):
+    def showWhenForward(self):
         self.frame = self.transposeImageSrc(self.forwardArrow)
 
-    def showRight(self):
-        self.frame = self.transposeImageSrc(self.rightArrow)
+    def showWhenRight(self):
+        self.frame = self.transposeImageSrc(self.leftArrow)
