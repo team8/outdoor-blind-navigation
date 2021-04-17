@@ -141,81 +141,76 @@ class Display:
             if self.dimension == 3:
                 print("pangolin texture update")
                 if not pango.ShouldQuit():
-                    # Clear screen and activate view to render into
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
                     glClearColor(0.1, 0.3, 0.3, 0.0)
                     glLineWidth(5)
                     glPointSize(15)
-                    pango.DrawLine([[-1, 1, 0], [-1, 1, -1]]) # down is positive y, right is positive x - this does bottom left
-                    pango.DrawLine([[0, 0, 0], [0, 0, -1]]) # top right
-                    pango.DrawLine([[-1, 0, 0], [-1, 0, -1]]) # top left
-                    pango.DrawLine([[0, 1, 0], [0, 1, -1]]) # bottom right
-                    pango.DrawPoints([[-1, 1, -1], [0, 0, -1], [-1, 0, -1], [0, 1, -1]])
+                    pango.DrawLine([[-1, 1, 0], [-1, 1, -1]])  # down is positive y, right is positive x - this does bottom left
+                    pango.DrawLine([[1, -1, 0], [1, -1, -1]])  # top right
+                    pango.DrawLine([[-1, -1, 0], [-1, -1, -1]])  # top left
+                    pango.DrawLine([[1, 1, 0], [1, 1, -1]])  # bottom right
+                    pango.DrawPoints([[-1, 1, -1], [1, -1, -1], [-1, -1, -1], [1, 1, -1]])
 
-                    texture_data = cv2.flip(cv2.resize(self.frame, (800, 800)), 1)
+                    texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA), cv2.ROTATE_180)
                     height, width, _ = texture_data.shape
 
                     glEnable(GL_TEXTURE_2D)
-                    texid = glGenTextures(1)
+                    self.texid = glGenTextures(1)
 
-                    glBindTexture(GL_TEXTURE_2D, texid)
+                    glBindTexture(GL_TEXTURE_2D, self.texid)
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
-                                 0, GL_BGRA, GL_UNSIGNED_BYTE, texture_data)
+                                 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
 
-                    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER)
-                    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER)
-                    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-                    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
 
                     self.d_cam.Activate(self.s_cam)
 
-
-
                     glBegin(GL_QUADS)
-                    # TODO: Clean this up
-                    glVertex3f(-1, -1, 0.05)
-                    glVertex3f(1, -1,  0.05)
-                    glVertex3f(1,  1,  0.05)
-                    glVertex3f(-1,  1, 0.05)
-                    glTexCoord2f(1, -1)
-                    glVertex3f(-1, -1, -0.05)
-                    glTexCoord2f(1, 1)
-                    glVertex3f(-1,  1, -0.05)
-                    glTexCoord2f(-1, 1)
-                    glVertex3f(1,  1, -0.05)
-                    glTexCoord2f(-1, -1)
-                    glVertex3f(1, -1, -0.05)
-                    glVertex3f(-1,  1, -0.05)
-                    glVertex3f(-1,  1,  0.05)
-                    glVertex3f(1,  1,  0.05)
-                    glVertex3f(1,  1, -0.05)
-                    glVertex3f(1, -1, -0.05)
-                    glVertex3f(1, -1, 0.05)
-                    glVertex3f(-1, -1, 0.05)
-                    glVertex3f(1, -1, -0.05)
-                    glVertex3f(1,  1, -0.05)
-                    glVertex3f(1,  1, 0.05)
-                    glVertex3f(1, -1, 0.05)
-                    glVertex3f(-1, -1, -0.05)
-                    glVertex3f(-1, -1, 0.05)
-                    glVertex3f(-1,  1, 0.05)
-                    glVertex3f(-1,  1, -0.05)
+
+                    glVertex3f(1.0, 1.0, -0.025)
+                    glVertex3f(-1.0, 1.0, -0.025)
+                    glVertex3f(-1.0, 1.0, 0.025)
+                    glVertex3f(1.0, 1.0, 0.025)
+
+                    glVertex3f(1.0, -1.0, -0.025)
+                    glVertex3f(-1.0, -1.0, -0.025)
+                    glVertex3f(-1.0, -1.0, 0.025)
+                    glVertex3f(1.0, -1.0, 0.025)
+
+                    glVertex3f(1.0, 1.0, 0.025)
+                    glVertex3f(-1.0, 1.0, 0.025)
+                    glVertex3f(-1.0, -1.0, 0.025)
+                    glVertex3f(1.0, -1.0, 0.025)
+
+                    glTexCoord2f(0.0, 1.0)
+                    glVertex3f(1.0, -1.0, -0.025)
+                    glTexCoord2f(1.0, 1.0)
+                    glVertex3f(-1.0, -1.0, -0.025)
+                    glTexCoord2f(1.0, 0.0)
+                    glVertex3f(-1.0, 1.0, -0.025)
+                    glTexCoord2f(0.0, 0.0)
+                    glVertex3f(1.0, 1.0, -0.025)
+
+                    glVertex3f(-1.0, 1.0, 0.025)
+                    glVertex3f(-1.0, 1.0, -0.025)
+                    glVertex3f(-1.0, -1.0, -0.025)
+                    glVertex3f(-1.0, -1.0, 0.025)
+
+                    glVertex3f(1.0, 1.0, 0.025)
+                    glVertex3f(1.0, 1.0, -0.025)
+                    glVertex3f(1.0, -1.0, -0.025)
+                    glVertex3f(1.0, -1.0, 0.025)
+
                     glEnd()
-
-                    # glBegin(GL_LINES)
-                    # for cubeEdge in cubeEdges:
-                    #     for cubeVertex in cubeEdge:
-                    #         glVertex3fv(cubeVertices[cubeVertex])
-                    # glEnd()
-                    #
-
 
                     # Swap Frames and Process Events
                     pango.FinishFrame()
 
-                    glDeleteTextures(texid)
+                    glDeleteTextures(self.texid)
 
-                # pangolin texture update
             else:
                 # nolan just do cv2 imshow
                 cv2.imshow("2d visualizer", self.frame)
