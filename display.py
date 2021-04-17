@@ -180,10 +180,16 @@ class Display:
                     glVertex3f(-1.0, -1.0, 0.025)
                     glVertex3f(1.0, -1.0, 0.025)
 
+
+                    glTexCoord2f(0.0, 0.0)
                     glVertex3f(1.0, 1.0, 0.025)
+                    glTexCoord2f(1.0, 0.0)
                     glVertex3f(-1.0, 1.0, 0.025)
+                    glTexCoord2f(1.0, 1.0)
                     glVertex3f(-1.0, -1.0, 0.025)
+                    glTexCoord2f(0.0, 1.0)
                     glVertex3f(1.0, -1.0, 0.025)
+
 
                     glTexCoord2f(0.0, 1.0)
                     glVertex3f(1.0, -1.0, -0.025)
