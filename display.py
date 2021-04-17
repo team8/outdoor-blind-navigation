@@ -79,11 +79,11 @@ class Display:
         self.frame = cv2.resize(orig_cap, self.size)
     def putSidewalkState(self, state): #fix this - should use correct function based on state
         if state == "Left of Sidewalk":
-            self.showRight()
+            self.showLeft()
         if state == "Middle of Sidewalk":
             self.showForward()
         if(state == "Right of Sidewalk"):
-            self.showLeft()
+            self.showRight()
         # nolan this is yours
     def displayScreen(self):
         if self.dimension == 3:
