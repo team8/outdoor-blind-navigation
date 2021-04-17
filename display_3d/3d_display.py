@@ -73,10 +73,10 @@ def main():
         glLineWidth(5)
         glPointSize(15)
         pango.DrawLine([[-1, 1, 0], [-1, 1, -1]])  # down is positive y, right is positive x - this does bottom left
-        pango.DrawLine([[0, 0, 0], [0, 0, -1]])  # top right
-        pango.DrawLine([[-1, 0, 0], [-1, 0, -1]])  # top left
-        pango.DrawLine([[0, 1, 0], [0, 1, -1]])  # bottom right
-        pango.DrawPoints([[-1, 1, -1], [0, 0, -1], [-1, 0, -1], [0, 1, -1]])
+        pango.DrawLine([[1, -1, 0], [1, -1, -1]])  # top right
+        pango.DrawLine([[-1, -1, 0], [-1, -1, -1]])  # top left
+        pango.DrawLine([[1, 1, 0], [1, 1, -1]])  # bottom right
+        pango.DrawPoints([[-1, 1, -1], [1, -1, -1], [-1, -1, -1], [1, 1, -1]])
 
         ret, texture_data = vid.read()
         texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(texture_data, (1400, 1400)), cv2.COLOR_BGR2RGBA), cv2.ROTATE_180)
