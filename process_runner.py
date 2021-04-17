@@ -13,7 +13,7 @@ time.sleep(1)
 
 sc = StateClassifier()
 ol = ObjectLocalizer()
-display = Display(dimension=2)
+display = Display(dimension=3)
 
 
 counter = 0
@@ -27,7 +27,7 @@ while True:
 
 
     display.putVideoFrame(capture)
-    display.putSidewalkState(state_classifier_inference)
+    # display.putSidewalkState(state_classifier_inference)
     display.putObjects(object_localizer_inference)
     display.displayScreen()
 
