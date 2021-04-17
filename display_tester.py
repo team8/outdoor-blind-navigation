@@ -12,7 +12,7 @@ while True:
     capture = video.read(0)[1]
     display.putVideoFrame(capture)
     display.putObjects(obs)
-    display.putSidewalkState(1)
+    display.putSidewalkState("Left of Sidewalk")
     #obs[0][2][0] -= 3
 
     display.displayScreen()
