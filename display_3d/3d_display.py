@@ -66,6 +66,8 @@ def main():
 
     vid = cv2.VideoCapture("../Sidewalk.mp4")
     # texture_data = vid.read()[1]
+    pbo = 0
+    pbo = glGenBuffers(1, pbo)
     while not pango.ShouldQuit():
         # Clear screen and activate view to render into
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -80,9 +82,17 @@ def main():
 
         ret, texture_data = vid.read()
         texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(texture_data, (1400, 1400)), cv2.COLOR_BGR2RGBA), cv2.ROTATE_180)
-        height, width, _ = texture_data.shape
+        height, width, dims = texture_data.shape
 
         glEnable(GL_TEXTURE_2D)
+
+        bytes = (height * width * dims)
+        glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo)
+        glBufferData(GL_PIXEL_PACK_BUFFER,
+                     bytes,
+                     texture_data,
+                     GL_DYNAMIC_DRAW)
+
         texid = glGenTextures(1)
 
         glBindTexture(GL_TEXTURE_2D, texid)
