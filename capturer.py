@@ -24,10 +24,10 @@ def capturer():
     print("Capturing Starting")
     while True:
         images_queue.add(stream.read()[1])
-        # if firstRun:
-            # time.sleep(15)
-        # else:
-        time.sleep(0.05)
+        if firstRun:
+            time.sleep(14)
+        else:
+            time.sleep(0.05)
         # time.sleep(0.2)
         firstRun = False
 

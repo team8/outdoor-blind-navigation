@@ -69,6 +69,8 @@ class Display:
                 .SetHandler(self.handler)
             )
             glPointSize(15)
+            # pango.RegisterKeyPressCallback(int(pango.PANGO_CTRL) + ord('r'), self.rehome3dViewer()) 
+            # glTranslatef(0.0, 0.0, -10)
         elif self.dimension == 2:
             # initialize cv2 2d viewer
             print("Initializing cv2 2d viewer")
@@ -87,6 +89,8 @@ class Display:
     def displayScreen(self):
         if self.dimension == 3:
             if not pango.ShouldQuit():
+
+                # glRotatef(1, 1, 1, 1)
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
                 glClearColor(0.5, 0.7, 0.7, 0.0)
                 glLineWidth(5)
@@ -161,11 +165,17 @@ class Display:
 
                 # Swap Frames and Process Events
                 pango.FinishFrame()
-
                 glDeleteTextures(self.texid)
         else:
             cv2.imshow("2d visualizer", self.frame)
             cv2.waitKey(0)
+
+    def rehome3dViewer(self):
+        print("Resetting cam position")
+        # self.s_cam = pango.OpenGlRenderState(self.pm, self.mv)
+        # Create Interactive View in window
+        # self.handler = pango.Handler3D(self.s_cam)
+
 
     def __putArrows(self):
 
