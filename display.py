@@ -92,13 +92,18 @@ class Display:
                 glClearColor(0.5, 0.7, 0.7, 0.0)
                 glLineWidth(5)
                 glPointSize(15)
+
+
+
+
+
                 # z axis (+)  is toward self
                 pango.DrawLine([[-1, 1, 0], [-1, 1, -0.3]])  # down is positive y, right is positive x - this does bottom left
                 pango.DrawLine([[1, -1, 0], [1, -1, -0.3]])  # top right
                 pango.DrawLine([[-1, -1, 0], [-1, -1, -0.3]])  # top left
                 pango.DrawLine([[1, 1, 0], [1, 1, -0.3]])  # bottom right
                 pango.DrawPoints([[-1, 1, -0.3], [1, -1, -0.3], [-1, -1, -0.3], [1, 1, -0.3]])
-
+                self.__putArrows()
                 texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA), cv2.ROTATE_180) #TODO dont convert to rgba here
                 height, width, _ = texture_data.shape
 
@@ -166,9 +171,25 @@ class Display:
                 glDeleteTextures(self.texid)
         else:
             cv2.imshow("2d visualizer", self.frame)
-            cv2.waitKey(1)
+            cv2.waitKey(0)
+
+    def __putArrows(self):
+        if self.obstacles is not None:
+            for detection in self.obstacles:
+                if detection[0] in self.labelToColor.keys():
+                    x_offset, y_offset, z_offset = detection[4]
+                    x_anchor, y_anchor, w, h = detection[2]
+                    x_offset = (x_offset * self.stretchXValue/self.size[0])
+                    y_offset = (y_offset * self.stretchYValue/self.size[1])
+                    x_anchor = (x_anchor * self.stretchXValue/self.size[0]) * 2 - 1
+                    y_anchor = (y_anchor * self.stretchYValue/self.size[1]) * 2 - 1
+                    print(x_offset, y_offset, x_anchor, y_anchor)
+
+                    # z axis (+)  is toward self
+                    pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor+x_offset, y_anchor+y_offset, -0.3]])  # down is positive y, right is positive x - this does bottom left
 
     def putObjects(self, obstacles):
+        self.obstacles = obstacles
         if obstacles is None:
             return
         for detection in obstacles:
