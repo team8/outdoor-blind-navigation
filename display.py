@@ -68,7 +68,6 @@ class Display:
                 )
                 .SetHandler(self.handler)
             )
-            glLineWidth(5)
             glPointSize(15)
         elif self.dimension == 2:
             # initialize cv2 2d viewer
@@ -91,11 +90,6 @@ class Display:
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
                 glClearColor(0.5, 0.7, 0.7, 0.0)
                 glLineWidth(5)
-                glPointSize(15)
-
-
-
-
 
                 # z axis (+)  is toward self
                 pango.DrawLine([[-1, 1, 0], [-1, 1, -0.3]])  # down is positive y, right is positive x - this does bottom left
@@ -174,6 +168,10 @@ class Display:
             cv2.waitKey(0)
 
     def __putArrows(self):
+
+        # glColor3f(1,0,0)
+
+        glLineWidth(3)
         if self.obstacles is not None:
             for detection in self.obstacles:
                 if detection[0] in self.labelToColor.keys():
@@ -183,12 +181,13 @@ class Display:
                     y_offset = (y_offset * self.stretchYValue/self.size[1])
                     x_anchor = (x_anchor * self.stretchXValue/self.size[0]) * 2 - 1
                     y_anchor = (y_anchor * self.stretchYValue/self.size[1]) * 2 - 1
-                    print(x_offset, y_offset, x_anchor, y_anchor)
 
-                    wanted_z_anchor = 0.2
+                    wanted_z_anchor = math.sqrt(abs(z_offset)) * 0.03
                     z_anchor = -math.sqrt(1 - x_offset**2 - y_offset**2) *wanted_z_anchor
                     # z axis (+)  is toward self
                     pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor+x_offset, y_anchor+y_offset, z_anchor]])  # down is positive y, right is positive x - this does bottom left
+
+                    pango.DrawPoints([[x_anchor+x_offset, y_anchor+y_offset, z_anchor]])
 
     def putObjects(self, obstacles):
         self.obstacles = obstacles
@@ -213,7 +212,7 @@ class Display:
         font = cv2.FONT_HERSHEY_SIMPLEX
         shownText = objectInfo[0].replace("sign", "") + " ID: " + str(objectInfo[3])
         textsize = cv2.getTextSize(shownText, font, 0.5, 2)[0]
-        cv2.putText(self.frame, shownText, (int(centerX - (textsize[0]/2)), int(centerY)), font, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(self.frame, shownText, (int(centerX - (textsize[0]/2)), int(centerY)), font, 0.7, (255, 255, 255), 2, cv2.LINE_AA)
         return self.frame
 
 
