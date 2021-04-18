@@ -1,14 +1,11 @@
+from person_automobile_sign_detection.detection import Detection
 
+blank_detection = Detection()
 # provides psuedo direction vector
 def get_direction_vector(bbox_buffer):
     bbox_list = [x for x in bbox_buffer.getList() if x is not None]
-    # print(bbox_list)
-    # if None not in bbox_list:
-        # base_position = bbox_list.median()
-        # bbox_current_pos = bbox_list.median(bbox_list.size() - 5, bbox_list.size())
-        # print(base_position)
-        # print(bbox_current_pos)
-        # summation_direction_vector = (bbox_current_pos[0] - base_position[0], bbox_current_pos[1] - base_position[1])
+    if len(bbox_list) < blank_detection.bbox_history_size * 0.6:
+        return (0, 0, 0)
     weighting = 0.1
     base_position = (bbox_list[0][0], bbox_list[0][1])
     base_area = bbox_list[0][2] * bbox_list[0][3]

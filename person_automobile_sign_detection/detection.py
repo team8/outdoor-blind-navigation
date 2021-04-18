@@ -18,7 +18,7 @@ class Detection:
     lastSeen = True
 
 
-    def __init__(self, label, object_id, bbox):
+    def __init__(self, label=None, object_id=None, bbox=None):
         self.label = label
         self.bbox = bbox
         self.bbox_history.initQueue([None]*self.bbox_history_size)
