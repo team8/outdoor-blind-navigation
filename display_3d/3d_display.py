@@ -92,17 +92,18 @@ def main():
                      bytes,
                      texture_data,
                      GL_DYNAMIC_DRAW)
+        pbo
 
-        texid = glGenTextures(1)
-
-        glBindTexture(GL_TEXTURE_2D, texid)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
-                     0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
+        # texid = glGenTextures(1)
+        #
+        # glBindTexture(GL_TEXTURE_2D, texid)
+        # glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
+        #              0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
+        #
+        # glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        # glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        # glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
+        # glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
 
         d_cam.Activate(s_cam)
 
@@ -154,7 +155,7 @@ def main():
         # Swap Frames and Process Events
         pango.FinishFrame()
 
-        glDeleteTextures(texid)
+        # glDeleteTextures(texid)
 
 
 if __name__ == "__main__":
