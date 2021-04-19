@@ -184,7 +184,7 @@ class Display:
         glLineWidth(3)
         if self.obstacles is not None:
             for detection in self.obstacles:
-                if detection[0] in self.labelToColor.keys():
+                if detection[0] == "person" or detection[0] == "car":
                     x_offset, y_offset, z_offset = detection[4]
                     x_anchor, y_anchor, w, h = detection[2]
                     x_offset = (x_offset * self.stretchXValue/self.size[0])
@@ -192,8 +192,8 @@ class Display:
                     x_anchor = (x_anchor * self.stretchXValue/self.size[0]) * 2 - 1
                     y_anchor = (y_anchor * self.stretchYValue/self.size[1]) * 2 - 1
 
-                    wanted_z_anchor = math.sqrt(abs(z_offset)) * 0.015
-                    z_anchor = -math.sqrt(2 - x_offset**2 - y_offset**2) *wanted_z_anchor
+                    wanted_z_anchor = math.sqrt(abs(z_offset)) * 0.006
+                    z_anchor = -min(math.sqrt(1 - x_offset**2 - y_offset**2) *wanted_z_anchor, 0.3)
                     # z axis (+)  is toward self
                     pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor+x_offset, y_anchor+y_offset, z_anchor]])  # down is positive y, right is positive x - this does bottom left
 
