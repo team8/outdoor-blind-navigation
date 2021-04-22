@@ -70,4 +70,4 @@ Create an issue if you have any questions
 
 By Paly Robotics
 
-![](assets/Logo.png =250x250)
+![](assets/Logo.png)
