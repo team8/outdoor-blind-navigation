@@ -23,7 +23,7 @@ This can be clearly seen in the gif:
 ![](assets/Design.png)
 
 ## Physical Build
-![](assets/Physical Build.jpg")
+![](assets/Physical Build.jpg)
 
 ## Using the code
 1. Install dependencies with `pip install -r `[`requirements.txt`](requirements.txt)
