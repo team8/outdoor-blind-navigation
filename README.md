@@ -13,11 +13,17 @@ to open source code.
 Our code uses AI in order to detect people and locate what side the sidewalk is on.
 This can be clearly seen in the gif:
 
-![](Sidewalk_Demo.gif)
+![](assets/Sidewalk_Demo.gif)
 
 ## Blind Navigation Code Diagram
 
-![](Code_Diagram.png)
+![](assets/Code_Diagram.png)
+
+## Design
+![](assets/Design.png)
+
+## Physical Build
+![](assets/Physical Build.jpg")
 
 ## Using the code
 1. Install dependencies with `pip install -r `[`requirements.txt`](requirements.txt)
@@ -58,8 +64,10 @@ TODO:
 4. Submit a pull request with a list of changes
 
 ## Acknowledgements
-* Darknet (Yolov4), Pangolin (3d Opengl Visualizer), Pygame(2D SDL Visualizer), Tensorflow
+* Darknet (Yolov4), Pangolin (3d Opengl Visualizer), Pygame(2D SDL Visualizer), Tensorflow, Opencv
 
 Create an issue if you have any questions
 
-Enjoy!
+By Paly Robotics
+
+![](assets/Logo.png)

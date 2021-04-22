@@ -1,0 +1,4 @@
+ filter=lfs diff=lfs merge=lfs -text
+InnovationChallenge_BAT_v3.STL filter=lfs diff=lfs merge=lfs -text
+InnovationChallenge_BOT_v3.STL filter=lfs diff=lfs merge=lfs -text
+InnovationChallenge_TOP_v1.STL filter=lfs diff=lfs merge=lfs -text
