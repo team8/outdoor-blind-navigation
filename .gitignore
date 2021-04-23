@@ -5,6 +5,7 @@
 .idea/
 .vs/
 venv/
+.vim/
 *.weights
 __pycache__
 libdarknet.so

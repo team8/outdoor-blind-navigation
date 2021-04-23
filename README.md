@@ -2,6 +2,10 @@
 
 ## Reasoning
 
+
+TODO: Update this 
+
+
 There are 12 million blind and visually impaired individuals in the U.S. and only 2% of visually impaired individuals in
 the U.S. work with guide dogs.
 We made this project in order to prototype the use of easily accessible navigation software.
@@ -10,8 +14,7 @@ We made this project for FIRST's Innovation Challenge and we hope we can encoura
 to open source code.
 
 ## Detection Demo
-Our code uses AI in order to detect people and locate what side the sidewalk is on.
-This can be clearly seen in the gif:
+Our code uses deep learning in order to detect people and locate what side the sidewalk is on.
 
 ![](assets/Sidewalk_Demo.gif)
 
@@ -21,6 +24,8 @@ This can be clearly seen in the gif:
 
 ## Design
 ![](assets/Design.png)
+
+Note: Chestmount was 3d-printed in flexible TPU for comfort and wearability
 
 ## Physical Build
 ![](assets/Physical_Build.jpg)
