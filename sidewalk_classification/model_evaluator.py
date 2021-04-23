@@ -6,7 +6,6 @@ from display import Display
 import numpy as np
 classes = ["Left of Sidewalk", "Middle of Sidewalk", "Right of Sidewalk"]
 model = tf.keras.models.load_model("sidewalk_classification_model_resnet.h5")
-# vid = cv2.VideoCapture("/home/aoberai/Downloads/Long_Sidewalk.mp4")
 rotate = False
 vid = cv2.VideoCapture(0)
 time.sleep(3)

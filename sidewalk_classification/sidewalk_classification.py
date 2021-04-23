@@ -14,10 +14,16 @@ detection_threshold = 0.5
 
 class SidewalkClassification:
 
+    def __init__(self):
+        self.model = tf.keras.models.load_model(model_path)
+        self.readings_buffer = CircularBuffer(readings_buffer_size, noneOverridePercent=0.5)
+        self.images_queue = CircularBuffer(1)
+        self.classifier_queue = CircularBuffer(1)
+        threading.Thread(target=self.classification_starter).start()
+
     def capture_processing(self):
         while True:
             try:
-
                 frame = capturer.getImages().getLast()
                 if frame is not None:
                     preprocessed_frame = cv2.resize(frame, image_preprocessing_dimens, interpolation=cv2.INTER_LINEAR)
@@ -43,11 +49,4 @@ class SidewalkClassification:
 
     def get_inference(self):
         return self.classifier_queue.getLast()
-
-    def __init__(self):
-        self.model = tf.keras.models.load_model(model_path)
-        self.readings_buffer = CircularBuffer(readings_buffer_size, noneOverridePercent=0.5)
-        self.images_queue = CircularBuffer(1)
-        self.classifier_queue = CircularBuffer(1)
-        threading.Thread(target=self.classification_starter).start()
 

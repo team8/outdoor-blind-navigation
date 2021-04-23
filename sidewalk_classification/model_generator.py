@@ -6,18 +6,7 @@ import numpy as np
 import random
 import preprocessing
 input_shape = (100, 100, 3)
-# model = tf.keras.models.Sequential([
-   # tf.keras.layers.Conv2D(64, (11, 11), input_shape=input_shape),
-   # tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-   # tf.keras.layers.Conv2D(128, (9, 9), input_shape=input_shape),
-   # tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-   # tf.keras.layers.Conv2D(128, (7, 7), input_shape=input_shape),
-   # tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-   # tf.keras.layers.Flatten(input_shape=input_shape),
-   # tf.keras.layers.Dense(64, activation='relu'),
-   # tf.keras.layers.Dropout(0.1),
-   # tf.keras.layers.Dense(3, activation='softmax')])
-#
+
 # model.compile(
     # optimizer='Adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
 

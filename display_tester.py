@@ -13,6 +13,4 @@ while True:
     display.putVideoFrame(capture)
     display.putObjects(obs)
     display.putSidewalkState("Left of Sidewalk")
-    #obs[0][2][0] -= 3
-
     display.displayScreen()
