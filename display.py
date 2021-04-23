@@ -10,14 +10,10 @@ import cv2
 from PIL import Image
 
 class Display:
-    # dimension can be 3d or 2d
+    # dimension can be 2 or 3
     def __init__(self, dimension=3):
         self.dimension = dimension
         self.size = (720, 540)
-        # self.size = (416, 416)
-        # for yolo tiny
-        # self.bbox_inference_coord_size = (416, 416)
-        # for yolo full
         self.bbox_inference_coord_size = (618, 618)
         self.stretchXValue = self.size[0]/self.bbox_inference_coord_size[0]
         self.stretchYValue = self.size[1]/self.bbox_inference_coord_size[1]
@@ -29,20 +25,19 @@ class Display:
                              "fire hydrant": ((0, 255, 255)),
                              "bench": ((200, 100, 200))}
 
-        #Load to lower compuational cost of opening and reading a bunch
         self.rightArrow = Image.open("./display_resources/RightExpanded.png")
         self.leftArrow = Image.open("./display_resources/LeftExpanded.png")
         self.forwardArrow = Image.open("./display_resources/ForwardExpanded.png")
+
         if self.dimension == 3:
-            #     # initialize pangolin opengl 3d viewer
             print("Initializing pangolin opengl 3d viewer")
 
             self.win = pango.CreateWindowAndBind("Visualization Tool 3d", self.size[0], self.size[1])
             glEnable(GL_DEPTH_TEST)
 
-            # Define Projection and initial ModelView matrix
+            # Definition of Projection and initial ModelView matrices
 
-            #   ProjectionMatrix (int w, int h, double fu, double fv, double u0, double v0, double zNear, double zFar)
+            # ProjectionMatrix (int w, int h, double fu, double fv, double u0, double v0, double zNear, double zFar)
             self.pm = pango.ProjectionMatrix(640, 480, 420, 420, 320, 240, 0.5, 100)
 
             # This allows changing of "camera" angle : glulookat style model view matrix (x, y, z, lx, ly, lz, AxisDirection Up) Forward is -z and up is +y
@@ -62,106 +57,60 @@ class Display:
                 .SetBounds(
                     pango.Attach(0),
                     pango.Attach(1),
-                    pango.Attach.Pix(1), # side bar which can be used for notification system
+                    pango.Attach.Pix(1), # side bar which can be used for notification system; not used right now
                     pango.Attach(1),
                     -640.0 / 480.0,
                 )
                 .SetHandler(self.handler)
             )
             glPointSize(15)
-            # pango.RegisterKeyPressCallback(int(pango.PANGO_CTRL) + ord('r'), self.rehome3dViewer()) 
+            # pango.RegisterKeyPressCallback(int(pango.PANGO_CTRL) + ord('r'), self.rehome3dViewer()) # Key press with panfolin for rehoming is broken - use different key press lib
             # glTranslatef(0.0, 0.0, -10)
         elif self.dimension == 2:
-            # initialize cv2 2d viewer
             print("Initializing cv2 2d viewer")
         else:
             raise Exception("Dimension for viewing tool must be either 2 or 3")
     def putVideoFrame(self,orig_cap):
         self.frame = cv2.resize(orig_cap, self.size)
-    def putSidewalkState(self, state): #fix this - should use correct function based on state
+    def putSidewalkState(self, state):
         if state == "Left of Sidewalk":
-            self.showWhenLeft()
+            self.__showLeftArrow()
         if state == "Middle of Sidewalk":
-            self.showWhenForward()
+            self.__showForwardArrow()
         if(state == "Right of Sidewalk"):
-            self.showWhenRight()
-        # nolan this is yours
+            self.__showRightArrow()
+
     def displayScreen(self):
         if self.dimension == 3:
             if not pango.ShouldQuit():
-
-                # glRotatef(1, 1, 1, 1)
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
                 glClearColor(0.5, 0.7, 0.7, 0.0)
                 glLineWidth(5)
 
-                # z axis (+)  is toward self
-                pango.DrawLine([[-1, 1, 0], [-1, 1, -0.3]])  # down is positive y, right is positive x - this does bottom left
+                # z axis (-) is toward self, down is positive y, right is positive x
+                pango.DrawLine([[-1, 1, 0], [-1, 1, -0.3]])  # bottom left
                 pango.DrawLine([[1, -1, 0], [1, -1, -0.3]])  # top right
                 pango.DrawLine([[-1, -1, 0], [-1, -1, -0.3]])  # top left
                 pango.DrawLine([[1, 1, 0], [1, 1, -0.3]])  # bottom right
                 pango.DrawPoints([[-1, 1, -0.3], [1, -1, -0.3], [-1, -1, -0.3], [1, 1, -0.3]])
-                self.__putArrows()
-                texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA), cv2.ROTATE_180) #TODO dont convert to rgba here
-                height, width, _ = texture_data.shape
 
+                self.__putMovementDirectionVectors() # Draws arrows on 3d viewer for movement direction vector of objects
+                self.__drawCanvas() # Draws 3d canvas
+
+                 # Generates and applies texture for canvas
+                texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA), cv2.ROTATE_180)
+                height, width, _ = texture_data.shape
                 glEnable(GL_TEXTURE_2D)
                 self.texid = glGenTextures(1)
-
                 glBindTexture(GL_TEXTURE_2D, self.texid)
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
                              0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
-
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
 
                 self.d_cam.Activate(self.s_cam)
-
-                glBegin(GL_QUADS)
-
-                glVertex3f(1.0, 1.0, -0.025)
-                glVertex3f(-1.0, 1.0, -0.025)
-                glVertex3f(-1.0, 1.0, 0.025)
-                glVertex3f(1.0, 1.0, 0.025)
-
-                glVertex3f(1.0, -1.0, -0.025)
-                glVertex3f(-1.0, -1.0, -0.025)
-                glVertex3f(-1.0, -1.0, 0.025)
-                glVertex3f(1.0, -1.0, 0.025)
-
-
-                glTexCoord2f(0.0, 0.0)
-                glVertex3f(1.0, 1.0, 0.025)
-                glTexCoord2f(1.0, 0.0)
-                glVertex3f(-1.0, 1.0, 0.025)
-                glTexCoord2f(1.0, 1.0)
-                glVertex3f(-1.0, -1.0, 0.025)
-                glTexCoord2f(0.0, 1.0)
-                glVertex3f(1.0, -1.0, 0.025)
-
-
-                glTexCoord2f(0.0, 1.0)
-                glVertex3f(1.0, -1.0, -0.025)
-                glTexCoord2f(1.0, 1.0)
-                glVertex3f(-1.0, -1.0, -0.025)
-                glTexCoord2f(1.0, 0.0)
-                glVertex3f(-1.0, 1.0, -0.025)
-                glTexCoord2f(0.0, 0.0)
-                glVertex3f(1.0, 1.0, -0.025)
-
-                glVertex3f(-1.0, 1.0, 0.025)
-                glVertex3f(-1.0, 1.0, -0.025)
-                glVertex3f(-1.0, -1.0, -0.025)
-                glVertex3f(-1.0, -1.0, 0.025)
-
-                glVertex3f(1.0, 1.0, 0.025)
-                glVertex3f(1.0, 1.0, -0.025)
-                glVertex3f(1.0, -1.0, -0.025)
-                glVertex3f(1.0, -1.0, 0.025)
-
-                glEnd()
 
                 # Swap Frames and Process Events
                 pango.FinishFrame()
@@ -170,17 +119,58 @@ class Display:
             cv2.imshow("2d visualizer", self.frame)
             cv2.waitKey(0)
 
-    def rehome3dViewer(self):
+    def __rehome3dViewer(self):
         print("Resetting cam position")
         # self.s_cam = pango.OpenGlRenderState(self.pm, self.mv)
-        # Create Interactive View in window
+        # # Create Interactive View in window
         # self.handler = pango.Handler3D(self.s_cam)
 
+    def __drawCanvas(self):
+        glBegin(GL_QUADS)
 
-    def __putArrows(self):
+        glVertex3f(1.0, 1.0, -0.025)
+        glVertex3f(-1.0, 1.0, -0.025)
+        glVertex3f(-1.0, 1.0, 0.025)
+        glVertex3f(1.0, 1.0, 0.025)
 
-        # glColor3f(1,0,0)
+        glVertex3f(1.0, -1.0, -0.025)
+        glVertex3f(-1.0, -1.0, -0.025)
+        glVertex3f(-1.0, -1.0, 0.025)
+        glVertex3f(1.0, -1.0, 0.025)
 
+
+        glTexCoord2f(0.0, 0.0)
+        glVertex3f(1.0, 1.0, 0.025)
+        glTexCoord2f(1.0, 0.0)
+        glVertex3f(-1.0, 1.0, 0.025)
+        glTexCoord2f(1.0, 1.0)
+        glVertex3f(-1.0, -1.0, 0.025)
+        glTexCoord2f(0.0, 1.0)
+        glVertex3f(1.0, -1.0, 0.025)
+
+
+        glTexCoord2f(0.0, 1.0)
+        glVertex3f(1.0, -1.0, -0.025)
+        glTexCoord2f(1.0, 1.0)
+        glVertex3f(-1.0, -1.0, -0.025)
+        glTexCoord2f(1.0, 0.0)
+        glVertex3f(-1.0, 1.0, -0.025)
+        glTexCoord2f(0.0, 0.0)
+        glVertex3f(1.0, 1.0, -0.025)
+
+        glVertex3f(-1.0, 1.0, 0.025)
+        glVertex3f(-1.0, 1.0, -0.025)
+        glVertex3f(-1.0, -1.0, -0.025)
+        glVertex3f(-1.0, -1.0, 0.025)
+
+        glVertex3f(1.0, 1.0, 0.025)
+        glVertex3f(1.0, 1.0, -0.025)
+        glVertex3f(1.0, -1.0, -0.025)
+        glVertex3f(1.0, -1.0, 0.025)
+
+        glEnd()
+
+    def __putMovementDirectionVectors(self):
         glLineWidth(3)
         if self.obstacles is not None:
             for detection in self.obstacles:
@@ -226,26 +216,25 @@ class Display:
         return self.frame
 
 
-    def pilToOpenCV(self, pil_image):
+    def __pilToOpenCV(self, pil_image):
         return np.array(pil_image)
 
-    def openCVToPil(self, cv_image):
-        # You may need to convert the color.
+    def __openCVToPil(self, cv_image):
         im_pil = Image.fromarray(cv2.cvtColor(cv_image, cv2.COLOR_RGB2RGBA))
         return im_pil
 
     def transposeImageSrc(self, arrow):
-        src = self.openCVToPil(self.frame)
+        src = self.__openCVToPil(self.frame)
         img = arrow.resize(src.size)
         img = Image.alpha_composite(src, img)
-        imcv = self.pilToOpenCV(img)
+        imcv = self.__pilToOpenCV(img)
         return imcv
 
-    def showWhenLeft(self):
+    def __showLeftArrow(self):
         self.frame = self.transposeImageSrc(self.rightArrow)
 
-    def showWhenForward(self):
+    def __showForwardArrow(self):
         self.frame = self.transposeImageSrc(self.forwardArrow)
 
-    def showWhenRight(self):
+    def __showRightArrow(self):
         self.frame = self.transposeImageSrc(self.leftArrow)
