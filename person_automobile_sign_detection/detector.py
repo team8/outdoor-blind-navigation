@@ -95,7 +95,7 @@ class Detector:
                 if largest_iou != -1:
                     idSeen.append(self.running_detections[largest_iou_index].object_id)
                     self.running_detections[largest_iou_index].update(largest_iou_bbox)
-                   print("Associated BB", raw_detection[0])
+                    print("Associated BB", raw_detection[0])
                 else:
                     print("Adding new detection", raw_detection[0])
                     self.id_index += 1
