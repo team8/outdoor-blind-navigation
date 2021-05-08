@@ -95,7 +95,6 @@ class Display:
                 pango.DrawPoints([[-1, 1, -0.3], [1, -1, -0.3], [-1, -1, -0.3], [1, 1, -0.3]])
 
                 self.__putMovementDirectionVectors() # Draws arrows on 3d viewer for movement direction vector of objects
-                self.__drawCanvas() # Draws 3d canvas
 
                  # Generates and applies texture for canvas
                 texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA), cv2.ROTATE_180)
@@ -112,6 +111,7 @@ class Display:
 
                 self.d_cam.Activate(self.s_cam)
 
+                self.__drawCanvas() # Draws 3d canvas
                 # Swap Frames and Process Events
                 pango.FinishFrame()
                 glDeleteTextures(self.texid)

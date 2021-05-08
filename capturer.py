@@ -26,8 +26,8 @@ def capturer():
         if firstRun:
             time.sleep(14)
         else:
-            # time.sleep(0.07)
-            time.sleep(0.3)
+            time.sleep(0.07)
+            # time.sleep(0.3)
         firstRun = False
 
 def getImages():
