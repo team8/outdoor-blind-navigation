@@ -117,7 +117,7 @@ class Display:
                 glDeleteTextures(self.texid)
         else:
             cv2.imshow("2d visualizer", self.frame)
-            cv2.waitKey(0)
+            cv2.waitKey(1)
 
     def __rehome3dViewer(self):
         print("Resetting cam position")
