@@ -77,7 +77,11 @@ SightWalk is entirely open source, meaning all software, CAD designs, and image 
 
 ## Image Dataset Link
 
-![](https://drive.google.com/file/d/1hT2aOikyk8xYNjPstqaAtFY1kt-81E8O/view?usp=sharing)
+[Sidewalk Position Determination Dataset](https://drive.google.com/file/d/1hT2aOikyk8xYNjPstqaAtFY1kt-81E8O/view?usp=sharing)
+
+We custom collected this dataset housing the images that would respectively indicate if an individual was left, right, or middle of the sidewalk. It has been weighted for training purposes with a left: 1000, right: 1000, middle: 1150 split. Augmentation has been preperformed on the data. 
+
+Create a pull request with a zip file of the new images and a google drive link if you have more images to add!
 
 ## Acknowledgements
 * Darknet (Yolov4), Pangolin (3d Opengl Visualizer), Pygame(2D SDL Visualizer), Tensorflow, Opencv
