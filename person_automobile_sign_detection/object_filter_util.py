@@ -8,8 +8,9 @@ def get_direction_vector(label, bbox_buffer):
     average_bbox = bbox_list.mean(axis=0)
     newest_bbox = bbox_list[0]
     oldest_bbox = bbox_list[-1]
-    print(label, bbox_list)
-    return [newest_bbox[0] - average_bbox[0], newest_bbox[1] - average_bbox[1], 4]
+    newest_bbox_area = newest_bbox[2] * newest_bbox[3]
+    average_bbox_area = average_bbox[2] * average_bbox[3]
+    return [newest_bbox[0] - average_bbox[0], newest_bbox[1] - average_bbox[1], ((newest_bbox_area - average_bbox_area)/average_bbox_area)]
     # weighting = 0.1
     # base_position = (bbox_list[-1][0], bbox_list[-1][1])
     # base_area = bbox_list[-1][2] * bbox_list[-1][3]
