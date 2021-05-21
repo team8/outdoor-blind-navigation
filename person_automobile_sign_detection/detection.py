@@ -8,7 +8,7 @@ class Detection:
     label = ""
     bbox = None # detected object position in image
     bbox_history_size = 15
-    bbox_history = CircularBuffer(bbox_history_size)
+    bbox_history = []
     kalmannFilter = None # kalmann filter object for motion tracking
 
     consecutiveNotSeenCount = 0 # num of frames it has been that the object has not been detected
@@ -20,14 +20,16 @@ class Detection:
     def __init__(self, label=None, object_id=None, bbox=None):
         self.label = label
         self.bbox = bbox
-        self.bbox_history.initQueue([None]*self.bbox_history_size)
-        self.bbox_history.add(self.bbox)
+        self.bbox_history = [None]*self.bbox_history_size
+        self.bbox_history.insert(0, self.bbox)
+        del self.bbox_history[-1]
         self.object_id = object_id
 
     def update(self, bbox):
         if bbox is not None:
             self.bbox = bbox
-            self.bbox_history.add(self.bbox)
+            self.bbox_history.insert(0, self.bbox)
+            del self.bbox_history[-1]
             is_seen = True
         else:
             is_seen = False

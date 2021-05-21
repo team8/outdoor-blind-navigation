@@ -6,8 +6,9 @@ try:
     stream = cv2.VideoCapture(0)
     cv2.resize(stream.read()[1], (100, 100)) # throws exception if webcam is not attached
 except Exception as e:
-    stream = cv2.VideoCapture('./Sidewalk.mp4')
+    # stream = cv2.VideoCapture('./Sidewalk.mp4')
     # stream = cv2.VideoCapture('/home/aoberai/Downloads/DemoFinalFinal.mp4')
+    stream = cv2.VideoCapture('/home/aoberai/Downloads/betterwork.MOV')
     # stream = cv2.VideoCapture('/home/aoberai/Downloads/Long_Sidewalk_Final.mp4')
     # stream = cv2.VideoCapture('/home/aoberai/Downloads/NewTest.mp4')
     # stream = cv2.VideoCapture('/home/aoberai/Downloads/2ndStopSign.mp4')

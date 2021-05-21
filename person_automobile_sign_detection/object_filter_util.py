@@ -1,23 +1,28 @@
 from person_automobile_sign_detection.detection import Detection
-import math
+import numpy as np
 
 blank_detection = Detection()
 # provides psuedo direction vector
-def get_direction_vector(bbox_buffer):
-    bbox_list = [x for x in bbox_buffer.getList() if x is not None]
-    weighting = 0.1
-    base_position = (bbox_list[-1][0], bbox_list[-1][1])
-    base_area = bbox_list[-1][2] * bbox_list[-1][3]
-    new_area = bbox_list[0][2] * bbox_list[0][3]
-
-    summation_direction_vector = (0, 0, new_area - base_area)
-    for i in range(len(bbox_list) - 1, 0):
-        summation_direction_vector = ((bbox_list[i][0] - base_position[0])*weighting + summation_direction_vector[0], (bbox_list[i][1] - base_position[1])*weighting + summation_direction_vector[1],25)
-
-        # z offset :  (new_area - base_area)**(1/3)
-
-    return summation_direction_vector
-
+def get_direction_vector(label, bbox_buffer):
+    bbox_list = np.array([x for x in bbox_buffer if x is not None])
+    average_bbox = bbox_list.mean(axis=0)
+    newest_bbox = bbox_list[0]
+    oldest_bbox = bbox_list[-1]
+    print(label, bbox_list)
+    return [newest_bbox[0] - average_bbox[0], newest_bbox[1] - average_bbox[1], 0.5]
+    # weighting = 0.1
+    # base_position = (bbox_list[-1][0], bbox_list[-1][1])
+    # base_area = bbox_list[-1][2] * bbox_list[-1][3]
+    # new_area = bbox_list[0][2] * bbox_list[0][3]
+    #
+    # summation_direction_vector = (0, 0, new_area - base_area)
+    # for i in range(len(bbox_list) - 1, 0):
+    #     summation_direction_vector = ((bbox_list[i][0] - base_position[0])*weighting + summation_direction_vector[0], (bbox_list[i][1] - base_position[1])*weighting + summation_direction_vector[1],25)
+    #
+    #     # z offset :  (new_area - base_area)**(1/3)
+    #
+    # return summation_direction_vector
+    #
 
 
 def compute_iou(orig_bbox, new_bbox): # Should also look at general shape of bboxes to see if they match? Likely not needed                                           
