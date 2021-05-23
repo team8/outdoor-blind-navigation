@@ -31,7 +31,7 @@ class Display:
         self.leftArrow = Image.open("./display_resources/LeftExpanded.png")
         self.forwardArrow = Image.open("./display_resources/ForwardExpanded.png")
 
-        self.x_position = 0
+        self.t = 0
 
         if self.dimension == 3:
             print("Initializing pangolin opengl 3d viewer")
@@ -55,7 +55,7 @@ class Display:
             self.s_cam = pango.OpenGlRenderState(self.pm, self.mv)
 
             # Create Interactive View in window
-            # self.handler = pango.Handler3D(self.s_cam)
+            self.handler = pango.Handler3D(self.s_cam)
             self.d_cam = (
                 pango.CreateDisplay()
                 .SetBounds(
@@ -65,7 +65,7 @@ class Display:
                     pango.Attach(1),
                     -640.0 / 480.0,
                 )
-                # .SetHandler(self.handler)
+                .SetHandler(self.handler)
             )
             glPointSize(15)
             # pango.RegisterKeyPressCallback(int(pango.PANGO_CTRL) + ord('r'), self.rehome3dViewer()) # Key press with panfolin for rehoming is broken - use different key press lib
@@ -115,7 +115,9 @@ class Display:
 
                 self.d_cam.Activate(self.s_cam)
 
-                self.__drawCanvas() # Draws 3d canvas
+                x = 0.5 * math.sin(self.t)
+                self.__drawCanvas((x + 1, 1.0, 0.025), (x - 1, -1.0, 0))  # Draws 3d canvas
+                self.t += 0.05
                 # Swap Frames and Process Events
                 pango.FinishFrame()
                 glDeleteTextures(self.texid)
@@ -129,48 +131,51 @@ class Display:
         # # Create Interactive View in window
         # self.handler = pango.Handler3D(self.s_cam)
 
-    def __drawCanvas(self):
+    def __drawCanvas(self, p1, p2):
         glBegin(GL_QUADS)
 
-        glVertex3f(1.0, 1.0, -0.025)
-        glVertex3f(-1.0, 1.0, -0.025)
-        glVertex3f(-1.0, 1.0, 0.025)
-        glVertex3f(1.0, 1.0, 0.025)
+        x1, y1, z1 = p1
+        x2, y2, z2 = p2
 
-        glVertex3f(1.0, -1.0, -0.025)
-        glVertex3f(-1.0, -1.0, -0.025)
-        glVertex3f(-1.0, -1.0, 0.025)
-        glVertex3f(1.0, -1.0, 0.025)
+        glVertex3f(x1, y1, z2)
+        glVertex3f(x2, y1, z2)
+        glVertex3f(x2, y1, z1)
+        glVertex3f(x1, y1, z1)
+
+        glVertex3f(x1, y2, z2)
+        glVertex3f(x2, y2, z2)
+        glVertex3f(x2, y2, z1)
+        glVertex3f(x1, y2, z1)
 
 
         glTexCoord2f(0.0, 0.0)
-        glVertex3f(1.0, 1.0, 0.025)
+        glVertex3f(x1, y1, z1)
         glTexCoord2f(1.0, 0.0)
-        glVertex3f(-1.0, 1.0, 0.025)
+        glVertex3f(x2, y1, z1)
         glTexCoord2f(1.0, 1.0)
-        glVertex3f(-1.0, -1.0, 0.025)
+        glVertex3f(x2, y2, z1)
         glTexCoord2f(0.0, 1.0)
-        glVertex3f(1.0, -1.0, 0.025)
+        glVertex3f(x1, y2, z1)
 
 
         glTexCoord2f(0.0, 1.0)
-        glVertex3f(1.0, -1.0, -0.025)
+        glVertex3f(x1, y2, z2)
         glTexCoord2f(1.0, 1.0)
-        glVertex3f(-1.0, -1.0, -0.025)
+        glVertex3f(x2, y2, z2)
         glTexCoord2f(1.0, 0.0)
-        glVertex3f(-1.0, 1.0, -0.025)
+        glVertex3f(x2, y1, z2)
         glTexCoord2f(0.0, 0.0)
-        glVertex3f(1.0, 1.0, -0.025)
+        glVertex3f(x1, y1, z2)
 
-        glVertex3f(-1.0, 1.0, 0.025)
-        glVertex3f(-1.0, 1.0, -0.025)
-        glVertex3f(-1.0, -1.0, -0.025)
-        glVertex3f(-1.0, -1.0, 0.025)
+        glVertex3f(x2, y1, z1)
+        glVertex3f(x2, y1, z2)
+        glVertex3f(x2, y2, z2)
+        glVertex3f(x2, y2, z1)
 
-        glVertex3f(1.0, 1.0, 0.025)
-        glVertex3f(1.0, 1.0, -0.025)
-        glVertex3f(1.0, -1.0, -0.025)
-        glVertex3f(1.0, -1.0, 0.025)
+        glVertex3f(x1, y1, z1)
+        glVertex3f(x1, y1, z2)
+        glVertex3f(x1, y2, z2)
+        glVertex3f(x1, y2, z1)
 
         glEnd()
 
