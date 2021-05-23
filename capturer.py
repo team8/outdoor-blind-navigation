@@ -8,7 +8,7 @@ try:
 except Exception as e:
     # stream = cv2.VideoCapture('./Sidewalk.mp4')
     # stream = cv2.VideoCapture('/home/aoberai/Downloads/DemoFinalFinal.mp4')
-    stream = cv2.VideoCapture('/home/aoberai/Downloads/betterwork.MOV')
+    stream = cv2.VideoCapture('/home/luca/code/blind-navigation/Sidewalk.mp4')
     # stream = cv2.VideoCapture('/home/aoberai/Downloads/Long_Sidewalk_Final.mp4')
     # stream = cv2.VideoCapture('/home/aoberai/Downloads/NewTest.mp4')
     # stream = cv2.VideoCapture('/home/aoberai/Downloads/2ndStopSign.mp4')

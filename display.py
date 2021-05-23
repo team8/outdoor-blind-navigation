@@ -9,6 +9,8 @@ import PIL
 import cv2
 from PIL import Image
 
+
+
 class Display:
     # dimension can be 2 or 3
     def __init__(self, dimension=3):
@@ -28,6 +30,8 @@ class Display:
         self.rightArrow = Image.open("./display_resources/RightExpanded.png")
         self.leftArrow = Image.open("./display_resources/LeftExpanded.png")
         self.forwardArrow = Image.open("./display_resources/ForwardExpanded.png")
+
+        self.x_position = 0
 
         if self.dimension == 3:
             print("Initializing pangolin opengl 3d viewer")
@@ -51,7 +55,7 @@ class Display:
             self.s_cam = pango.OpenGlRenderState(self.pm, self.mv)
 
             # Create Interactive View in window
-            self.handler = pango.Handler3D(self.s_cam)
+            # self.handler = pango.Handler3D(self.s_cam)
             self.d_cam = (
                 pango.CreateDisplay()
                 .SetBounds(
@@ -61,7 +65,7 @@ class Display:
                     pango.Attach(1),
                     -640.0 / 480.0,
                 )
-                .SetHandler(self.handler)
+                # .SetHandler(self.handler)
             )
             glPointSize(15)
             # pango.RegisterKeyPressCallback(int(pango.PANGO_CTRL) + ord('r'), self.rehome3dViewer()) # Key press with panfolin for rehoming is broken - use different key press lib
