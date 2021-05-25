@@ -95,6 +95,7 @@ class Display:
                 pango.DrawPoints([[-1, 1, -0.3], [1, -1, -0.3], [-1, -1, -0.3], [1, 1, -0.3]])
 
                 self.__putMovementDirectionVectors() # Draws arrows on 3d viewer for movement direction vector of objects
+                self.__putCollisionROI()
 
                  # Generates and applies texture for canvas
                 texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA), cv2.ROTATE_180)
@@ -182,13 +183,17 @@ class Display:
                     x_anchor = (x_anchor * self.stretchXValue/self.size[0]) * 2 - 1
                     y_anchor = (y_anchor * self.stretchYValue/self.size[1]) * 2 - 1
 
-                    wanted_z_anchor = (abs(z_offset) - 1) * 0.1
-                    z_anchor = min(math.sqrt(1 - x_offset**2 - y_offset**2) *wanted_z_anchor, 0.3)
+                    wanted_z_anchor = (abs(z_offset) - 1) * 0.3
+                    z_anchor = min(math.sqrt(1 - x_offset**2 - y_offset**2) *wanted_z_anchor, 0.5)
                     # z axis (+)  is toward self
                     pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor+x_offset, y_anchor+y_offset, z_anchor]])  # down is positive y, right is positive x - this does bottom left
 
                     pango.DrawPoints([[x_anchor+x_offset, y_anchor+y_offset, z_anchor]])
 
+    def __putCollisionROI(self):
+        collisionROI = [[0.4, -0.2, -0.3], [0.6, 0.8, -0.3], [-0.6, 0.8, -0.3], [-0.4, -0.2, -0.3], [0.4, -0.2, -0.3]]
+        for i in range(0, len(collisionROI) - 1):
+           pango.DrawLine([collisionROI[i], collisionROI[i+1]])
     def putObjects(self, obstacles):
         self.obstacles = obstacles
         if obstacles is None:
