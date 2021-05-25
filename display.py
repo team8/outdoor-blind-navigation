@@ -10,15 +10,14 @@ import cv2
 from PIL import Image
 
 
-
 class Display:
     # dimension can be 2 or 3
     def __init__(self, dimension=3):
         self.dimension = dimension
         self.size = (720, 540)
         self.bbox_inference_coord_size = (618, 618)
-        self.stretchXValue = self.size[0]/self.bbox_inference_coord_size[0]
-        self.stretchYValue = self.size[1]/self.bbox_inference_coord_size[1]
+        self.stretchXValue = self.size[0] / self.bbox_inference_coord_size[0]
+        self.stretchYValue = self.size[1] / self.bbox_inference_coord_size[1]
         self.labelToColor = {"stop sign": ((0, 0, 255)),
                              "person": ((0, 255, 0)),
                              "car": ((255, 0, 0)),
@@ -58,14 +57,14 @@ class Display:
             self.handler = pango.Handler3D(self.s_cam)
             self.d_cam = (
                 pango.CreateDisplay()
-                .SetBounds(
+                    .SetBounds(
                     pango.Attach(0),
                     pango.Attach(1),
-                    pango.Attach.Pix(1), # side bar which can be used for notification system; not used right now
+                    pango.Attach.Pix(1),  # side bar which can be used for notification system; not used right now
                     pango.Attach(1),
                     -640.0 / 480.0,
                 )
-                .SetHandler(self.handler)
+                    .SetHandler(self.handler)
             )
             glPointSize(15)
             # pango.RegisterKeyPressCallback(int(pango.PANGO_CTRL) + ord('r'), self.rehome3dViewer()) # Key press with panfolin for rehoming is broken - use different key press lib
@@ -74,14 +73,16 @@ class Display:
             print("Initializing cv2 2d viewer")
         else:
             raise Exception("Dimension for viewing tool must be either 2 or 3")
-    def putVideoFrame(self,orig_cap):
+
+    def putVideoFrame(self, orig_cap):
         self.frame = cv2.resize(orig_cap, self.size)
+
     def putSidewalkState(self, state):
         if state == "Left of Sidewalk":
             self.__showLeftArrow()
         if state == "Middle of Sidewalk":
             self.__showForwardArrow()
-        if(state == "Right of Sidewalk"):
+        if (state == "Right of Sidewalk"):
             self.__showRightArrow()
 
     def displayScreen(self):
@@ -91,17 +92,11 @@ class Display:
                 glClearColor(0.5, 0.7, 0.7, 0.0)
                 glLineWidth(5)
 
-                # z axis (-) is toward self, down is positive y, right is positive x
-                pango.DrawLine([[-1, 1, 0], [-1, 1, -0.3]])  # bottom left
-                pango.DrawLine([[1, -1, 0], [1, -1, -0.3]])  # top right
-                pango.DrawLine([[-1, -1, 0], [-1, -1, -0.3]])  # top left
-                pango.DrawLine([[1, 1, 0], [1, 1, -0.3]])  # bottom right
-                pango.DrawPoints([[-1, 1, -0.3], [1, -1, -0.3], [-1, -1, -0.3], [1, 1, -0.3]])
+                self.__putMovementDirectionVectors()  # Draws arrows on 3d viewer for movement direction vector of objects
 
-                self.__putMovementDirectionVectors() # Draws arrows on 3d viewer for movement direction vector of objects
-
-                 # Generates and applies texture for canvas
-                texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA), cv2.ROTATE_180)
+                # Generates and applies texture for canvas
+                texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA),
+                                          cv2.ROTATE_180)
                 height, width, _ = texture_data.shape
                 glEnable(GL_TEXTURE_2D)
                 self.texid = glGenTextures(1)
@@ -132,10 +127,17 @@ class Display:
         # self.handler = pango.Handler3D(self.s_cam)
 
     def __drawCanvas(self, p1, p2):
-        glBegin(GL_QUADS)
-
         x1, y1, z1 = p1
         x2, y2, z2 = p2
+
+        # z axis (-) is toward self, down is positive y, right is positive x
+        pango.DrawLine([[x2, y1, z1], [x2, y1, z1 - 0.3]])  # bottom left
+        pango.DrawLine([[x1, y2, z1], [x1, y2, z1 - 0.3]])  # top right
+        pango.DrawLine([[x2, y2, z1], [x2, y2, z1 - 0.3]])  # top left
+        pango.DrawLine([[x1, y1, z1], [x1, y1, z1 - 0.3]])  # bottom right
+        pango.DrawPoints([[x2, y1, z1 - 0.3], [x1, y2, z1 - 0.3], [x2, y2, z1 - 0.3], [x1, y1, z1 - 0.3]])
+
+        glBegin(GL_QUADS)
 
         glVertex3f(x1, y1, z2)
         glVertex3f(x2, y1, z2)
@@ -147,7 +149,6 @@ class Display:
         glVertex3f(x2, y2, z1)
         glVertex3f(x1, y2, z1)
 
-
         glTexCoord2f(0.0, 0.0)
         glVertex3f(x1, y1, z1)
         glTexCoord2f(1.0, 0.0)
@@ -156,7 +157,6 @@ class Display:
         glVertex3f(x2, y2, z1)
         glTexCoord2f(0.0, 1.0)
         glVertex3f(x1, y2, z1)
-
 
         glTexCoord2f(0.0, 1.0)
         glVertex3f(x1, y2, z2)
@@ -186,17 +186,18 @@ class Display:
                 if detection[0] == "person" or detection[0] == "car":
                     x_offset, y_offset, z_offset = detection[4]
                     x_anchor, y_anchor, w, h = detection[2]
-                    x_offset = (x_offset * self.stretchXValue/self.size[0])
-                    y_offset = (y_offset * self.stretchYValue/self.size[1])
-                    x_anchor = (x_anchor * self.stretchXValue/self.size[0]) * 2 - 1
-                    y_anchor = (y_anchor * self.stretchYValue/self.size[1]) * 2 - 1
+                    x_offset = (x_offset * self.stretchXValue / self.size[0])
+                    y_offset = (y_offset * self.stretchYValue / self.size[1])
+                    x_anchor = (x_anchor * self.stretchXValue / self.size[0]) * 2 - 1
+                    y_anchor = (y_anchor * self.stretchYValue / self.size[1]) * 2 - 1
 
                     wanted_z_anchor = (abs(z_offset) - 1) * 0.1
-                    z_anchor = min(math.sqrt(1 - x_offset**2 - y_offset**2) *wanted_z_anchor, 0.3)
+                    z_anchor = min(math.sqrt(1 - x_offset ** 2 - y_offset ** 2) * wanted_z_anchor, 0.3)
                     # z axis (+)  is toward self
-                    pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor+x_offset, y_anchor+y_offset, z_anchor]])  # down is positive y, right is positive x - this does bottom left
+                    pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor + x_offset, y_anchor + y_offset,
+                                                              z_anchor]])  # down is positive y, right is positive x - this does bottom left
 
-                    pango.DrawPoints([[x_anchor+x_offset, y_anchor+y_offset, z_anchor]])
+                    pango.DrawPoints([[x_anchor + x_offset, y_anchor + y_offset, z_anchor]])
 
     def putObjects(self, obstacles):
         self.obstacles = obstacles
@@ -217,13 +218,15 @@ class Display:
         centerY = y + (h / 2) + 15
         if (centerY + 15 >= self.size[1]):
             centerY = y - (h / 2) - 15
-        self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))), (int(x + (w / 2)), int(y + (h / 2))), self.labelToColor[objectInfo[0]], lineLengthWeightage)
+        self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))),
+                                  (int(x + (w / 2)), int(y + (h / 2))), self.labelToColor[objectInfo[0]],
+                                  lineLengthWeightage)
         font = cv2.FONT_HERSHEY_SIMPLEX
         shownText = objectInfo[0].replace("sign", "") + " ID: " + str(objectInfo[3])
         textsize = cv2.getTextSize(shownText, font, 0.5, 2)[0]
-        cv2.putText(self.frame, shownText, (int(centerX - (textsize[0]/2)), int(centerY)), font, 0.7, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(self.frame, shownText, (int(centerX - (textsize[0] / 2)), int(centerY)), font, 0.7, (255, 255, 255),
+                    2, cv2.LINE_AA)
         return self.frame
-
 
     def __pilToOpenCV(self, pil_image):
         return np.array(pil_image)
