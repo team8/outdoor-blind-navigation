@@ -85,6 +85,18 @@ class Display:
         if (state == "Right of Sidewalk"):
             self.__showRightArrow()
 
+    def rehome3dViewer(self):
+        print("Resetting cam position")
+
+        # This allows changing of "camera" angle : glulookat style model view matrix (x, y, z, lx, ly, lz, AxisDirection Up) Forward is -z and up is +y
+        self.mv = pango.ModelViewLookAt(math.sin(self.t), 0, -2.5,
+                                        0, 0, 0,
+                                        0, -1, 0)
+
+        self.s_cam = pango.OpenGlRenderState(self.pm, self.mv)
+        # Create Interactive View in window
+        self.handler = pango.Handler3D(self.s_cam)
+
     def displayScreen(self):
         if self.dimension == 3:
             if not pango.ShouldQuit():
@@ -110,8 +122,8 @@ class Display:
 
                 self.d_cam.Activate(self.s_cam)
 
-                x = 0.5 * math.sin(self.t)
-                self.__drawCanvas((x + 1, 1.0, 0.025), (x - 1, -1.0, 0))  # Draws 3d canvas
+                self.rehome3dViewer()
+                self.__drawCanvas((1, 1.0, 0.025), (-1, -1.0, 0))  # Draws 3d canvas
                 self.t += 0.05
                 # Swap Frames and Process Events
                 pango.FinishFrame()
