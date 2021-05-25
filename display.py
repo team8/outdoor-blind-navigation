@@ -1,6 +1,7 @@
 import sys
 import cv2
 import math
+
 import pygame
 import pangolin as pango
 from OpenGL.GL import *
@@ -29,7 +30,7 @@ class Display:
         self.rightArrow = Image.open("./display_resources/RightExpanded.png")
         self.leftArrow = Image.open("./display_resources/LeftExpanded.png")
         self.forwardArrow = Image.open("./display_resources/ForwardExpanded.png")
-
+        self.view_mode = 0
         self.t = 0
 
         if self.dimension == 3:
@@ -66,6 +67,13 @@ class Display:
                 )
                     .SetHandler(self.handler)
             )
+
+            panel = pango.CreatePanel('ui')
+            panel.SetBounds(0.0, 1.0, 0.0, 45 / 640.)
+            self.nbutton = pango.VarBool('ui.Normal', value=False, toggle=True)
+            self.xbutton = pango.VarBool('ui.X', value=False, toggle=False)
+            self.ybutton = pango.VarBool('ui.Y', value=False, toggle=False)
+
             glPointSize(15)
             # pango.RegisterKeyPressCallback(int(pango.PANGO_CTRL) + ord('r'), self.rehome3dViewer()) # Key press with panfolin for rehoming is broken - use different key press lib
             # glTranslatef(0.0, 0.0, -10)
@@ -85,11 +93,26 @@ class Display:
         if (state == "Right of Sidewalk"):
             self.__showRightArrow()
 
-    def rehome3dViewer(self):
-        print("Resetting cam position")
-
-        # This allows changing of "camera" angle : glulookat style model view matrix (x, y, z, lx, ly, lz, AxisDirection Up) Forward is -z and up is +y
+    def view_x(self):
         self.mv = pango.ModelViewLookAt(math.sin(self.t), 0, -2.5,
+                                        0, 0, 0,
+                                        0, -1, 0)
+
+        self.s_cam = pango.OpenGlRenderState(self.pm, self.mv)
+        # Create Interactive View in window
+        self.handler = pango.Handler3D(self.s_cam)
+
+    def view_y(self):
+        self.mv = pango.ModelViewLookAt(0.3, math.sin(self.t), -2.5,
+                                        0, 0, 0,
+                                        0, -1, 0)
+
+        self.s_cam = pango.OpenGlRenderState(self.pm, self.mv)
+        # Create Interactive View in window
+        self.handler = pango.Handler3D(self.s_cam)
+
+    def view_n(self):
+        self.mv = pango.ModelViewLookAt(0.3, 0, -2.5,
                                         0, 0, 0,
                                         0, -1, 0)
 
@@ -121,8 +144,21 @@ class Display:
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
 
                 self.d_cam.Activate(self.s_cam)
+                glColor3f(0.0, 0.0, 0.0)
 
-                self.rehome3dViewer()
+                if pango.Pushed(self.nbutton):
+                    self.view_mode = 0
+                if pango.Pushed(self.xbutton):
+                    self.view_mode = 1
+                if pango.Pushed(self.ybutton):
+                    self.view_mode = 2
+
+                if self.view_mode == 0:
+                    self.view_n()
+                if self.view_mode == 1:
+                    self.view_x()
+                if self.view_mode == 2:
+                    self.view_y()
                 self.__drawCanvas((1, 1.0, 0.025), (-1, -1.0, 0))  # Draws 3d canvas
                 self.t += 0.05
                 # Swap Frames and Process Events
@@ -148,6 +184,8 @@ class Display:
         pango.DrawLine([[x2, y2, z1], [x2, y2, z1 - 0.3]])  # top left
         pango.DrawLine([[x1, y1, z1], [x1, y1, z1 - 0.3]])  # bottom right
         pango.DrawPoints([[x2, y1, z1 - 0.3], [x1, y2, z1 - 0.3], [x2, y2, z1 - 0.3], [x1, y1, z1 - 0.3]])
+
+        glColor3f(1.0, 1.0, 1.0)
 
         glBegin(GL_QUADS)
 
@@ -188,6 +226,8 @@ class Display:
         glVertex3f(x1, y1, z2)
         glVertex3f(x1, y2, z2)
         glVertex3f(x1, y2, z1)
+
+        glColor(0, 0, 0)
 
         glEnd()
 
