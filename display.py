@@ -13,7 +13,7 @@ import collision
 
 class Display:
     # dimension can be 2 or 3
-    def __init__(self, dimension=3):
+    def __init__(self, dimension=3, size=(720, 540), bbox_inference_coord_size=(618, 618)):
         self.dimension = dimension
         self.size = size
         self.bbox_inference_coord_size = bbox_inference_coord_size
@@ -259,6 +259,7 @@ class Display:
         collisionROI = collision.collisionROI
         for i in range(0, len(collisionROI) - 1):
            pango.DrawLine([collisionROI[i], collisionROI[i+1]])
+
     def putObjects(self, obstacles, objects_collision):
         self.obstacles = obstacles
         self.objects_collision = objects_collision
@@ -288,7 +289,6 @@ class Display:
         cv2.putText(self.frame, shownText, (int(centerX - (textsize[0] / 2)), int(centerY)), font, 0.7, (255, 255, 255),
                     2, cv2.LINE_AA)
         return self.frame
-
 
     def __pilToOpenCV(self, pil_image):
         return np.array(pil_image)
