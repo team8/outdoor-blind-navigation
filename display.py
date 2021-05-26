@@ -128,9 +128,6 @@ class Display:
                 glClearColor(0.5, 0.7, 0.7, 0.0)
                 glLineWidth(5)
 
-                self.__putMovementDirectionVectors()  # Draws arrows on 3d viewer for movement direction vector of objects
-                self.__putCollisionROI()
-
                 # Generates and applies texture for canvas
                 texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA),
                                           cv2.ROTATE_180)
@@ -156,6 +153,8 @@ class Display:
                     self.view()
 
                 self.__drawCanvas((1, 1.0, 0.025), (-1, -1.0, 0))  # Draws 3d canvas
+                self.__putMovementDirectionVectors()  # Draws arrows on 3d viewer for movement direction vector of objects
+                self.__putCollisionROI()
                 self.t += 0.05
                 # Swap Frames and Process Events
                 pango.FinishFrame()
