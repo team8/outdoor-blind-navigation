@@ -29,7 +29,7 @@ while True:
     print(object_collision_inference)
     display.putVideoFrame(capture)
     display.putSidewalkState(state_classifier_inference)
-    display.putObjects(object_localizer_inference) # TODO: Have display take in collision objects and color arrow differently to show possible collision
+    display.putObjects(object_localizer_inference, object_collision_inference) # TODO: Have display take in collision objects and color arrow differently to show possible collision
     display.displayScreen()
 
     counter += 1

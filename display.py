@@ -177,6 +177,8 @@ class Display:
         if self.obstacles is not None:
             for detection in self.obstacles:
                 if detection[0] == "person" or detection[0] == "car":
+                    if detection in self.objects_collision:
+                        glColor3f(1, 0.5, 0.25)
                     x_offset, y_offset, z_offset = detection[4]
                     x_anchor, y_anchor, w, h = detection[2]
                     x_offset = (x_offset * self.stretchXValue/self.size[0])
@@ -191,12 +193,16 @@ class Display:
 
                     pango.DrawPoints([[x_anchor+x_offset, y_anchor+y_offset, z_anchor]])
 
+                    if detection in self.objects_collision:
+                        glColor3f(1, 1, 1)
+
     def __putCollisionROI(self):
         collisionROI = collision.collisionROI
         for i in range(0, len(collisionROI) - 1):
            pango.DrawLine([collisionROI[i], collisionROI[i+1]])
-    def putObjects(self, obstacles):
+    def putObjects(self, obstacles, objects_collision):
         self.obstacles = obstacles
+        self.objects_collision = objects_collision
         if obstacles is None:
             return
         for detection in obstacles:
