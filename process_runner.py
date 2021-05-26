@@ -26,7 +26,7 @@ while True:
     object_localizer_inference = ol.get_inference()
     object_collision_inference = cd.findCollisions(object_localizer_inference)
     # print(state_classifier_inference if counter % 2 == 0 else object_localizer_inference)
-    print(object_collision_inference)
+    # print(object_collision_inference)
     display.putVideoFrame(capture)
     display.putSidewalkState(state_classifier_inference)
     display.putObjects(object_localizer_inference, object_collision_inference) # TODO: Have display take in collision objects and color arrow differently to show possible collision
