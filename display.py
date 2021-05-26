@@ -122,6 +122,9 @@ class Display:
 
     def displayScreen(self):
         if self.dimension == 3:
+            glEnable(GL_TEXTURE_2D)
+            self.texid = glGenTextures(1)
+
             if not pango.ShouldQuit():
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
                 glClearColor(0.5, 0.7, 0.7, 0.0)
@@ -133,8 +136,7 @@ class Display:
                 texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA),
                                           cv2.ROTATE_180)
                 height, width, _ = texture_data.shape
-                glEnable(GL_TEXTURE_2D)
-                self.texid = glGenTextures(1)
+
                 glBindTexture(GL_TEXTURE_2D, self.texid)
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
                              0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
@@ -142,19 +144,19 @@ class Display:
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
+                glBindTexture(GL_TEXTURE_2D, 0)
 
                 self.d_cam.Activate(self.s_cam)
                 glColor3f(0.0, 0.0, 0.0)
 
                 if pango.Pushed(self.nbutton):
+                    self.view_n()
                     self.view_mode = 0
                 if pango.Pushed(self.xbutton):
                     self.view_mode = 1
                 if pango.Pushed(self.ybutton):
                     self.view_mode = 2
 
-                if self.view_mode == 0:
-                    self.view_n()
                 if self.view_mode == 1:
                     self.view_x()
                 if self.view_mode == 2:
@@ -163,7 +165,8 @@ class Display:
                 self.t += 0.05
                 # Swap Frames and Process Events
                 pango.FinishFrame()
-                glDeleteTextures(self.texid)
+
+            glDeleteTextures(self.texid)
         else:
             cv2.imshow("2d visualizer", self.frame)
             cv2.waitKey(1)
@@ -186,6 +189,8 @@ class Display:
         pango.DrawPoints([[x2, y1, z1 - 0.3], [x1, y2, z1 - 0.3], [x2, y2, z1 - 0.3], [x1, y1, z1 - 0.3]])
 
         glColor3f(1.0, 1.0, 1.0)
+
+        glBindTexture(GL_TEXTURE_2D, self.texid)
 
         glBegin(GL_QUADS)
 
@@ -227,9 +232,9 @@ class Display:
         glVertex3f(x1, y2, z2)
         glVertex3f(x1, y2, z1)
 
-        glColor(0, 0, 0)
-
         glEnd()
+
+        glBindTexture(GL_TEXTURE_2D, 0)
 
     def __putMovementDirectionVectors(self):
         glLineWidth(3)
