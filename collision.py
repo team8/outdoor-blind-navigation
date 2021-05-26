@@ -13,21 +13,16 @@ import math
 collisionROI = [[0.4, -0.2, -0.3], [0.6, 0.8, -0.3], [-0.6, 0.8, -0.3], [-0.4, -0.2, -0.3], [0.4, -0.2, -0.3]] # in opengl 3d coordinate system [-1, 1] in both x and y axis. bottom right hand corner is (1, 1). Toward self is negative, away is positive for z pos. Points go cyclicly from top right to bottom right to bottom left to top left back to top right
 areaROI = (collisionROI[1][1] - collisionROI[0][1]) * ((collisionROI[1][0] - collisionROI[2][0]) + (collisionROI[4][0] - collisionROI[3][0]))/2
 
-# Temp
-
+# Test Cases
+'''
 def __area_triangle(pt1, pt2, pt3):
-    return (0.5 * (pt1[0] * (pt2[1] - pt3[1]) + pt2[0] * (pt3[1] - pt1[1]) + pt3[0] * (pt1[1] - pt2[1])))
-
-
+    return abs(0.5 * (pt1[0] * (pt2[1] - pt3[1]) + pt2[0] * (pt3[1] - pt1[1]) + pt3[0] * (pt1[1] - pt2[1])))
 # print(sum([__area_triangle((0, 0, 0), collisionROI[i], collisionROI[i+1]) for i in range(0, len(collisionROI) - 1)]))
 inside_roi = True if areaROI == sum([__area_triangle((0, 0, 0), collisionROI[i], collisionROI[i+1]) for i in range(0, len(collisionROI) - 1)]) else False
 print("0, 0, 0", inside_roi)
-
-inside_roi = True if areaROI == sum([__area_triangle((-0.9, -0.9, 0), collisionROI[i], collisionROI[i+1]) for i in range(0, len(collisionROI) - 1)]) else False
-
-
+inside_roi = True if areaROI == sum([__area_triangle((0.5, 0.5, 0), collisionROI[i], collisionROI[i+1]) for i in range(0, len(collisionROI) - 1)]) else False
 print("1, 1, 0", inside_roi)
-# end of temp
+'''
 
 
 class CollisionDetector:
@@ -51,6 +46,6 @@ class CollisionDetector:
                 inside_roi = True if areaROI == sum([self.__area_triangle((x_anchor + x_offset, y_anchor + y_offset, z_anchor), collisionROI[i], collisionROI[i+1]) for i in range(0, len(collisionROI) - 1)]) else False
 
     def __area_triangle(self, pt1, pt2, pt3):
-        return (0.5 * (pt1[0] * (pt2[1] - pt3[1]) + pt2[0] * (pt3[1] - pt1[1]) + pt3[0] * (pt1[1] - pt2[1])))
+        return abs(0.5 * (pt1[0] * (pt2[1] - pt3[1]) + pt2[0] * (pt3[1] - pt1[1]) + pt3[0] * (pt1[1] - pt2[1])))
 
 
