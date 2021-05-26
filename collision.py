@@ -30,22 +30,24 @@ class CollisionDetector:
         self.viewer3d_size = viewer3d_size
         self.viewer3d_stretch = viewer3d_stretch
     def findCollisions(self, detections):
+        collision_detections = []
         for detection in detections:
             if detection[0] == "person" or detection[0] == "car":
                 x_offset, y_offset, z_offset = detection[4]
-                x_anchor, y_anchor = detection[2]
+                x_anchor, y_anchor, w, h = detection[2]
                 x_offset = (x_offset * self.viewer3d_stretch[0] / self.viewer3d_size[0])
                 y_offset = (y_offset * self.viewer3d_stretch[1] / self.viewer3d_size[1])
                 x_anchor = (x_offset * self.viewer3d_stretch[0] / self.viewer3d_size[0])
                 y_anchor = (y_offset * self.viewer3d_stretch[1] / self.viewer3d_size[1])
 
-                wanted_z_anchor = (abs(z_offset) - 1) * 0.3
+                wanted_z_anchor = (abs(z_offset) - 1) * 0.5
                 z_anchor = min(math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor, 0.5)
                 x_midpoint = 0
-                pointing_toward_center = True if math.ceil(abs(x_offset + x_anchor) * 10) < math.floor(abs(x_offset) * 10) else False
-                inside_roi = True if areaROI == sum([self.__area_triangle((x_anchor + x_offset, y_anchor + y_offset, z_anchor), collisionROI[i], collisionROI[i+1]) for i in range(0, len(collisionROI) - 1)]) else False
+                pointing_toward_center = True if math.ceil(abs(x_offset + x_anchor) * 10) < math.floor(abs(x_offset) * 10) else False # TODO: enhance this alg
+                inside_roi = True if (areaROI == sum([self.__area_triangle((x_anchor + x_offset, y_anchor + y_offset, z_anchor), collisionROI[i], collisionROI[i+1]) for i in range(0, len(collisionROI) - 1)])) and all(z_anchor > z[2] for z in collisionROI) else False
+                if inside_roi:
+                    collision_detections.append(detection)
+        return collision_detections
 
     def __area_triangle(self, pt1, pt2, pt3):
         return abs(0.5 * (pt1[0] * (pt2[1] - pt3[1]) + pt2[0] * (pt3[1] - pt1[1]) + pt3[0] * (pt1[1] - pt2[1])))
-
-

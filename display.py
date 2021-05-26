@@ -12,10 +12,10 @@ import collision
 
 class Display:
     # dimension can be 2 or 3
-    def __init__(self, dimension=3):
+    def __init__(self, dimension=3, size=(720, 540), bbox_inference_coord_size=(618, 618)):
         self.dimension = dimension
-        self.size = (720, 540)
-        self.bbox_inference_coord_size = (618, 618)
+        self.size = size
+        self.bbox_inference_coord_size = bbox_inference_coord_size
         self.stretchXValue = self.size[0]/self.bbox_inference_coord_size[0]
         self.stretchYValue = self.size[1]/self.bbox_inference_coord_size[1]
         self.labelToColor = {"stop sign": ((0, 0, 255)),
@@ -184,7 +184,7 @@ class Display:
                     x_anchor = (x_anchor * self.stretchXValue/self.size[0]) * 2 - 1
                     y_anchor = (y_anchor * self.stretchYValue/self.size[1]) * 2 - 1
 
-                    wanted_z_anchor = (abs(z_offset) - 1) * 0.3
+                    wanted_z_anchor = (abs(z_offset) - 1) * 0.5
                     z_anchor = min(math.sqrt(1 - x_offset**2 - y_offset**2) *wanted_z_anchor, 0.5)
                     # z axis (+)  is toward self
                     pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor+x_offset, y_anchor+y_offset, z_anchor]])  # down is positive y, right is positive x - this does bottom left
@@ -244,3 +244,8 @@ class Display:
 
     def __showRightArrow(self):
         self.frame = self.transposeImageSrc(self.leftArrow)
+    def getStretchFactor(self):
+        return (self.stretchXValue, self.stretchYValue)
+    def getViewerSize(self):
+        return self.size
+
