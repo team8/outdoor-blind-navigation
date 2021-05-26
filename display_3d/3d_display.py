@@ -8,7 +8,7 @@ from PIL import Image
 
 
 def main():
-    win = pango.CreateWindowAndBind("Visualization Tool 3d", 640*2, 480*2)
+    win = pango.CreateWindowAndBind("Visualization Tool 3d", 640 * 2, 480 * 2)
     glEnable(GL_DEPTH_TEST)
 
     # Define Projection and initial ModelView matrix
@@ -16,7 +16,8 @@ def main():
     #   ProjectionMatrix (int w, int h, double fu, double fv, double u0, double v0, double zNear, double zFar)
     pm = pango.ProjectionMatrix(640, 480, 420, 420, 320, 240, 0.5, 100)
 
-    # This allows changing of "camera" angle : glulookat style model view matrix (x, y, z, lx, ly, lz, AxisDirection Up) Forward is -z and up is +y
+    # This allows changing of "camera" angle : glulookat style model view matrix (x, y, z, lx, ly, lz, AxisDirection
+    # Up) Forward is -z and up is +y
     # mv = pango.ModelViewLookAt(-1, 2, -2,
     # 0, 1, 0,
     # 0, -1, 0)
@@ -39,30 +40,15 @@ def main():
     handler = pango.Handler3D(s_cam)
     d_cam = (
         pango.CreateDisplay()
-            .SetBounds(
+        .SetBounds(
             pango.Attach(0),
             pango.Attach(1),
             pango.Attach.Pix(1),  # side bar which can be used for notification system
             pango.Attach(1),
             -640.0 / 480.0,
         )
-            .SetHandler(handler)
+        .SetHandler(handler)
     )
-
-    # pango.CreatePanel("ui").SetBounds(
-    # pango.Attach(0), pango.Attach(1), pango.Attach(0), pango.Attach.Pix(ui_width)
-    # )
-    # var_ui = pango.Var("ui")
-    # var_ui.a_Button = False
-    # var_ui.a_double = (0.0, pango.VarMeta(0, 5))
-    # var_ui.an_int = (5, pango.VarMeta(0, 5))
-    # var_ui.a_double_log = (3.0, pango.VarMeta(1, 1e4, logscale=True))
-    # var_ui.a_checkbox = (False, pango.VarMeta(toggle=True))
-    # var_ui.an_int_no_input = 5
-    # var_ui.a_str = "sss"
-    #
-    # ctrl = -96
-    # pango.RegisterKeyPressCallback(ctrl + ord("a"), a_callback)
 
     vid = cv2.VideoCapture("../Sidewalk.mp4")
     # texture_data = vid.read()[1]
@@ -81,81 +67,65 @@ def main():
         pango.DrawPoints([[-1, 1, -1], [1, -1, -1], [-1, -1, -1], [1, 1, -1]])
 
         ret, texture_data = vid.read()
-        texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(texture_data, (1400, 1400)), cv2.COLOR_BGR2RGBA), cv2.ROTATE_180)
+        texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(texture_data, (1400, 1400)), cv2.COLOR_BGR2RGBA),
+                                  cv2.ROTATE_180)
         height, width, dims = texture_data.shape
 
         glEnable(GL_TEXTURE_2D)
 
-        bytes = (height * width * dims)
+        size = (height * width * dims)
         glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo)
         glBufferData(GL_PIXEL_PACK_BUFFER,
-                     bytes,
+                     size,
                      texture_data,
                      GL_DYNAMIC_DRAW)
-        pbo
 
-        # texid = glGenTextures(1)
-        #
-        # glBindTexture(GL_TEXTURE_2D, texid)
-        # glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
-        #              0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
-        #
-        # glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        # glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        # glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
-        # glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
+        draw_rect()
 
         d_cam.Activate(s_cam)
-
-        glBegin(GL_QUADS)
-
-        glVertex3f(1.0, 1.0, -0.05)
-        glVertex3f(-1.0, 1.0, -0.05)
-        glVertex3f(-1.0, 1.0, 0.05)
-        glVertex3f(1.0, 1.0, 0.05)
-
-        glVertex3f(1.0, -1.0, -0.05)
-        glVertex3f(-1.0, -1.0, -0.05)
-        glVertex3f(-1.0, -1.0, 0.05)
-        glVertex3f(1.0, -1.0, 0.05)
-
-        glVertex3f(1.0, 1.0, 0.05)
-        glVertex3f(-1.0, 1.0, 0.05)
-        glVertex3f(-1.0, -1.0, 0.05)
-        glVertex3f(1.0, -1.0, 0.05)
-
-        glTexCoord2f(0.0, 1.0)
-        glVertex3f(1.0, -1.0, -0.05)
-        glTexCoord2f(1.0, 1.0)
-        glVertex3f(-1.0, -1.0, -0.05)
-        glTexCoord2f(1.0, 0.0)
-        glVertex3f(-1.0, 1.0, -0.05)
-        glTexCoord2f(0.0, 0.0)
-        glVertex3f(1.0, 1.0, -0.05)
-
-        glVertex3f(-1.0, 1.0, 0.05)
-        glVertex3f(-1.0, 1.0, -0.05)
-        glVertex3f(-1.0, -1.0, -0.05)
-        glVertex3f(-1.0, -1.0, 0.05)
-
-        glVertex3f(1.0, 1.0, 0.05)
-        glVertex3f(1.0, 1.0, -0.05)
-        glVertex3f(1.0, -1.0, -0.05)
-        glVertex3f(1.0, -1.0, 0.05)
-
-        glEnd()
-
-        # glBegin(GL_LINES)
-        # for cubeEdge in cubeEdges:
-        #     for cubeVertex in cubeEdge:
-        #         glVertex3fv(cubeVertices[cubeVertex])
-        # glEnd()
-        #
 
         # Swap Frames and Process Events
         pango.FinishFrame()
 
-        # glDeleteTextures(texid)
+
+def draw_rect():
+    glBegin(GL_QUADS)
+
+    glVertex3f(1.0, 1.0, -0.05)
+    glVertex3f(-1.0, 1.0, -0.05)
+    glVertex3f(-1.0, 1.0, 0.05)
+    glVertex3f(1.0, 1.0, 0.05)
+
+    glVertex3f(1.0, -1.0, -0.05)
+    glVertex3f(-1.0, -1.0, -0.05)
+    glVertex3f(-1.0, -1.0, 0.05)
+    glVertex3f(1.0, -1.0, 0.05)
+
+    glVertex3f(1.0, 1.0, 0.05)
+    glVertex3f(-1.0, 1.0, 0.05)
+    glVertex3f(-1.0, -1.0, 0.05)
+    glVertex3f(1.0, -1.0, 0.05)
+
+    glTexCoord2f(0.0, 1.0)
+    glVertex3f(1.0, -1.0, -0.05)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3f(-1.0, -1.0, -0.05)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3f(-1.0, 1.0, -0.05)
+    glTexCoord2f(0.0, 0.0)
+    glVertex3f(1.0, 1.0, -0.05)
+
+    glVertex3f(-1.0, 1.0, 0.05)
+    glVertex3f(-1.0, 1.0, -0.05)
+    glVertex3f(-1.0, -1.0, -0.05)
+    glVertex3f(-1.0, -1.0, 0.05)
+
+    glVertex3f(1.0, 1.0, 0.05)
+    glVertex3f(1.0, 1.0, -0.05)
+    glVertex3f(1.0, -1.0, -0.05)
+    glVertex3f(1.0, -1.0, 0.05)
+
+    glEnd()
 
 
 if __name__ == "__main__":

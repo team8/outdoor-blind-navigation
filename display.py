@@ -10,6 +10,7 @@ import cv2
 from PIL import Image
 import collision
 
+
 class Display:
     # dimension can be 2 or 3
     def __init__(self, dimension=3, size=(720, 540), bbox_inference_coord_size=(618, 618)):
@@ -29,6 +30,10 @@ class Display:
         self.rightArrow = Image.open("./display_resources/RightExpanded.png")
         self.leftArrow = Image.open("./display_resources/LeftExpanded.png")
         self.forwardArrow = Image.open("./display_resources/ForwardExpanded.png")
+        self.view_mode = 0
+        self.t = 0
+        self.tX = 0
+        self.tY = 0
 
         if self.dimension == 3:
             print("Initializing pangolin opengl 3d viewer")
@@ -55,15 +60,22 @@ class Display:
             self.handler = pango.Handler3D(self.s_cam)
             self.d_cam = (
                 pango.CreateDisplay()
-                .SetBounds(
+                    .SetBounds(
                     pango.Attach(0),
                     pango.Attach(1),
-                    pango.Attach.Pix(1), # side bar which can be used for notification system; not used right now
+                    pango.Attach.Pix(1),  # side bar which can be used for notification system; not used right now
                     pango.Attach(1),
                     -640.0 / 480.0,
                 )
-                .SetHandler(self.handler)
+                    .SetHandler(self.handler)
             )
+
+            panel = pango.CreatePanel('ui')
+            panel.SetBounds(0.0, 1.0, 0.0, 30 / 640.)
+            self.checkBox = pango.VarBool('ui.N', value=True, toggle=True)
+            self.xspeed = pango.VarFloat('ui.sX', value=False, toggle=False)
+            self.yspeed = pango.VarFloat('ui.sY', value=False, toggle=False)
+
             glPointSize(15)
             # pango.RegisterKeyPressCallback(int(pango.PANGO_CTRL) + ord('r'), self.rehome3dViewer()) # Key press with panfolin for rehoming is broken - use different key press lib
             # glTranslatef(0.0, 0.0, -10)
@@ -71,38 +83,56 @@ class Display:
             print("Initializing cv2 2d viewer")
         else:
             raise Exception("Dimension for viewing tool must be either 2 or 3")
-    def putVideoFrame(self,orig_cap):
+
+    def putVideoFrame(self, orig_cap):
         self.frame = cv2.resize(orig_cap, self.size)
+
     def putSidewalkState(self, state):
         if state == "Left of Sidewalk":
             self.__showLeftArrow()
         if state == "Middle of Sidewalk":
             self.__showForwardArrow()
-        if(state == "Right of Sidewalk"):
+        if (state == "Right of Sidewalk"):
             self.__showRightArrow()
+
+    def view(self):
+        self.mv = pango.ModelViewLookAt(math.cos(self.tX), math.sin(self.tY), -2.5,
+                                        0, 0, 0,
+                                        0, -1, 0)
+
+        self.s_cam = pango.OpenGlRenderState(self.pm, self.mv)
+        # Create Interactive View in window
+        self.handler = pango.Handler3D(self.s_cam)
+        self.tX += self.xspeed.Get() / 10
+        self.tY += self.yspeed.Get() / 10
+
+    def view_n(self):
+        self.mv = pango.ModelViewLookAt(0, 0, -2.5,
+                                        0, 0, 0,
+                                        0, -1, 0)
+
+        self.s_cam = pango.OpenGlRenderState(self.pm, self.mv)
+        # Create Interactive View in window
+        self.handler = pango.Handler3D(self.s_cam)
+
+        self.tX = 0
+        self.tY = 0
 
     def displayScreen(self):
         if self.dimension == 3:
+            glEnable(GL_TEXTURE_2D)
+            self.texid = glGenTextures(1)
+
             if not pango.ShouldQuit():
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
                 glClearColor(0.5, 0.7, 0.7, 0.0)
                 glLineWidth(5)
 
-                # z axis (-) is toward self, down is positive y, right is positive x
-                pango.DrawLine([[-1, 1, 0], [-1, 1, -0.3]])  # bottom left
-                pango.DrawLine([[1, -1, 0], [1, -1, -0.3]])  # top right
-                pango.DrawLine([[-1, -1, 0], [-1, -1, -0.3]])  # top left
-                pango.DrawLine([[1, 1, 0], [1, 1, -0.3]])  # bottom right
-                pango.DrawPoints([[-1, 1, -0.3], [1, -1, -0.3], [-1, -1, -0.3], [1, 1, -0.3]])
-
-                self.__putMovementDirectionVectors() # Draws arrows on 3d viewer for movement direction vector of objects
-                self.__putCollisionROI()
-
-                 # Generates and applies texture for canvas
-                texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA), cv2.ROTATE_180)
+                # Generates and applies texture for canvas
+                texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA),
+                                          cv2.ROTATE_180)
                 height, width, _ = texture_data.shape
-                glEnable(GL_TEXTURE_2D)
-                self.texid = glGenTextures(1)
+
                 glBindTexture(GL_TEXTURE_2D, self.texid)
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
                              0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
@@ -110,13 +140,26 @@ class Display:
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
+                glBindTexture(GL_TEXTURE_2D, 0)
 
                 self.d_cam.Activate(self.s_cam)
+                glColor3f(0.0, 0.0, 0.0)
 
-                self.__drawCanvas() # Draws 3d canvas
+                if self.checkBox.Get() and self.view_mode != 0:
+                    self.view_n()
+                    self.view_mode = 0
+                elif not self.checkBox.Get():
+                    self.view_mode = 1
+                    self.view()
+
+                self.__drawCanvas((1, 1.0, 0.025), (-1, -1.0, 0))  # Draws 3d canvas
+                self.__putMovementDirectionVectors()  # Draws arrows on 3d viewer for movement direction vector of objects
+                self.__putCollisionROI()
+                self.t += 0.05
                 # Swap Frames and Process Events
                 pango.FinishFrame()
-                glDeleteTextures(self.texid)
+
+            glDeleteTextures(self.texid)
         else:
             cv2.imshow("2d visualizer", self.frame)
             cv2.waitKey(1)
@@ -127,50 +170,64 @@ class Display:
         # # Create Interactive View in window
         # self.handler = pango.Handler3D(self.s_cam)
 
-    def __drawCanvas(self):
+    def __drawCanvas(self, p1, p2):
+        x1, y1, z1 = p1
+        x2, y2, z2 = p2
+
+        # z axis (-) is toward self, down is positive y, right is positive x
+        pango.DrawLine([[x2, y1, z1], [x2, y1, z1 - 0.3]])  # bottom left
+        pango.DrawLine([[x1, y2, z1], [x1, y2, z1 - 0.3]])  # top right
+        pango.DrawLine([[x2, y2, z1], [x2, y2, z1 - 0.3]])  # top left
+        pango.DrawLine([[x1, y1, z1], [x1, y1, z1 - 0.3]])  # bottom right
+        pango.DrawPoints([[x2, y1, z1 - 0.3], [x1, y2, z1 - 0.3], [x2, y2, z1 - 0.3], [x1, y1, z1 - 0.3]])
+
+        glColor3f(1.0, 1.0, 1.0)
+
+        glBindTexture(GL_TEXTURE_2D, self.texid)
+
         glBegin(GL_QUADS)
 
-        glVertex3f(1.0, 1.0, -0.025)
-        glVertex3f(-1.0, 1.0, -0.025)
-        glVertex3f(-1.0, 1.0, 0.025)
-        glVertex3f(1.0, 1.0, 0.025)
+        glVertex3f(x1, y1, z2)
+        glVertex3f(x2, y1, z2)
+        glVertex3f(x2, y1, z1)
+        glVertex3f(x1, y1, z1)
 
-        glVertex3f(1.0, -1.0, -0.025)
-        glVertex3f(-1.0, -1.0, -0.025)
-        glVertex3f(-1.0, -1.0, 0.025)
-        glVertex3f(1.0, -1.0, 0.025)
-
+        glVertex3f(x1, y2, z2)
+        glVertex3f(x2, y2, z2)
+        glVertex3f(x2, y2, z1)
+        glVertex3f(x1, y2, z1)
 
         glTexCoord2f(0.0, 0.0)
-        glVertex3f(1.0, 1.0, 0.025)
+        glVertex3f(x1, y1, z1)
         glTexCoord2f(1.0, 0.0)
-        glVertex3f(-1.0, 1.0, 0.025)
+        glVertex3f(x2, y1, z1)
         glTexCoord2f(1.0, 1.0)
-        glVertex3f(-1.0, -1.0, 0.025)
+        glVertex3f(x2, y2, z1)
         glTexCoord2f(0.0, 1.0)
-        glVertex3f(1.0, -1.0, 0.025)
-
+        glVertex3f(x1, y2, z1)
 
         glTexCoord2f(0.0, 1.0)
-        glVertex3f(1.0, -1.0, -0.025)
+        glVertex3f(x1, y2, z2)
         glTexCoord2f(1.0, 1.0)
-        glVertex3f(-1.0, -1.0, -0.025)
+        glVertex3f(x2, y2, z2)
         glTexCoord2f(1.0, 0.0)
-        glVertex3f(-1.0, 1.0, -0.025)
+        glVertex3f(x2, y1, z2)
         glTexCoord2f(0.0, 0.0)
-        glVertex3f(1.0, 1.0, -0.025)
+        glVertex3f(x1, y1, z2)
 
-        glVertex3f(-1.0, 1.0, 0.025)
-        glVertex3f(-1.0, 1.0, -0.025)
-        glVertex3f(-1.0, -1.0, -0.025)
-        glVertex3f(-1.0, -1.0, 0.025)
+        glVertex3f(x2, y1, z1)
+        glVertex3f(x2, y1, z2)
+        glVertex3f(x2, y2, z2)
+        glVertex3f(x2, y2, z1)
 
-        glVertex3f(1.0, 1.0, 0.025)
-        glVertex3f(1.0, 1.0, -0.025)
-        glVertex3f(1.0, -1.0, -0.025)
-        glVertex3f(1.0, -1.0, 0.025)
+        glVertex3f(x1, y1, z1)
+        glVertex3f(x1, y1, z2)
+        glVertex3f(x1, y2, z2)
+        glVertex3f(x1, y2, z1)
 
         glEnd()
+
+        glBindTexture(GL_TEXTURE_2D, 0)
 
     def __putMovementDirectionVectors(self):
         glLineWidth(3)
@@ -181,17 +238,18 @@ class Display:
                         glColor3f(1, 0.5, 0.25)
                     x_offset, y_offset, z_offset = detection[4]
                     x_anchor, y_anchor, w, h = detection[2]
-                    x_offset = (x_offset * self.stretchXValue/self.size[0])
-                    y_offset = (y_offset * self.stretchYValue/self.size[1])
-                    x_anchor = (x_anchor * self.stretchXValue/self.size[0]) * 2 - 1
-                    y_anchor = (y_anchor * self.stretchYValue/self.size[1]) * 2 - 1
+                    x_offset = (x_offset * self.stretchXValue / self.size[0])
+                    y_offset = (y_offset * self.stretchYValue / self.size[1])
+                    x_anchor = (x_anchor * self.stretchXValue / self.size[0]) * 2 - 1
+                    y_anchor = (y_anchor * self.stretchYValue / self.size[1]) * 2 - 1
 
                     wanted_z_anchor = (abs(z_offset) - 1) * 0.5
                     z_anchor = min(math.sqrt(1 - x_offset**2 - y_offset**2) *wanted_z_anchor, 0.5)
                     # z axis (+)  is toward self
-                    pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor+x_offset, y_anchor+y_offset, z_anchor]])  # down is positive y, right is positive x - this does bottom left
+                    pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor + x_offset, y_anchor + y_offset,
+                                                              z_anchor]])  # down is positive y, right is positive x - this does bottom left
 
-                    pango.DrawPoints([[x_anchor+x_offset, y_anchor+y_offset, z_anchor]])
+                    pango.DrawPoints([[x_anchor + x_offset, y_anchor + y_offset, z_anchor]])
 
                     if detection in self.objects_collision:
                         glColor3f(1, 1, 1)
@@ -200,6 +258,7 @@ class Display:
         collisionROI = collision.collisionROI
         for i in range(0, len(collisionROI) - 1):
            pango.DrawLine([collisionROI[i], collisionROI[i+1]])
+
     def putObjects(self, obstacles, objects_collision):
         self.obstacles = obstacles
         self.objects_collision = objects_collision
@@ -220,13 +279,15 @@ class Display:
         centerY = y + (h / 2) + 15
         if (centerY + 15 >= self.size[1]):
             centerY = y - (h / 2) - 15
-        self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))), (int(x + (w / 2)), int(y + (h / 2))), self.labelToColor[objectInfo[0]], lineLengthWeightage)
+        self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))),
+                                  (int(x + (w / 2)), int(y + (h / 2))), self.labelToColor[objectInfo[0]],
+                                  lineLengthWeightage)
         font = cv2.FONT_HERSHEY_SIMPLEX
         shownText = objectInfo[0].replace("sign", "") + " ID: " + str(objectInfo[3])
         textsize = cv2.getTextSize(shownText, font, 0.5, 2)[0]
-        cv2.putText(self.frame, shownText, (int(centerX - (textsize[0]/2)), int(centerY)), font, 0.7, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(self.frame, shownText, (int(centerX - (textsize[0] / 2)), int(centerY)), font, 0.7, (255, 255, 255),
+                    2, cv2.LINE_AA)
         return self.frame
-
 
     def __pilToOpenCV(self, pil_image):
         return np.array(pil_image)
