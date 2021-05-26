@@ -32,6 +32,8 @@ class Display:
         self.forwardArrow = Image.open("./display_resources/ForwardExpanded.png")
         self.view_mode = 0
         self.t = 0
+        self.tX = 0
+        self.tY = 0
 
         if self.dimension == 3:
             print("Initializing pangolin opengl 3d viewer")
@@ -69,10 +71,12 @@ class Display:
             )
 
             panel = pango.CreatePanel('ui')
-            panel.SetBounds(0.0, 1.0, 0.0, 45 / 640.)
-            self.nbutton = pango.VarBool('ui.Normal', value=False, toggle=True)
+            panel.SetBounds(0.0, 1.0, 0.0, 30 / 640.)
+            self.nbutton = pango.VarBool('ui.N', value=False, toggle=False)
             self.xbutton = pango.VarBool('ui.X', value=False, toggle=False)
             self.ybutton = pango.VarBool('ui.Y', value=False, toggle=False)
+            self.xspeed = pango.VarFloat('ui.sX', value=False, toggle=False)
+            self.yspeed = pango.VarFloat('ui.sY', value=False, toggle=False)
 
             glPointSize(15)
             # pango.RegisterKeyPressCallback(int(pango.PANGO_CTRL) + ord('r'), self.rehome3dViewer()) # Key press with panfolin for rehoming is broken - use different key press lib
@@ -94,22 +98,24 @@ class Display:
             self.__showRightArrow()
 
     def view_x(self):
-        self.mv = pango.ModelViewLookAt(math.sin(self.t), 0, -2.5,
+        self.mv = pango.ModelViewLookAt(math.sin(self.tX), 0, -2.5,
                                         0, 0, 0,
                                         0, -1, 0)
 
         self.s_cam = pango.OpenGlRenderState(self.pm, self.mv)
         # Create Interactive View in window
         self.handler = pango.Handler3D(self.s_cam)
+        self.tX += self.xspeed.Get() / 10
 
     def view_y(self):
-        self.mv = pango.ModelViewLookAt(0.3, math.sin(self.t), -2.5,
+        self.mv = pango.ModelViewLookAt(0.3, math.sin(self.tY), -2.5,
                                         0, 0, 0,
                                         0, -1, 0)
 
         self.s_cam = pango.OpenGlRenderState(self.pm, self.mv)
         # Create Interactive View in window
         self.handler = pango.Handler3D(self.s_cam)
+        self.tY += self.yspeed.Get() / 10
 
     def view_n(self):
         self.mv = pango.ModelViewLookAt(0.3, 0, -2.5,
