@@ -1,7 +1,6 @@
 import sys
 import cv2
 import math
-
 import pygame
 import pangolin as pango
 from OpenGL.GL import *
@@ -9,16 +8,17 @@ import numpy as np
 import PIL
 import cv2
 from PIL import Image
+import collision
 
 
 class Display:
     # dimension can be 2 or 3
     def __init__(self, dimension=3):
         self.dimension = dimension
-        self.size = (720, 540)
-        self.bbox_inference_coord_size = (618, 618)
-        self.stretchXValue = self.size[0] / self.bbox_inference_coord_size[0]
-        self.stretchYValue = self.size[1] / self.bbox_inference_coord_size[1]
+        self.size = size
+        self.bbox_inference_coord_size = bbox_inference_coord_size
+        self.stretchXValue = self.size[0]/self.bbox_inference_coord_size[0]
+        self.stretchYValue = self.size[1]/self.bbox_inference_coord_size[1]
         self.labelToColor = {"stop sign": ((0, 0, 255)),
                              "person": ((0, 255, 0)),
                              "car": ((255, 0, 0)),
@@ -129,6 +129,7 @@ class Display:
                 glLineWidth(5)
 
                 self.__putMovementDirectionVectors()  # Draws arrows on 3d viewer for movement direction vector of objects
+                self.__putCollisionROI()
 
                 # Generates and applies texture for canvas
                 texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA),
@@ -234,6 +235,8 @@ class Display:
         if self.obstacles is not None:
             for detection in self.obstacles:
                 if detection[0] == "person" or detection[0] == "car":
+                    if detection in self.objects_collision:
+                        glColor3f(1, 0.5, 0.25)
                     x_offset, y_offset, z_offset = detection[4]
                     x_anchor, y_anchor, w, h = detection[2]
                     x_offset = (x_offset * self.stretchXValue / self.size[0])
@@ -241,16 +244,24 @@ class Display:
                     x_anchor = (x_anchor * self.stretchXValue / self.size[0]) * 2 - 1
                     y_anchor = (y_anchor * self.stretchYValue / self.size[1]) * 2 - 1
 
-                    wanted_z_anchor = (abs(z_offset) - 1) * 0.1
-                    z_anchor = min(math.sqrt(1 - x_offset ** 2 - y_offset ** 2) * wanted_z_anchor, 0.3)
+                    wanted_z_anchor = (abs(z_offset) - 1) * 0.5
+                    z_anchor = min(math.sqrt(1 - x_offset**2 - y_offset**2) *wanted_z_anchor, 0.5)
                     # z axis (+)  is toward self
                     pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor + x_offset, y_anchor + y_offset,
                                                               z_anchor]])  # down is positive y, right is positive x - this does bottom left
 
                     pango.DrawPoints([[x_anchor + x_offset, y_anchor + y_offset, z_anchor]])
 
-    def putObjects(self, obstacles):
+                    if detection in self.objects_collision:
+                        glColor3f(1, 1, 1)
+
+    def __putCollisionROI(self):
+        collisionROI = collision.collisionROI
+        for i in range(0, len(collisionROI) - 1):
+           pango.DrawLine([collisionROI[i], collisionROI[i+1]])
+    def putObjects(self, obstacles, objects_collision):
         self.obstacles = obstacles
+        self.objects_collision = objects_collision
         if obstacles is None:
             return
         for detection in obstacles:
@@ -278,6 +289,7 @@ class Display:
                     2, cv2.LINE_AA)
         return self.frame
 
+
     def __pilToOpenCV(self, pil_image):
         return np.array(pil_image)
 
@@ -300,3 +312,8 @@ class Display:
 
     def __showRightArrow(self):
         self.frame = self.transposeImageSrc(self.leftArrow)
+    def getStretchFactor(self):
+        return (self.stretchXValue, self.stretchYValue)
+    def getViewerSize(self):
+        return self.size
+
