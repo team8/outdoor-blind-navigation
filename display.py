@@ -8,6 +8,7 @@ import numpy as np
 import PIL
 import cv2
 from PIL import Image
+import collision
 
 class Display:
     # dimension can be 2 or 3
@@ -191,7 +192,7 @@ class Display:
                     pango.DrawPoints([[x_anchor+x_offset, y_anchor+y_offset, z_anchor]])
 
     def __putCollisionROI(self):
-        collisionROI = [[0.4, -0.2, -0.3], [0.6, 0.8, -0.3], [-0.6, 0.8, -0.3], [-0.4, -0.2, -0.3], [0.4, -0.2, -0.3]]
+        collisionROI = collision.collisionROI
         for i in range(0, len(collisionROI) - 1):
            pango.DrawLine([collisionROI[i], collisionROI[i+1]])
     def putObjects(self, obstacles):
