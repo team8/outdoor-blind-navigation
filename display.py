@@ -72,9 +72,7 @@ class Display:
 
             panel = pango.CreatePanel('ui')
             panel.SetBounds(0.0, 1.0, 0.0, 30 / 640.)
-            self.nbutton = pango.VarBool('ui.N', value=False, toggle=False)
-            self.xbutton = pango.VarBool('ui.X', value=False, toggle=False)
-            self.ybutton = pango.VarBool('ui.Y', value=False, toggle=False)
+            self.checkBox = pango.VarBool('ui.N', value=True, toggle=True)
             self.xspeed = pango.VarFloat('ui.sX', value=False, toggle=False)
             self.yspeed = pango.VarFloat('ui.sY', value=False, toggle=False)
 
@@ -97,8 +95,8 @@ class Display:
         if (state == "Right of Sidewalk"):
             self.__showRightArrow()
 
-    def view_x(self):
-        self.mv = pango.ModelViewLookAt(math.sin(self.tX), 0, -2.5,
+    def view(self):
+        self.mv = pango.ModelViewLookAt(math.cos(self.tX), math.sin(self.tY), -2.5,
                                         0, 0, 0,
                                         0, -1, 0)
 
@@ -106,25 +104,19 @@ class Display:
         # Create Interactive View in window
         self.handler = pango.Handler3D(self.s_cam)
         self.tX += self.xspeed.Get() / 10
-
-    def view_y(self):
-        self.mv = pango.ModelViewLookAt(0.3, math.sin(self.tY), -2.5,
-                                        0, 0, 0,
-                                        0, -1, 0)
-
-        self.s_cam = pango.OpenGlRenderState(self.pm, self.mv)
-        # Create Interactive View in window
-        self.handler = pango.Handler3D(self.s_cam)
         self.tY += self.yspeed.Get() / 10
 
     def view_n(self):
-        self.mv = pango.ModelViewLookAt(0.3, 0, -2.5,
+        self.mv = pango.ModelViewLookAt(0, 0, -2.5,
                                         0, 0, 0,
                                         0, -1, 0)
 
         self.s_cam = pango.OpenGlRenderState(self.pm, self.mv)
         # Create Interactive View in window
         self.handler = pango.Handler3D(self.s_cam)
+
+        self.tX = 0
+        self.tY = 0
 
     def displayScreen(self):
         if self.dimension == 3:
@@ -155,18 +147,13 @@ class Display:
                 self.d_cam.Activate(self.s_cam)
                 glColor3f(0.0, 0.0, 0.0)
 
-                if pango.Pushed(self.nbutton):
+                if self.checkBox.Get() and self.view_mode != 0:
                     self.view_n()
                     self.view_mode = 0
-                if pango.Pushed(self.xbutton):
+                elif not self.checkBox.Get():
                     self.view_mode = 1
-                if pango.Pushed(self.ybutton):
-                    self.view_mode = 2
+                    self.view()
 
-                if self.view_mode == 1:
-                    self.view_x()
-                if self.view_mode == 2:
-                    self.view_y()
                 self.__drawCanvas((1, 1.0, 0.025), (-1, -1.0, 0))  # Draws 3d canvas
                 self.t += 0.05
                 # Swap Frames and Process Events
