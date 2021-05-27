@@ -243,7 +243,7 @@ class Display:
                     x_anchor = (x_anchor * self.stretchXValue / self.size[0]) * 2 - 1
                     y_anchor = (y_anchor * self.stretchYValue / self.size[1]) * 2 - 1
 
-                    wanted_z_anchor = (abs(z_offset) - 1) * 0.5
+                    wanted_z_anchor = -abs(z_offset) * 0.7
                     z_anchor = min(math.sqrt(1 - x_offset**2 - y_offset**2) *wanted_z_anchor, 0.5)
                     # z axis (+)  is toward self
                     pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor + x_offset, y_anchor + y_offset,
