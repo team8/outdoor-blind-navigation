@@ -5,7 +5,7 @@ import cv2
 # from tensorflow.keras.layers.experimental import preprocessing
 import pathlib
 
-
+# TODO: Important It is flipping images that have already been flipped which is resulting in duplicate images in category and thus overfitting. 
 # data_augmentation = [
         # preprocessing.RandomRotation(0.2),
         # preprocessing.RandomZoom(0.2, 0.2),
