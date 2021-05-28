@@ -55,7 +55,7 @@ train_ds = train_ds.map(lambda x, y: (data_augmentation(x), y))
 train_ds = train_ds.shuffle(buffer_size = 1000)
 train_ds = train_ds.cache()
 print(train_ds)
-model.fit(train_ds, validation_data=val_ds, epochs=10)
+model.fit(train_ds, validation_data=val_ds, epochs=8)
 
 print(model.summary())
 if input("Do you want to save model? y for yes, n for no?\n") == 'y':
