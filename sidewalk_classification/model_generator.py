@@ -10,20 +10,20 @@ input_shape = (100, 100, 3)
 # model.compile(
     # optimizer='Adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
 
-# VGG16_MODEL=tf.keras.applications.VGG16(input_shape=input_shape,
+VGG16_MODEL=tf.keras.applications.VGG16(input_shape=input_shape,
                                                # include_top=False,
                                                # weights='imagenet')
 
-RESNET_MODEL=tf.keras.applications.ResNet152(input_shape=input_shape,
+# RESNET_MODEL=tf.keras.applications.ResNet152(input_shape=input_shape,
                                                include_top=False,
                                                weights='imagenet')
-RESNET_MODEL.trainable=False
+# RESNET_MODEL.trainable=False
 global_average_layer = tf.keras.layers.GlobalAveragePooling2D()
 prediction_layer = tf.keras.layers.Dense(3,activation='softmax')
 
 model = tf.keras.Sequential([
-  # VGG16_MODEL,
-    RESNET_MODEL,
+  VGG16_MODEL,
+    # RESNET_MODEL,
   global_average_layer,
   prediction_layer
 ])
