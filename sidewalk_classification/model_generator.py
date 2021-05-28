@@ -43,15 +43,15 @@ model.compile(
 batch_size = 32
 dataset_path = "../../../ml-datasets/Sidewalk Dataset Final/"
 # train_ds = tf.keras.preprocessing.image_dataset_from_directory( dataset_path , validation_split = 0.1, subset="training", seed=123, image_size = (input_shape[0], input_shape[1]))
-train_ds = tf.keras.preprocessing.image_dataset_from_directory(dataset_path , labels='inferred', batch_size=batch_size, validation_split = 0.2, subset="training", seed=121, image_size = (input_shape[0], input_shape[1]), label_mode="categorical")
+train_ds = tf.keras.preprocessing.image_dataset_from_directory(dataset_path , labels='inferred', batch_size=batch_size, validation_split = 0.1, subset="training", seed=121, image_size = (input_shape[0], input_shape[1]), label_mode="categorical")
 
-val_ds = tf.keras.preprocessing.image_dataset_from_directory(dataset_path , labels='inferred', batch_size=batch_size, validation_split = 0.2, subset="validation", seed=121, image_size = (input_shape[0], input_shape[1]), label_mode="categorical")
+val_ds = tf.keras.preprocessing.image_dataset_from_directory(dataset_path , labels='inferred', batch_size=batch_size, validation_split = 0.1, subset="validation", seed=121, image_size = (input_shape[0], input_shape[1]), label_mode="categorical")
 labels = ["Left of Sidewalk", "Middle of Sidewalk", "Right of Sidewalk"]
 
-data_augmentation = tf.keras.Sequential([tf.keras.layers.experimental.preprocessing.RandomRotation((-0.6, 0.6))]) # TODO: Add random contrast
+data_augmentation = tf.keras.Sequential([tf.keras.layers.experimental.preprocessing.RandomRotation((-0.02, 0.02))]) # TODO: Add random contrast
 normalization_layer = tf.keras.layers.experimental.preprocessing.Rescaling(1./255)
 train_ds = train_ds.map(lambda x, y: (data_augmentation(x), y))
-train_ds = train_ds.map(lambda x, y: (normalization_layer(x), y))
+# train_ds = train_ds.map(lambda x, y: (normalization_layer(x), y))
 train_ds = train_ds.shuffle(buffer_size = 1000)
 train_ds = train_ds.cache()
 print(train_ds)
@@ -59,7 +59,7 @@ model.fit(train_ds, validation_data=val_ds, epochs=10)
 
 print(model.summary())
 if input("Do you want to save model? y for yes, n for no?\n") == 'y':
-    model.save("sidewalk_classification_model_resnet.h5")
+    model.save("sidewalk_classification_model_resnet_final.h5")
 
 
 # modifications for 1 input channel for image
