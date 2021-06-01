@@ -6,15 +6,15 @@ import numpy as np
 import random
 
 input_shape = (100, 100, 3)
-labels = ['Turn Left', 'No Turn', 'Turn Right']
+labels = ['Left Turn', 'No Turn', 'Right Turn']
 
 VGG16_MODEL=tf.keras.applications.VGG16(input_shape=input_shape,
-                                               # include_top=False,
-                                               # weights='imagenet')
-
-# RESNET_MODEL=tf.keras.applications.ResNet152(input_shape=input_shape,
                                                include_top=False,
                                                weights='imagenet')
+
+# RESNET_MODEL=tf.keras.applications.ResNet152(input_shape=input_shape,
+                                               # include_top=False,
+                                               # weights='imagenet')
 # RESNET_MODEL.trainable=False
 global_average_layer = tf.keras.layers.GlobalAveragePooling2D()
 prediction_layer = tf.keras.layers.Dense(3,activation='softmax')
@@ -32,15 +32,15 @@ model.compile(
   metrics=['acc'])
 
 batch_size = 32
-dataset_path = "../../../ml-datasets/Sidewalk Dataset Final/Turn Dataset/"
+dataset_path = "../../../ml-datasets/Sidewalk Dataset Final/Turn Classification/"
 # train_ds = tf.keras.preprocessing.image_dataset_from_directory( dataset_path , validation_split = 0.1, subset="training", seed=123, image_size = (input_shape[0], input_shape[1]))
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(dataset_path , labels='inferred', batch_size=batch_size, validation_split = 0.1, subset="training", seed=121, image_size = (input_shape[0], input_shape[1]), label_mode="categorical")
 
 val_ds = tf.keras.preprocessing.image_dataset_from_directory(dataset_path , labels='inferred', batch_size=batch_size, validation_split = 0.1, subset="validation", seed=121, image_size = (input_shape[0], input_shape[1]), label_mode="categorical")
 
-data_augmentation = tf.keras.Sequential([tf.keras.layers.experimental.preprocessing.RandomRotation((-0.02, 0.02))]) # TODO: Add random contrast
-normalization_layer = tf.keras.layers.experimental.preprocessing.Rescaling(1./255)
-train_ds = train_ds.map(lambda x, y: (data_augmentation(x), y))
+# data_augmentation = tf.keras.Sequential([tf.keras.layers.experimental.preprocessing.RandomRotation((-0.02, 0.02))]) # TODO: Add random contrast
+# normalization_layer = tf.keras.layers.experimental.preprocessing.Rescaling(1./255)
+# train_ds = train_ds.map(lambda x, y: (data_augmentation(x), y))
 # train_ds = train_ds.map(lambda x, y: (normalization_layer(x), y))
 train_ds = train_ds.shuffle(buffer_size = 1000)
 train_ds = train_ds.cache()
