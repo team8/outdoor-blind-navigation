@@ -233,11 +233,11 @@ class Display:
         glLineWidth(3)
         if self.obstacles is not None:
             for detection in self.obstacles:
-                if detection[0] == "person" or detection[0] == "car":
+                if detection["label"] == "person" or detection["label"] == "car":
                     if detection in self.objects_collision:
                         glColor3f(1, 0.5, 0.25)
-                    x_offset, y_offset, z_offset = detection[4]
-                    x_anchor, y_anchor, w, h = detection[2]
+                    x_offset, y_offset, z_offset = detection["mdv"]
+                    x_anchor, y_anchor, w, h = detection["bbox"]
                     x_offset = (x_offset * self.stretchXValue / self.size[0])
                     y_offset = (y_offset * self.stretchYValue / self.size[1])
                     x_anchor = (x_anchor * self.stretchXValue / self.size[0]) * 2 - 1
@@ -265,11 +265,11 @@ class Display:
         if obstacles is None:
             return
         for detection in obstacles:
-            if detection[0] in self.labelToColor.keys():
+            if detection["label"] in self.labelToColor.keys():
                 self.frame = self.__displayObjects(detection)
 
     def __displayObjects(self, objectInfo):
-        x, y, w, h = objectInfo[2]
+        x, y, w, h = objectInfo["bbox"]
         x *= self.stretchXValue
         y *= self.stretchYValue
         w *= self.stretchXValue
@@ -280,10 +280,10 @@ class Display:
         if (centerY + 15 >= self.size[1]):
             centerY = y - (h / 2) - 15
         self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))),
-                                  (int(x + (w / 2)), int(y + (h / 2))), self.labelToColor[objectInfo[0]],
+                                  (int(x + (w / 2)), int(y + (h / 2))), self.labelToColor[objectInfo["label"]],
                                   lineLengthWeightage)
         font = cv2.FONT_HERSHEY_SIMPLEX
-        shownText = objectInfo[0].replace("sign", "") + " ID: " + str(objectInfo[3])
+        shownText = objectInfo["label"].replace("sign", "") + " ID: " + str(objectInfo["id"])
         textsize = cv2.getTextSize(shownText, font, 0.5, 2)[0]
         cv2.putText(self.frame, shownText, (int(centerX - (textsize[0] / 2)), int(centerY)), font, 0.7, (255, 255, 255),
                     2, cv2.LINE_AA)

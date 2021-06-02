@@ -29,9 +29,9 @@ class CollisionDetector:
     def findCollisions(self, detections):
         collision_detections = []
         for detection in detections:
-            if detection[0] == "person" or detection[0] == "car":
-                x_offset, y_offset, z_offset = detection[4]
-                x_anchor, y_anchor, w, h = detection[2]
+            if detection["label"] == "person" or detection["label"] == "car":
+                x_offset, y_offset, z_offset = detection["mdv"]
+                x_anchor, y_anchor, w, h = detection["bbox"]
                 x_offset = (x_offset * self.viewer3d_stretch[0] / self.viewer3d_size[0])
                 y_offset = (y_offset * self.viewer3d_stretch[1] / self.viewer3d_size[1])
                 x_anchor = (x_anchor * self.viewer3d_stretch[0] / self.viewer3d_size[0]) * 2 - 1
