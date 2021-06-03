@@ -1,16 +1,15 @@
 from ctypes import *
-import random
-import os
 import cv2
 import time
 import darknet
-import argparse
 import threading
 from utils.circularBuffer import CircularBuffer
 import capturer
 from queue import Queue
 from person_automobile_sign_detection.detection import Detection
 import person_automobile_sign_detection.object_filter_util as ofu
+from person_automobile_sign_detection.collision import CollisionDetector
+import display
 
 class Detector:
     weights_path = "person_automobile_sign_detection/yolov4.weights"
@@ -39,9 +38,10 @@ class Detector:
     height = darknet.network_height(network)
     colors = {"person": [255, 255, 0], "car": [100, 0, 0], "stop sign": [100, 100, 0]}
 
-    def __init__(self):
+    def __init__(self, viewer_size, stretch_factor):
         print("Initializing Object Localizer")
 
+        self.collision_detector = CollisionDetector(viewer_size, stretch_factor)
         threading.Thread(target=self.capture_processing).start()
         time.sleep(3)
         threading.Thread(target=self.detection_starter).start()
@@ -62,7 +62,9 @@ class Detector:
         inference = []
         for detection in self.running_detections:
             if detection.countSeen >= 7:
-                inference.append({"label": detection.label, "confidence": 0, "bbox": detection.bbox, "id": detection.object_id, "mdv": ofu.get_direction_vector(detection.label, detection.bbox_history)}) # Convert to hashmap
+                output = {"label": detection.label, "confidence": 0, "bbox": detection.bbox, "id": detection.object_id, "mdv": ofu.get_direction_vector(detection.label, detection.bbox_history)}
+                output["colliding"] = self.collision_detector.isColliding(output)
+                inference.append(output)
         return inference
 
     def detection_starter(self):

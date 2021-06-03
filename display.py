@@ -8,8 +8,7 @@ import numpy as np
 import PIL
 import cv2
 from PIL import Image
-import collision
-
+import person_automobile_sign_detection.collision as collision
 
 class Display:
     # dimension can be 2 or 3
@@ -234,7 +233,7 @@ class Display:
         if self.obstacles is not None:
             for detection in self.obstacles:
                 if detection["label"] == "person" or detection["label"] == "car":
-                    if detection in self.objects_collision:
+                    if detection["colliding"] == True:
                         glColor3f(1, 0.5, 0.25)
                     x_offset, y_offset, z_offset = detection["mdv"]
                     x_anchor, y_anchor, w, h = detection["bbox"]
@@ -251,7 +250,7 @@ class Display:
 
                     pango.DrawPoints([[x_anchor + x_offset, y_anchor + y_offset, z_anchor]])
 
-                    if detection in self.objects_collision:
+                    if detection["colliding"] == True:
                         glColor3f(1, 1, 1)
 
     def __putCollisionROI(self):
@@ -259,9 +258,8 @@ class Display:
         for i in range(0, len(collisionROI) - 1):
            pango.DrawLine([collisionROI[i], collisionROI[i+1]])
 
-    def putObjects(self, obstacles, objects_collision):
+    def putObjects(self, obstacles):
         self.obstacles = obstacles
-        self.objects_collision = objects_collision
         if obstacles is None:
             return
         for detection in obstacles:
