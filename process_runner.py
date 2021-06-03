@@ -11,8 +11,8 @@ threading.Thread(target=capturer.capturer).start()
 time.sleep(1)
 
 sc = StateClassifier()
+ol = ObjectLocalizer()
 display = Display(dimension=3)
-ol = ObjectLocalizer(display.getViewerSize(), display.getStretchFactor())
 
 counter = 0
 while True:
@@ -21,6 +21,9 @@ while True:
     state_classifier_inference = sc.get_inference()
     object_localizer_inference = ol.get_inference()
     # print(state_classifier_inference if counter % 2 == 0 else object_localizer_inference)
+    for i in object_localizer_inference:
+        if i["colliding"]:
+            print(i)
     display.putVideoFrame(capture)
     display.putSidewalkState(state_classifier_inference)
     display.putObjects(object_localizer_inference)

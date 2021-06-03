@@ -10,14 +10,19 @@ import cv2
 from PIL import Image
 import person_automobile_sign_detection.collision as collision
 
+viewer_size = None
+stretch = None
 class Display:
     # dimension can be 2 or 3
     def __init__(self, dimension=3, size=(720, 540), bbox_inference_coord_size=(618, 618)):
+        global viewer_size
+        global stretch
         self.dimension = dimension
-        self.size = size
+        viewer_size = size
         self.bbox_inference_coord_size = bbox_inference_coord_size
-        self.stretchXValue = self.size[0]/self.bbox_inference_coord_size[0]
-        self.stretchYValue = self.size[1]/self.bbox_inference_coord_size[1]
+        self.stretchXValue = viewer_size[0]/self.bbox_inference_coord_size[0]
+        self.stretchYValue = viewer_size[1]/self.bbox_inference_coord_size[1]
+        stretch = (self.stretchXValue, self.stretchYValue)
         self.labelToColor = {"stop sign": ((0, 0, 255)),
                              "person": ((0, 255, 0)),
                              "car": ((255, 0, 0)),
@@ -37,7 +42,7 @@ class Display:
         if self.dimension == 3:
             print("Initializing pangolin opengl 3d viewer")
 
-            self.win = pango.CreateWindowAndBind("Visualization Tool 3d", self.size[0], self.size[1])
+            self.win = pango.CreateWindowAndBind("Visualization Tool 3d", size[0], size[1])
             glEnable(GL_DEPTH_TEST)
 
             # Definition of Projection and initial ModelView matrices
@@ -84,7 +89,8 @@ class Display:
             raise Exception("Dimension for viewing tool must be either 2 or 3")
 
     def putVideoFrame(self, orig_cap):
-        self.frame = cv2.resize(orig_cap, self.size)
+        global viewer_size
+        self.frame = cv2.resize(orig_cap, viewer_size)
 
     def putSidewalkState(self, state):
         if state == "Left of Sidewalk":
@@ -230,6 +236,7 @@ class Display:
 
     def __putMovementDirectionVectors(self):
         glLineWidth(3)
+        global viewer_size
         if self.obstacles is not None:
             for detection in self.obstacles:
                 if detection["label"] == "person" or detection["label"] == "car":
@@ -237,12 +244,12 @@ class Display:
                         glColor3f(1, 0.5, 0.25)
                     x_offset, y_offset, z_offset = detection["mdv"]
                     x_anchor, y_anchor, w, h = detection["bbox"]
-                    x_offset = (x_offset * self.stretchXValue / self.size[0])
-                    y_offset = (y_offset * self.stretchYValue / self.size[1])
-                    x_anchor = (x_anchor * self.stretchXValue / self.size[0]) * 2 - 1
-                    y_anchor = (y_anchor * self.stretchYValue / self.size[1]) * 2 - 1
+                    x_offset = (x_offset * self.stretchXValue / viewer_size[0])
+                    y_offset = (y_offset * self.stretchYValue / viewer_size[1])
+                    x_anchor = (x_anchor * self.stretchXValue / viewer_size[0]) * 2 - 1
+                    y_anchor = (y_anchor * self.stretchYValue / viewer_size[1]) * 2 - 1
 
-                    wanted_z_anchor = -abs(z_offset) * 0.7
+                    wanted_z_anchor = -abs(z_offset)
                     z_anchor = min(math.sqrt(1 - x_offset**2 - y_offset**2) *wanted_z_anchor, 0.5)
                     # z axis (+)  is toward self
                     pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor + x_offset, y_anchor + y_offset,
@@ -267,6 +274,7 @@ class Display:
                 self.frame = self.__displayObjects(detection)
 
     def __displayObjects(self, objectInfo):
+        global viewer_size
         x, y, w, h = objectInfo["bbox"]
         x *= self.stretchXValue
         y *= self.stretchYValue
@@ -275,7 +283,7 @@ class Display:
         lineLengthWeightage = 2
         centerX = x
         centerY = y + (h / 2) + 15
-        if (centerY + 15 >= self.size[1]):
+        if (centerY + 15 >= viewer_size[1]):
             centerY = y - (h / 2) - 15
         self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))),
                                   (int(x + (w / 2)), int(y + (h / 2))), self.labelToColor[objectInfo["label"]],
@@ -309,8 +317,9 @@ class Display:
 
     def __showRightArrow(self):
         self.frame = self.transposeImageSrc(self.leftArrow)
-    def getStretchFactor(self):
-        return (self.stretchXValue, self.stretchYValue)
-    def getViewerSize(self):
-        return self.size
+
+def getStretchFactor():
+    return stretch
+def getViewerSize():
+    return viewer_size
 

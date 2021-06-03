@@ -1,4 +1,7 @@
-from utils.circularBuffer import CircularBuffer
+import person_automobile_sign_detection.object_filter_util as ofu
+from person_automobile_sign_detection.collision import CollisionDetector
+import display
+
 """
 Class which represents every object detected that is being tracked.
 """
@@ -9,23 +12,33 @@ class Detection:
     bbox = None # detected object position in image
     bbox_history_size = 15
     bbox_history = []
+    mdv_history = []
+    collision_history = []
+    mdv_history_size = 7 
+    collision_history_size = 3
     kalmannFilter = None # kalmann filter object for motion tracking
 
     consecutiveNotSeenCount = 0 # num of frames it has been that the object has not been detected
     frames_passed = 0 # number of frames passed since first detected
     countSeen = 0 # number of frames object has been seen
     lastSeen = True
-
-
+    collision_detector = CollisionDetector(display.getViewerSize(), display.getStretchFactor())
     def __init__(self, label=None, object_id=None, bbox=None):
         self.label = label
         self.bbox = bbox
         self.bbox_history = [None]*self.bbox_history_size
         self.bbox_history.insert(0, self.bbox)
         del self.bbox_history[-1]
+        self.mdv_history = [None]*self.mdv_history_size
+        self.collision_history = [None]*self.collision_history_size
         self.object_id = object_id
 
-    def update(self, bbox):
+    def update(self, new_bbox):
+        self.__updateBBOX(new_bbox)
+        self.__updateMDV()
+        self.__updateCollision()
+
+    def __updateBBOX(self, bbox):
         if bbox is not None:
             self.bbox = bbox
             self.bbox_history.insert(0, self.bbox)
@@ -42,6 +55,13 @@ class Detection:
         else:
             self.consecutiveNotSeenCount += 1
             self.lastSeen = False
+    def __updateMDV(self):
+        self.mdv_history.insert(0, ofu.get_direction_vector(self.label, self.bbox_history))
+        del self.mdv_history[-1]
+
+    def __updateCollision(self):
+        self.collision_history.insert(0, self.collision_detector.isColliding({"label": self.label, "bbox": self.bbox_history[0], "mdv": self.mdv_history[0]}))
+        del self.collision_history[-1]
 
     def evaluateRemove(self) -> bool:
         return True if self.consecutiveNotSeenCount > 4 else False # finish
