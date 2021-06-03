@@ -65,9 +65,10 @@ class Detector:
         inference = []
         for detection in self.running_detections:
             if detection.countSeen >= 7:
+                collision_count = detection.collision_history.count(True)
                 output = {"label": detection.label, "confidence": 0, "bbox": detection.bbox, "id": detection.object_id,
-                          "mdv": map(lambda x: sum(x) / float(len(x)), zip(*detection.mdv_history)),
-                          "colliding": detection.collision_history[0]}
+                          "mdv": np.median(np.array(detection.mdv_history), axis=0).tolist(),
+                          "colliding": (True if collision_count > 1.3 * (len(detection.collision_history) - collision_count) else False)}
                 inference.append(output)
         return inference
 

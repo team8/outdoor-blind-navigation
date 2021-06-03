@@ -246,7 +246,7 @@ class Display:
                     y_anchor = (y_anchor * self.stretchYValue / self.viewer_size[1]) * 2 - 1
 
                     wanted_z_anchor = -abs(z_offset)
-                    z_anchor = min(math.sqrt(1 - x_offset**2 - y_offset**2) *wanted_z_anchor, 0.5)
+                    z_anchor = max(math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor, -0.5)
                     # z axis (+)  is toward self
                     pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor + x_offset, y_anchor + y_offset,
                                                               z_anchor]])  # down is positive y, right is positive x - this does bottom left
