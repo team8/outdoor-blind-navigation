@@ -9,6 +9,7 @@ from queue import Queue
 from person_automobile_sign_detection.detection import Detection
 import person_automobile_sign_detection.object_filter_util as ofu
 import numpy as np
+import person_automobile_sign_detection.collision as collision
 
 class Detector:
     weights_path = "person_automobile_sign_detection/yolov4.weights"
@@ -44,6 +45,8 @@ class Detector:
         time.sleep(3)
         threading.Thread(target=self.detection_starter).start()
 
+    def setup_collision_detector(self, viewer_size, viewer_stretch_factor):
+        collision.setConstants(viewer_size, viewer_stretch_factor)
 
     def capture_processing(self):
         while True:

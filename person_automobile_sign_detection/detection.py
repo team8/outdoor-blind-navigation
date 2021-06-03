@@ -1,5 +1,5 @@
 import person_automobile_sign_detection.object_filter_util as ofu
-from person_automobile_sign_detection.collision import CollisionDetector
+import person_automobile_sign_detection.collision as collision_detector
 import display
 
 """
@@ -22,7 +22,6 @@ class Detection:
     frames_passed = 0 # number of frames passed since first detected
     countSeen = 0 # number of frames object has been seen
     lastSeen = True
-    collision_detector = CollisionDetector(display.getViewerSize(), display.getStretchFactor())
     def __init__(self, label=None, object_id=None, bbox=None):
         self.label = label
         self.bbox = bbox
@@ -60,7 +59,7 @@ class Detection:
         del self.mdv_history[-1]
 
     def __updateCollision(self):
-        self.collision_history.insert(0, self.collision_detector.isColliding({"label": self.label, "bbox": self.bbox_history[0], "mdv": self.mdv_history[0]}))
+        self.collision_history.insert(0, collision_detector.isColliding({"label": self.label, "bbox": self.bbox_history[0], "mdv": self.mdv_history[0]}))
         del self.collision_history[-1]
 
     def evaluateRemove(self) -> bool:

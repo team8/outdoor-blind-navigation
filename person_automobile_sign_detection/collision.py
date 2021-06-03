@@ -23,32 +23,32 @@ areaROI = (collisionROI[1][1] - collisionROI[0][1]) * ((collisionROI[1][0] - col
 # inside_roi = True if areaROI == sum([__area_triangle((0.1, 0.1, 0), collisionROI[i], collisionROI[i+1]) for i in range(0, len(collisionROI) - 1)]) else False
 #
 
-class CollisionDetector:
-    def __init__(self, viewer3d_size, viewer3d_stretch):
-        self.viewer3d_size = viewer3d_size
-        self.viewer3d_stretch = viewer3d_stretch
-    def isColliding(self, detection):
-        try:
-            if detection["label"] == "person" or detection["label"] == "car":
-                x_offset, y_offset, z_offset = detection["mdv"]
-                x_anchor, y_anchor, w, h = detection["bbox"]
-                x_offset = (x_offset * self.viewer3d_stretch[0] / self.viewer3d_size[0])
-                y_offset = (y_offset * self.viewer3d_stretch[1] / self.viewer3d_size[1])
-                x_anchor = (x_anchor * self.viewer3d_stretch[0] / self.viewer3d_size[0]) * 2 - 1
-                y_anchor = (y_anchor * self.viewer3d_stretch[1] / self.viewer3d_size[1]) * 2 - 1
+viewer3d_size = None
+viewer3d_stretch = None
 
-                wanted_z_anchor = -abs(z_offset)
+def setConstants(size, stretch):
+    global viewer3d_size
+    global viewer3d_stretch
+    viewer3d_size = size
+    viewer3d_stretch = stretch
 
-                # z_anchor = min(math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor, 0.5)
-                z_anchor = math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor
-                pointing_toward_center = True if math.ceil(abs(x_offset + x_anchor) * 10) < math.floor(abs(x_offset) * 10) else False # TODO: enhance this alg
-                inside_roi = True if abs(areaROI - sum([self.__area_triangle((x_anchor + x_offset, y_anchor + y_offset, z_anchor), collisionROI[i], collisionROI[i+1]) for i in range(0, len(collisionROI) - 1)])) < 0.01 and all(z_anchor <= z[2] for z in collisionROI) else False # using inside polygon alg where area taken from central point to pairs of 2 corner points (creating triangle) and taking summation of area of all triangles and comparing to original area of trapezoid
-                # inside_roi = True if abs(areaROI - sum([self.__area_triangle((x_anchor + x_offset, y_anchor + y_offset, z_anchor), collisionROI[i], collisionROI[i+1]) for i in range(0, len(collisionROI) - 1)])) < 0.01 else False # using inside polygon alg where area taken from central point to pairs of 2 corner points (creating triangle) and taking summation of area of all triangles and comparing to original area of trapezoid
-                if inside_roi:
-                    return True
-                return False
-                    # print(detection[0], (x_anchor + x_offset, y_anchor + y_offset, z_anchor))
-        except Exception as e:
-            return False
-    def __area_triangle(self, pt1, pt2, pt3):
-        return abs(0.5 * (pt1[0] * (pt2[1] - pt3[1]) + pt2[0] * (pt3[1] - pt1[1]) + pt3[0] * (pt1[1] - pt2[1])))
+def isColliding(detection):
+    if detection["label"] == "person" or detection["label"] == "car":
+        x_offset, y_offset, z_offset = detection["mdv"]
+        x_anchor, y_anchor, w, h = detection["bbox"]
+        x_offset = (x_offset * viewer3d_stretch[0] / viewer3d_size[0])
+        y_offset = (y_offset * viewer3d_stretch[1] / viewer3d_size[1])
+        x_anchor = (x_anchor * viewer3d_stretch[0] / viewer3d_size[0]) * 2 - 1
+        y_anchor = (y_anchor * viewer3d_stretch[1] / viewer3d_size[1]) * 2 - 1
+        wanted_z_anchor = -abs(z_offset)
+        # z_anchor = min(math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor, 0.5)
+        z_anchor = math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor
+        pointing_toward_center = True if math.ceil(abs(x_offset + x_anchor) * 10) < math.floor(abs(x_offset) * 10) else False # TODO: enhance this alg
+        inside_roi = True if abs(areaROI - sum([__area_triangle((x_anchor + x_offset, y_anchor + y_offset, z_anchor), collisionROI[i], collisionROI[i+1]) for i in range(0, len(collisionROI) - 1)])) < 0.01 and all(z_anchor <= z[2] for z in collisionROI) else False # using inside polygon alg where area taken from central point to pairs of 2 corner points (creating triangle) and taking summation of area of all triangles and comparing to original area of trapezoid
+        # inside_roi = True if abs(areaROI - sum([__area_triangle((x_anchor + x_offset, y_anchor + y_offset, z_anchor), collisionROI[i], collisionROI[i+1]) for i in range(0, len(collisionROI) - 1)])) < 0.01 else False # using inside polygon alg where area taken from central point to pairs of 2 corner points (creating triangle) and taking summation of area of all triangles and comparing to original area of trapezoid
+        if inside_roi:
+            return True
+        return False
+            # print(detection[0], (x_anchor + x_offset, y_anchor + y_offset, z_anchor))
+def __area_triangle(pt1, pt2, pt3):
+    return abs(0.5 * (pt1[0] * (pt2[1] - pt3[1]) + pt2[0] * (pt3[1] - pt1[1]) + pt3[0] * (pt1[1] - pt2[1])))

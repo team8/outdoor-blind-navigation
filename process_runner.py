@@ -13,6 +13,7 @@ time.sleep(1)
 sc = StateClassifier()
 ol = ObjectLocalizer()
 display = Display(dimension=3)
+ol.setup_collision_detector(display.getViewerSize(), display.getStretchFactor())
 
 counter = 0
 while True:
