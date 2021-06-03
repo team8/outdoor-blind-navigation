@@ -1,15 +1,17 @@
-from ctypes import *
 import cv2
-import time
-import darknet
-import threading
-from utils.circularBuffer import CircularBuffer
-import capturer
-from queue import Queue
-from person_automobile_sign_detection.detection import Detection
-import person_automobile_sign_detection.object_filter_util as ofu
 import numpy as np
+import threading
+import time
+from ctypes import *
+from queue import Queue
+
+import capturer
+import darknet
 import person_automobile_sign_detection.collision as collision
+import person_automobile_sign_detection.object_filter_util as ofu
+from person_automobile_sign_detection.detection import Detection
+from utils.circularBuffer import CircularBuffer
+
 
 class Detector:
     weights_path = "person_automobile_sign_detection/yolov4.weights"
@@ -20,11 +22,11 @@ class Detector:
     # data_file_path = "person_automobile_sign_detection/coco.data"
 
     network, class_names, class_colors = darknet.load_network(
-                config_path,
-                data_file_path,
-                weights_path,
-                batch_size=1
-            )
+        config_path,
+        data_file_path,
+        weights_path,
+        batch_size=1
+    )
     running_detections = []
     detections_queue = CircularBuffer(2)
     prev_detections_queue = CircularBuffer(2)
@@ -32,9 +34,9 @@ class Detector:
     fps_queue = CircularBuffer(1)
     width = darknet.network_width(network)
     min_confidence = 25
-    min_iou = 10 # min iou percentage for id'ing
+    min_iou = 10  # min iou percentage for id'ing
     min_box_area = 700
-    id_index = 0 # keeps increasing per new object identified
+    id_index = 0  # keeps increasing per new object identified
     height = darknet.network_height(network)
     colors = {"person": [255, 255, 0], "car": [100, 0, 0], "stop sign": [100, 100, 0]}
 
@@ -63,7 +65,9 @@ class Detector:
         inference = []
         for detection in self.running_detections:
             if detection.countSeen >= 7:
-                output = {"label": detection.label, "confidence": 0, "bbox": detection.bbox, "id": detection.object_id, "mdv": map(lambda x: sum(x)/float(len(x)), zip(*detection.mdv_history)), "colliding": detection.collision_history[0]}
+                output = {"label": detection.label, "confidence": 0, "bbox": detection.bbox, "id": detection.object_id,
+                          "mdv": map(lambda x: sum(x) / float(len(x)), zip(*detection.mdv_history)),
+                          "colliding": detection.collision_history[0]}
                 inference.append(output)
         return inference
 
@@ -76,20 +80,22 @@ class Detector:
             self.prev_detections_queue.add(self.detections_queue.getLast())
             self.detections_queue.add(detections)
             self.update_running_detections(detections)
-            self.fps_queue.add(1/(time.time() - last_time))
+            self.fps_queue.add(1 / (time.time() - last_time))
             darknet.free_image(last_darknet_image)
 
     def update_running_detections(self, raw_detections_list):
         idSeen = []
         for raw_detection in raw_detections_list:
-            if float(raw_detection[1]) > self.min_confidence and raw_detection[2][2] * raw_detection[2][3] > self.min_box_area:
+            if float(raw_detection[1]) > self.min_confidence and raw_detection[2][2] * raw_detection[2][
+                3] > self.min_box_area:
                 largest_iou = -1
                 largest_iou_index = -1
                 largest_iou_bbox = None
                 for detection_index in range(0, len(self.running_detections)):
 
                     iou = ofu.compute_iou(self.running_detections[detection_index].bbox, raw_detection[2])
-                    if raw_detection[0] == self.running_detections[detection_index].label and iou > self.min_iou and iou > largest_iou:
+                    if raw_detection[0] == self.running_detections[
+                        detection_index].label and iou > self.min_iou and iou > largest_iou:
                         largest_iou = iou
                         largest_iou_index = detection_index
                         largest_iou_bbox = raw_detection[2]
@@ -127,11 +133,10 @@ class Detector:
                     xmax = int(x + (w / 2))
                     ymin = int(y - (h / 2))
                     ymax = int(y + (h / 2))
-                    display_image = cv2.rectangle(last_image, (xmax, ymax), (xmin, ymin), self.colors[detection[0]] if detection[0] in self.colors else [0, 100, 0], 4)
+                    display_image = cv2.rectangle(last_image, (xmax, ymax), (xmin, ymin),
+                                                  self.colors[detection[0]] if detection[0] in self.colors else [0, 100,
+                                                                                                                 0], 4)
                 cv2.imshow("Stream", display_image)
                 cv2.waitKey(1)
             except Exception as e:
-                    print("Displaying Not Working", e)
-
-
-
+                print("Displaying Not Working", e)
