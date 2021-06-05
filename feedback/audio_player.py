@@ -33,12 +33,12 @@ class AudioPlayer:
             # Find clip with the highest priority
             for clip in wantedAudioClips:
                 currentClipPriority = clipPriority[clip.split()[0]]
-                print(currentClipPriority)
-                print(highestPriorityIndex is None or currentClipPriority < highestPriorityIndex)
-                print(highestPriorityString not in playedAudioClips.getList())
-                print("PlayedAudioClips" + str(playedAudioClips.getList()))
-                print(clip)
-                print(playedAudioClips.getList().count(clip) == 0)
+                # print(currentClipPriority)
+                # print(highestPriorityIndex is None or currentClipPriority < highestPriorityIndex)
+                # print(highestPriorityString not in playedAudioClips.getList())
+                # print("PlayedAudioClips" + str(playedAudioClips.getList()))
+                # print(clip)
+                # print(playedAudioClips.getList().count(clip) == 0)
                 if (highestPriorityIndex is None or currentClipPriority < highestPriorityIndex) and playedAudioClips.getList().count(clip) == 0:
                     highestPriorityIndex = currentClipPriority
                     highestPriorityString = clip
