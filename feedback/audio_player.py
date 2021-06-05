@@ -34,17 +34,20 @@ class AudioPlayer:
     def __play(self, audio_string):
         # Play audio string based on identifier string
         print("Playing " + audio_string)
+        wave_obj = None
         audio_params = audio_string.split()
         if audio_params[0] == "ShiftLeft":
-           print("Playing shift left")
+            wave_obj = sa.WaveObject.from_wave_file("../assets/ShiftLeftAudio.wav")
         elif audio_params[0] == "ShiftRight":
-           print("Playing shift right")
+            wave_obj = sa.WaveObject.from_wave_file("../assets/ShiftRightAudio.wav")
         elif audio_params[0] == "Stop":
-            print("Play stop")
+            wave_obj = sa.WaveObject.from_wave_file("../assets/StopSignAudio.wav")
         elif audio_params[0] == "Person" and audio_params[2] == "True":
-            print("Play possible person collision detected")
+            wave_obj = sa.WaveObject.from_wave_file("../assets/PersonCollisionDetectedAudio.wav")
         elif audio_params[0] == "Car" and audio_params[2] == "True":
-            print("Play possible car collision detected")
+            wave_obj = sa.WaveObject.from_wave_file("../assets/CarCollisionDetectedAudio.wav")
+        play_obj = wave_obj.play()
+        play_obj.wait_done()
 
         # Exit once full audio clip has been played
 
