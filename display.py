@@ -1,14 +1,12 @@
-import sys
 import cv2
 import math
-import pygame
 import pangolin as pango
 from OpenGL.GL import *
 import numpy as np
-import PIL
 import cv2
 from PIL import Image
 import person_automobile_sign_detection.collision as collision
+
 
 class Display:
     # dimension can be 2 or 3
@@ -73,10 +71,19 @@ class Display:
             )
 
             panel = pango.CreatePanel('ui')
-            panel.SetBounds(0.0, 1.0, 0.0, 30 / 640.)
+            panel.SetBounds(0.0, 1.0, 0.0, 60 / 640.)
             self.checkBox = pango.VarBool('ui.N', value=True, toggle=True)
             self.xspeed = pango.VarFloat('ui.sX', value=False, toggle=False)
             self.yspeed = pango.VarFloat('ui.sY', value=False, toggle=False)
+            self.stop = pango.VarBool('ui.Stop Sign', value=False, toggle=True)
+            self.person = pango.VarBool('ui.Person', value=False, toggle=True)
+            self.car = pango.VarBool('ui.Car', value=False, toggle=True)
+            self.cperson = pango.VarBool('ui.Person Collision', value=False, toggle=True)
+            self.ccar = pango.VarBool('ui.Car Collision', value=False, toggle=True)
+            self.tright = pango.VarBool('ui.Turn Right', value=False, toggle=True)
+            self.tleft = pango.VarBool('ui.Turn Left', value=False, toggle=True)
+            self.sright = pango.VarBool('ui.Shift Right', value=False, toggle=True)
+            self.sleft = pango.VarBool('ui.Shift Left', value=False, toggle=True)
 
             glPointSize(15)
             # pango.RegisterKeyPressCallback(int(pango.PANGO_CTRL) + ord('r'), self.rehome3dViewer()) # Key press with panfolin for rehoming is broken - use different key press lib
@@ -156,6 +163,7 @@ class Display:
 
                 self.__drawCanvas((1, 1.0, 0.025), (-1, -1.0, 0))  # Draws 3d canvas
                 self.__putMovementDirectionVectors()  # Draws arrows on 3d viewer for movement direction vector of objects
+                # self.__put_statuses({"person": False, "stop sign": False, "car": True, "turn left": False, "turn right": False, "shift right": False, "shift left": False, "person collision": False, "car collision": True})
                 self.__putCollisionROI()
                 self.t += 0.05
                 # Swap Frames and Process Events
@@ -165,6 +173,17 @@ class Display:
         else:
             cv2.imshow("2d visualizer", self.frame)
             cv2.waitKey(1)
+
+    def put_state(self, map):
+        self.person.SetVal(map["person"])
+        self.car.SetVal(map["car"])
+        self.cperson.SetVal(map["person collision"])
+        self.ccar.SetVal(map["car collision"])
+        self.stop.SetVal(map["stop sign"])
+        self.tright.SetVal(map["turn left"])
+        self.tleft.SetVal(map["turn right"])
+        self.sright.SetVal(map["shift right"])
+        self.sleft.SetVal(map["shift left"])
 
     def __rehome3dViewer(self):
         print("Resetting cam position")
@@ -280,9 +299,7 @@ class Display:
         centerY = y + (h / 2) + 15
         if (centerY + 15 >= self.viewer_size[1]):
             centerY = y - (h / 2) - 15
-        self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))),
-                                  (int(x + (w / 2)), int(y + (h / 2))), self.labelToColor[objectInfo["label"]],
-                                  lineLengthWeightage)
+        self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))), (int(x + (w / 2)), int(y + (h / 2))), self.labelToColor[objectInfo["label"]], lineLengthWeightage)
         font = cv2.FONT_HERSHEY_SIMPLEX
         shownText = objectInfo["label"].replace("sign", "") + " ID: " + str(objectInfo["id"])
         textsize = cv2.getTextSize(shownText, font, 0.5, 2)[0]
