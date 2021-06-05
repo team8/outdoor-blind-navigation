@@ -26,37 +26,35 @@ def runCarCollisionDetected(numid, colliding):
 class AudioPlayer:
     def run(self):
         playedAudioClipsSize = 5
-        playedAudioClips = CircularBuffer(playedAudioClipsSize) # TODO: add associated time and delete clips which are more than 10 seconds old from this list
+        playedAudioClips = CircularBuffer(playedAudioClipsSize)
         timeTillPlayedAudioClipDelete = 10  # x seconds till a played audio clip is removed off of do-not-play list
         while True:
-            print("Running AudioPlayer")
-            global wantedAudioClips
-            print("Wanted " + str(wantedAudioClips))
-            print(playedAudioClips.getList())
-            highestPriorityString = None
-            highestPriorityIndex = None
-            # Find clip with the highest priority
-            for clip in wantedAudioClips:
-                currentClipPriority = clipPriority[clip.split()[0]]
-                # print(currentClipPriority)
-                # print(highestPriorityIndex is None or currentClipPriority < highestPriorityIndex)
-                # print(highestPriorityString not in playedAudioClips.getList())
-                # print("PlayedAudioClips" + str(playedAudioClips.getList()))
-                # print(clip)
-                playedAudioClipsList = list(filter(None, playedAudioClips.getList()))
-                if (highestPriorityIndex is None or currentClipPriority < highestPriorityIndex) and sum(map(lambda obstacle : obstacle[0] == clip, playedAudioClipsList)) == 0:
-                    highestPriorityIndex = currentClipPriority
-                    highestPriorityString = clip
-            if highestPriorityString is not None:
-                playedAudioClips.add((highestPriorityString,int(time.time())))
-                wantedAudioClips.remove(highestPriorityString)
-                self.__play(highestPriorityString)
-            time.sleep(1)
-            currentTime = int(time.time())
-            for clip_index in range(0, len(playedAudioClips.getList())):
-                if playedAudioClips.getList()[clip_index] != None:
-                    if (currentTime - playedAudioClips.getList()[clip_index][1]) > timeTillPlayedAudioClipDelete:
-                        playedAudioClips.replaceIndex(None, clip_index)
+            try:
+                print("Running AudioPlayer")
+                global wantedAudioClips
+                print("Wanted " + str(wantedAudioClips))
+                print(playedAudioClips.getList())
+                highestPriorityString = None
+                highestPriorityIndex = None
+                # Find clip with the highest priority
+                for clip in wantedAudioClips:
+                    currentClipPriority = clipPriority[clip.split()[0]]
+                    playedAudioClipsList = list(filter(None, playedAudioClips.getList()))
+                    if (highestPriorityIndex is None or currentClipPriority < highestPriorityIndex) and sum(map(lambda obstacle : obstacle[0] == clip, playedAudioClipsList)) == 0:
+                        highestPriorityIndex = currentClipPriority
+                        highestPriorityString = clip
+                if highestPriorityString is not None:
+                    playedAudioClips.add((highestPriorityString,int(time.time())))
+                    wantedAudioClips.remove(highestPriorityString)
+                    self.__play(highestPriorityString)
+                time.sleep(1)
+                currentTime = int(time.time())
+                for clip_index in range(0, len(playedAudioClips.getList())):
+                    if playedAudioClips.getList()[clip_index] != None:
+                        if (currentTime - playedAudioClips.getList()[clip_index][1]) > timeTillPlayedAudioClipDelete:
+                            playedAudioClips.replaceIndex(None, clip_index)
+            except Exception as e:
+                print(e)
 
     def __play(self, audio_string):
         # Play audio string based on identifier string
@@ -75,86 +73,6 @@ class AudioPlayer:
             wave_obj = sa.WaveObject.from_wave_file("assets/CarCollisionDetectedAudio.wav")
         play_obj = wave_obj.play()
         play_obj.wait_done()
-
         # Exit once full audio clip has been played
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# audioClipDictionary = {
-#     "personahead.wav": 1,
-#     "personleft.wav": 2,
-#     "personright.wav": 3,
-#     "stopsignmiddle.wav": 4,
-#     "stopsignleft.wav": 5,
-#     "stopsignright.wav": 6,
-# }
-#
-# audioClips = []
-# wave_object = None
-# play_object = None
-# is_playing = False
-#
-#
-# def add_new_sound(clip_name):
-#     prio = audioClipDictionary.get(clip_name)
-#     if len(audioClips) >= 1:
-#         for i in range(0, len(audioClips)):
-#             if i == len(audioClips) - 1:
-#                 if prio < audioClipDictionary.get(audioClips[i]):
-#                     audioClips.insert(i, clip_name)
-#                 else:
-#                     audioClips.append(clip_name)
-#                 break
-#             else:
-#                 print(str(prio) + " " + clip_name + " " + str(audioClipDictionary.get(audioClips[i])) + " " + audioClips[i])
-#                 if prio < audioClipDictionary.get(audioClips[i]):
-#                     audioClips.insert(i, clip_name)
-#                     break
-#     else:
-#         audioClips.append(clip_name)
-#
-#
-# def play_first_queue_sound():
-#     global wave_object
-#     wave_object = sa.WaveObject.from_wave_file(audioClips[0])
-#     global play_object
-#     play_object = wave_object.play()
-#     print(play_object.is_playing())
-#     print(audioClips)
-#     audioClips.remove(audioClips[0])
-#
