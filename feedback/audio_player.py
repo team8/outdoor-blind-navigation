@@ -1,35 +1,52 @@
 import simpleaudio as sa
+import time
 from utils.circularBuffer import CircularBuffer
 
 clipPriority = {"ShiftRight": 0, "ShiftLeft": 1, "Stop": 2, "Person": 3, "Car": 4} # lower value -> higher priority
-wantedAudioClips = []
+wantedAudioClips = [] # Have certain clips expire after certain amount of time? 
 
 def runShiftRight():
-    wantedAudioClips.append("ShiftRight")
+    if "ShiftRight" not in wantedAudioClips:
+        wantedAudioClips.append("ShiftRight")
 def runShiftLeft():
-    wantedAudioClips.append("ShiftLeft")
+    if "ShiftLeft" not in wantedAudioClips:
+        wantedAudioClips.append("ShiftLeft")
 def runStopSignDetected(numid):
-    wantedAudioClips.append("Stop" + " " + str(numid))
+    if ("Stop" + " " + str(numid)) not in wantedAudioClips:
+        wantedAudioClips.append("Stop" + " " + str(numid))
 def runPersonCollisionDetected(numid, colliding): #TODO: Make separate for collision from left and right side
-    wantedAudioClips.append("Person" + " " + str(numid) + " " + str(colliding))
+    if ("Person" + " " + str(numid) + " " + str(colliding)) not in wantedAudioClips:
+        wantedAudioClips.append("Person" + " " + str(numid) + " " + str(colliding))
 def runCarCollisionDetected(numid, colliding):
-    wantedAudioClips.append("Car" + " " + str(numid) + " " + str(colliding))
+    if ("Car" + " " + str(numid) + " " + str(colliding)) not in wantedAudioClips:
+        wantedAudioClips.append("Car" + " " + str(numid) + " " + str(colliding))
 
 class AudioPlayer:
-    playedAudioClips = CircularBuffer(15)
-    def update(self):
-        global wantedAudioClips
-        highestPriorityString = None
-        highestPriorityIndex = None
-        # Find clip with the highest priority
-        for clip in wantedAudioClips:
-            currentClipPriority = clipPriority[clip.split()[0]]
-            if (highestPriorityIndex is None or currentClipPriority < highestPriorityIndex) and highestPriorityString not in self.playedAudioClips.getList():
-                highestPriorityIndex = currentClipPriority
-                highestPriorityString = clip
-        if highestPriorityString is not None:
-            self.playedAudioClips.add(highestPriorityString)
-            self.__play(highestPriorityString)
+    def run(self):
+        playedAudioClips = CircularBuffer(15)
+        while True:
+            print("Running AudioPlayer")
+            global wantedAudioClips
+            print("Wanted " + str(wantedAudioClips))
+            highestPriorityString = None
+            highestPriorityIndex = None
+            # Find clip with the highest priority
+            for clip in wantedAudioClips:
+                currentClipPriority = clipPriority[clip.split()[0]]
+                print(currentClipPriority)
+                print(highestPriorityIndex is None or currentClipPriority < highestPriorityIndex)
+                print(highestPriorityString not in playedAudioClips.getList())
+                print("PlayedAudioClips" + str(playedAudioClips.getList()))
+                print(clip)
+                print(playedAudioClips.getList().count(clip) == 0)
+                if (highestPriorityIndex is None or currentClipPriority < highestPriorityIndex) and playedAudioClips.getList().count(clip) == 0:
+                    highestPriorityIndex = currentClipPriority
+                    highestPriorityString = clip
+            if highestPriorityString is not None:
+                playedAudioClips.add(highestPriorityString)
+                self.__play(highestPriorityString)
+            time.sleep(1)
+
 
     def __play(self, audio_string):
         # Play audio string based on identifier string
@@ -37,15 +54,15 @@ class AudioPlayer:
         wave_obj = None
         audio_params = audio_string.split()
         if audio_params[0] == "ShiftLeft":
-            wave_obj = sa.WaveObject.from_wave_file("../assets/ShiftLeftAudio.wav")
+            wave_obj = sa.WaveObject.from_wave_file("assets/ShiftLeftAudio.wav")
         elif audio_params[0] == "ShiftRight":
-            wave_obj = sa.WaveObject.from_wave_file("../assets/ShiftRightAudio.wav")
+            wave_obj = sa.WaveObject.from_wave_file("assets/ShiftRightAudio.wav")
         elif audio_params[0] == "Stop":
-            wave_obj = sa.WaveObject.from_wave_file("../assets/StopSignAudio.wav")
+            wave_obj = sa.WaveObject.from_wave_file("assets/StopSignAudio.wav")
         elif audio_params[0] == "Person" and audio_params[2] == "True":
-            wave_obj = sa.WaveObject.from_wave_file("../assets/PersonCollisionDetectedAudio.wav")
+            wave_obj = sa.WaveObject.from_wave_file("assets/PersonCollisionDetectedAudio.wav")
         elif audio_params[0] == "Car" and audio_params[2] == "True":
-            wave_obj = sa.WaveObject.from_wave_file("../assets/CarCollisionDetectedAudio.wav")
+            wave_obj = sa.WaveObject.from_wave_file("assets/CarCollisionDetectedAudio.wav")
         play_obj = wave_obj.play()
         play_obj.wait_done()
 

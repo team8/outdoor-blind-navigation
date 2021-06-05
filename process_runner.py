@@ -4,15 +4,18 @@ from display import Display
 import capturer
 from person_automobile_sign_detection.detector import Detector as ObjectLocalizer
 import time
-import feedback
+import feedback.output_feedback as feedback
+from feedback.audio_player import AudioPlayer
 
 threading.Thread(target=capturer.capturer).start()
 time.sleep(1)
 
 sc = StateClassifier()
 ol = ObjectLocalizer()
+ap = AudioPlayer()
 display = Display(dimension=3)
 ol.setup_collision_detector(display.getViewerSize(), display.getStretchFactor())
+threading.Thread(target=ap.run).start()
 
 counter = 0
 while True:
@@ -26,4 +29,5 @@ while True:
     display.putObjects(object_localizer_inference)
     display.putState(feedback.interpret_status(state_classifier_inference, object_localizer_inference))
     display.displayScreen()
+    feedback.updateAudioFeedback(state_classifier_inference, object_localizer_inference)
     counter += 1

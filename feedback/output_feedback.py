@@ -22,10 +22,8 @@ def interpret_status(state_classifier_inference, object_localizer_inference):
 
 def updateAudioFeedback(state_classifier_inference, object_localizer_inference):
     if state_classifier_inference == "Left of Sidewalk":
-       print("Add shift right to audio queue")
        audio_player.runShiftRight()
     elif state_classifier_inference == "Right of Sidewalk":
-       print("Add shift left to audio queue")
        audio_player.runShiftLeft()
     for obstacle in object_localizer_inference:
         if obstacle["label"] == "stop sign":
@@ -35,7 +33,6 @@ def updateAudioFeedback(state_classifier_inference, object_localizer_inference):
                audio_player.runPersonCollisionDetected(obstacle["id"], obstacle["colliding"])
         if obstacle["label"] == "car":
             if obstacle["colliding"] == True:
-                print("Car collision detected")
                 audio_player.runCarCollisionDetected(obstacle["id"], obstacle["colliding"])
 
 
