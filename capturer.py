@@ -13,7 +13,7 @@ except Exception as e:
     # stream = cv2.VideoCapture('/home/aoberai/Downloads/NewTest.mp4')
     # stream = cv2.VideoCapture('/home/aoberai/Downloads/2ndStopSign.mp4')
     # stream = cv2.VideoCapture('/home/aoberai/Downloads/3rdStopSign.mp4')
-    stream = cv2.VideoCapture('/home/aoberai/Downloads/4thStopSign.mp4')
+    # stream = cv2.VideoCapture('/home/aoberai/Downloads/4thStopSign.mp4')
     # stream = cv2.VideoCapture('/home/aoberai/Downloads/ChoreographWalking.mp4')
     # position_video = 0.05 # Position of video to start at
     # stream.set(cv2.CAP_PROP_POS_FRAMES, (position_video * stream.get(cv2.CAP_PROP_FRAME_COUNT)))

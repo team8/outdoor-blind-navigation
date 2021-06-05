@@ -23,11 +23,14 @@ def runCarCollisionDetected(numid, colliding):
 
 class AudioPlayer:
     def run(self):
-        playedAudioClips = CircularBuffer(15)
+        playedAudioClipsSize = 5
+        playedAudioClips = CircularBuffer(playedAudioClipsSize) # TODO: add associated time and delete clips which are more than 10 seconds old from this list
+        timeTillPlayedAudioClipDelete = 10  # x seconds till a played audio clip is removed off of do-not-play list
         while True:
             print("Running AudioPlayer")
             global wantedAudioClips
             print("Wanted " + str(wantedAudioClips))
+            print(playedAudioClips.getList())
             highestPriorityString = None
             highestPriorityIndex = None
             # Find clip with the highest priority
@@ -38,15 +41,19 @@ class AudioPlayer:
                 # print(highestPriorityString not in playedAudioClips.getList())
                 # print("PlayedAudioClips" + str(playedAudioClips.getList()))
                 # print(clip)
-                # print(playedAudioClips.getList().count(clip) == 0)
-                if (highestPriorityIndex is None or currentClipPriority < highestPriorityIndex) and playedAudioClips.getList().count(clip) == 0:
+                playedAudioClipsList = list(filter(None, playedAudioClips.getList()))
+                if (highestPriorityIndex is None or currentClipPriority < highestPriorityIndex) and sum(map(lambda obstacle : obstacle[0] == clip, playedAudioClipsList)) == 0:
                     highestPriorityIndex = currentClipPriority
                     highestPriorityString = clip
             if highestPriorityString is not None:
-                playedAudioClips.add(highestPriorityString)
+                playedAudioClips.add((highestPriorityString,int(time.time())))
                 self.__play(highestPriorityString)
             time.sleep(1)
-
+            currentTime = int(time.time())
+            for clip_index in range(0, len(playedAudioClips.getList())):
+                if playedAudioClips.getList()[clip_index] != None:
+                    if (currentTime - playedAudioClips.getList()[clip_index][1]) > timeTillPlayedAudioClipDelete:
+                        playedAudioClips.replaceIndex(None, clip_index)
 
     def __play(self, audio_string):
         # Play audio string based on identifier string
