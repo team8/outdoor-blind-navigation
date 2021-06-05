@@ -174,7 +174,7 @@ class Display:
             cv2.imshow("2d visualizer", self.frame)
             cv2.waitKey(1)
 
-    def put_state(self, map):
+    def putState(self, map):
         self.person.SetVal(map["person"])
         self.car.SetVal(map["car"])
         self.cperson.SetVal(map["person collision"])
