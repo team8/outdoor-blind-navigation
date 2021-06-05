@@ -15,11 +15,13 @@ def runStopSignDetected(numid):
     if ("Stop" + " " + str(numid)) not in wantedAudioClips:
         wantedAudioClips.append("Stop" + " " + str(numid))
 def runPersonCollisionDetected(numid, colliding): #TODO: Make separate for collision from left and right side
-    if ("Person" + " " + str(numid) + " " + str(colliding)) not in wantedAudioClips:
-        wantedAudioClips.append("Person" + " " + str(numid) + " " + str(colliding))
+    print("Possible Person Collision Detected")
+    # if ("Person" + " " + str(numid) + " " + str(colliding)) not in wantedAudioClips:
+        # wantedAudioClips.append("Person" + " " + str(numid) + " " + str(colliding))
 def runCarCollisionDetected(numid, colliding):
-    if ("Car" + " " + str(numid) + " " + str(colliding)) not in wantedAudioClips:
-        wantedAudioClips.append("Car" + " " + str(numid) + " " + str(colliding))
+    print("Possible Car Collision Detected")
+    # if ("Car" + " " + str(numid) + " " + str(colliding)) not in wantedAudioClips:
+        # wantedAudioClips.append("Car" + " " + str(numid) + " " + str(colliding))
 
 class AudioPlayer:
     def run(self):
@@ -47,6 +49,7 @@ class AudioPlayer:
                     highestPriorityString = clip
             if highestPriorityString is not None:
                 playedAudioClips.add((highestPriorityString,int(time.time())))
+                wantedAudioClips.remove(highestPriorityString)
                 self.__play(highestPriorityString)
             time.sleep(1)
             currentTime = int(time.time())
