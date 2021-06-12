@@ -1,24 +1,24 @@
-import sys
 import cv2
 import math
-import pygame
 import pangolin as pango
 from OpenGL.GL import *
 import numpy as np
-import PIL
 import cv2
 from PIL import Image
-import collision
+import person_automobile_sign_detection.collision as collision
 
 
 class Display:
     # dimension can be 2 or 3
     def __init__(self, dimension=3, size=(720, 540), bbox_inference_coord_size=(618, 618)):
+        global viewer_size
+        global stretch
         self.dimension = dimension
-        self.size = size
+        self.viewer_size = size
         self.bbox_inference_coord_size = bbox_inference_coord_size
-        self.stretchXValue = self.size[0]/self.bbox_inference_coord_size[0]
-        self.stretchYValue = self.size[1]/self.bbox_inference_coord_size[1]
+        self.stretchXValue = self.viewer_size[0]/self.bbox_inference_coord_size[0]
+        self.stretchYValue = self.viewer_size[1]/self.bbox_inference_coord_size[1]
+        self.stretch = (self.stretchXValue, self.stretchYValue)
         self.labelToColor = {"stop sign": ((0, 0, 255)),
                              "person": ((0, 255, 0)),
                              "car": ((255, 0, 0)),
@@ -38,7 +38,7 @@ class Display:
         if self.dimension == 3:
             print("Initializing pangolin opengl 3d viewer")
 
-            self.win = pango.CreateWindowAndBind("Visualization Tool 3d", self.size[0], self.size[1])
+            self.win = pango.CreateWindowAndBind("Visualization Tool 3d", size[0], size[1])
             glEnable(GL_DEPTH_TEST)
 
             # Definition of Projection and initial ModelView matrices
@@ -71,10 +71,19 @@ class Display:
             )
 
             panel = pango.CreatePanel('ui')
-            panel.SetBounds(0.0, 1.0, 0.0, 30 / 640.)
+            panel.SetBounds(0.0, 1.0, 0.0, 60 / 640.)
             self.checkBox = pango.VarBool('ui.N', value=True, toggle=True)
             self.xspeed = pango.VarFloat('ui.sX', value=False, toggle=False)
             self.yspeed = pango.VarFloat('ui.sY', value=False, toggle=False)
+            self.stop = pango.VarBool('ui.Stop Sign', value=False, toggle=True)
+            self.person = pango.VarBool('ui.Person', value=False, toggle=True)
+            self.car = pango.VarBool('ui.Car', value=False, toggle=True)
+            self.cperson = pango.VarBool('ui.Person Collision', value=False, toggle=True)
+            self.ccar = pango.VarBool('ui.Car Collision', value=False, toggle=True)
+            self.tright = pango.VarBool('ui.Turn Right', value=False, toggle=True)
+            self.tleft = pango.VarBool('ui.Turn Left', value=False, toggle=True)
+            self.sright = pango.VarBool('ui.Shift Right', value=False, toggle=True)
+            self.sleft = pango.VarBool('ui.Shift Left', value=False, toggle=True)
 
             glPointSize(15)
             # pango.RegisterKeyPressCallback(int(pango.PANGO_CTRL) + ord('r'), self.rehome3dViewer()) # Key press with panfolin for rehoming is broken - use different key press lib
@@ -85,7 +94,7 @@ class Display:
             raise Exception("Dimension for viewing tool must be either 2 or 3")
 
     def putVideoFrame(self, orig_cap):
-        self.frame = cv2.resize(orig_cap, self.size)
+        self.frame = cv2.resize(orig_cap, self.viewer_size)
 
     def putSidewalkState(self, state):
         if state == "Left of Sidewalk":
@@ -154,6 +163,7 @@ class Display:
 
                 self.__drawCanvas((1, 1.0, 0.025), (-1, -1.0, 0))  # Draws 3d canvas
                 self.__putMovementDirectionVectors()  # Draws arrows on 3d viewer for movement direction vector of objects
+                # self.__put_statuses({"person": False, "stop sign": False, "car": True, "turn left": False, "turn right": False, "shift right": False, "shift left": False, "person collision": False, "car collision": True})
                 self.__putCollisionROI()
                 self.t += 0.05
                 # Swap Frames and Process Events
@@ -163,6 +173,17 @@ class Display:
         else:
             cv2.imshow("2d visualizer", self.frame)
             cv2.waitKey(1)
+
+    def putState(self, map):
+        self.person.SetVal(map["person"])
+        self.car.SetVal(map["car"])
+        self.cperson.SetVal(map["person collision"])
+        self.ccar.SetVal(map["car collision"])
+        self.stop.SetVal(map["stop sign"])
+        self.tright.SetVal(map["turn left"])
+        self.tleft.SetVal(map["turn right"])
+        self.sright.SetVal(map["shift right"])
+        self.sleft.SetVal(map["shift left"])
 
     def __rehome3dViewer(self):
         print("Resetting cam position")
@@ -233,25 +254,25 @@ class Display:
         glLineWidth(3)
         if self.obstacles is not None:
             for detection in self.obstacles:
-                if detection[0] == "person" or detection[0] == "car":
-                    if detection in self.objects_collision:
+                if detection["label"] == "person" or detection["label"] == "car":
+                    if detection["colliding"] == True:
                         glColor3f(1, 0.5, 0.25)
-                    x_offset, y_offset, z_offset = detection[4]
-                    x_anchor, y_anchor, w, h = detection[2]
-                    x_offset = (x_offset * self.stretchXValue / self.size[0])
-                    y_offset = (y_offset * self.stretchYValue / self.size[1])
-                    x_anchor = (x_anchor * self.stretchXValue / self.size[0]) * 2 - 1
-                    y_anchor = (y_anchor * self.stretchYValue / self.size[1]) * 2 - 1
+                    x_offset, y_offset, z_offset = detection["mdv"]
+                    x_anchor, y_anchor, w, h = detection["bbox"]
+                    x_offset = (x_offset * self.stretchXValue / self.viewer_size[0])
+                    y_offset = (y_offset * self.stretchYValue / self.viewer_size[1])
+                    x_anchor = (x_anchor * self.stretchXValue / self.viewer_size[0]) * 2 - 1
+                    y_anchor = (y_anchor * self.stretchYValue / self.viewer_size[1]) * 2 - 1
 
-                    wanted_z_anchor = -abs(z_offset) * 0.7
-                    z_anchor = min(math.sqrt(1 - x_offset**2 - y_offset**2) *wanted_z_anchor, 0.5)
+                    wanted_z_anchor = -abs(z_offset)
+                    z_anchor = max(math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor, -0.5) if detection["colliding"] == False else min(math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor, -collision.collisionROI[0][2] - 0.2)
                     # z axis (+)  is toward self
                     pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor + x_offset, y_anchor + y_offset,
                                                               z_anchor]])  # down is positive y, right is positive x - this does bottom left
 
                     pango.DrawPoints([[x_anchor + x_offset, y_anchor + y_offset, z_anchor]])
 
-                    if detection in self.objects_collision:
+                    if detection["colliding"] == True:
                         glColor3f(1, 1, 1)
 
     def __putCollisionROI(self):
@@ -259,17 +280,16 @@ class Display:
         for i in range(0, len(collisionROI) - 1):
            pango.DrawLine([collisionROI[i], collisionROI[i+1]])
 
-    def putObjects(self, obstacles, objects_collision):
+    def putObjects(self, obstacles):
         self.obstacles = obstacles
-        self.objects_collision = objects_collision
         if obstacles is None:
             return
         for detection in obstacles:
-            if detection[0] in self.labelToColor.keys():
+            if detection["label"] in self.labelToColor.keys():
                 self.frame = self.__displayObjects(detection)
 
     def __displayObjects(self, objectInfo):
-        x, y, w, h = objectInfo[2]
+        x, y, w, h = objectInfo["bbox"]
         x *= self.stretchXValue
         y *= self.stretchYValue
         w *= self.stretchXValue
@@ -277,13 +297,11 @@ class Display:
         lineLengthWeightage = 2
         centerX = x
         centerY = y + (h / 2) + 15
-        if (centerY + 15 >= self.size[1]):
+        if (centerY + 15 >= self.viewer_size[1]):
             centerY = y - (h / 2) - 15
-        self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))),
-                                  (int(x + (w / 2)), int(y + (h / 2))), self.labelToColor[objectInfo[0]],
-                                  lineLengthWeightage)
+        self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))), (int(x + (w / 2)), int(y + (h / 2))), self.labelToColor[objectInfo["label"]], lineLengthWeightage)
         font = cv2.FONT_HERSHEY_SIMPLEX
-        shownText = objectInfo[0].replace("sign", "") + " ID: " + str(objectInfo[3])
+        shownText = objectInfo["label"].replace("sign", "") + " ID: " + str(objectInfo["id"])
         textsize = cv2.getTextSize(shownText, font, 0.5, 2)[0]
         cv2.putText(self.frame, shownText, (int(centerX - (textsize[0] / 2)), int(centerY)), font, 0.7, (255, 255, 255),
                     2, cv2.LINE_AA)
@@ -311,8 +329,10 @@ class Display:
 
     def __showRightArrow(self):
         self.frame = self.transposeImageSrc(self.leftArrow)
+
     def getStretchFactor(self):
-        return (self.stretchXValue, self.stretchYValue)
+        return self.stretch
     def getViewerSize(self):
-        return self.size
+        return self.viewer_size
+
 

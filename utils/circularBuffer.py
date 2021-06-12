@@ -81,3 +81,7 @@ class CircularBuffer:
 
     def getLastAccessed(self) -> bool:
         return self.lastAccessed
+
+    def replaceIndex(self, new_val, index):
+        self.queue[index] = new_val
+

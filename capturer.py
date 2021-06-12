@@ -17,7 +17,6 @@ except Exception as e:
     # stream = cv2.VideoCapture('/home/aoberai/Downloads/ChoreographWalking.mp4')
     # position_video = 0.05 # Position of video to start at
     # stream.set(cv2.CAP_PROP_POS_FRAMES, (position_video * stream.get(cv2.CAP_PROP_FRAME_COUNT)))
-    # for presentation video, use newTest and 3rdStopSign
 images_queue = CircularBuffer(2)
 def capturer():
     firstRun = True

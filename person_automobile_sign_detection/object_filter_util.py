@@ -1,7 +1,5 @@
-from person_automobile_sign_detection.detection import Detection
 import numpy as np
 
-blank_detection = Detection()
 # provides psuedo direction vector
 def get_direction_vector(label, bbox_buffer):
     bbox_list = np.array([x for x in bbox_buffer if x is not None])
