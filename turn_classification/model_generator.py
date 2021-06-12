@@ -6,6 +6,7 @@ import numpy as np
 import random
 
 input_shape = (100, 100, 3)
+# labels = ['Left Turn', 'No Turn', 'Right Turn']
 labels = ['Left Turn', 'No Turn', 'Right Turn']
 
 # VGG16_MODEL=tf.keras.applications.VGG16(input_shape=input_shape,

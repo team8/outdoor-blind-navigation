@@ -32,7 +32,7 @@ while True:
     display.putVideoFrame(capture)
     display.putSidewalkState(state_classifier_inference)
     display.putObjects(object_localizer_inference)
-    display.putState(feedback.interpret_status(state_classifier_inference, object_localizer_inference))
+    display.putState(feedback.interpret_status(state_classifier_inference, turn_classifier_inference, object_localizer_inference))
     display.displayScreen()
     feedback.updateAudioFeedback(state_classifier_inference, object_localizer_inference)
     counter += 1

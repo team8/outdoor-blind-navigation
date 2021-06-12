@@ -30,9 +30,9 @@ class AudioPlayer:
         timeTillPlayedAudioClipDelete = 10  # x seconds till a played audio clip is removed off of do-not-play list
         while True:
             try:
-                print("Running AudioPlayer")
+                # print("Running AudioPlayer")
                 global wantedAudioClips
-                print("Wanted " + str(wantedAudioClips))
+                # print("Wanted " + str(wantedAudioClips))
                 print(playedAudioClips.getList())
                 highestPriorityString = None
                 highestPriorityIndex = None

@@ -180,8 +180,8 @@ class Display:
         self.cperson.SetVal(map["person collision"])
         self.ccar.SetVal(map["car collision"])
         self.stop.SetVal(map["stop sign"])
-        self.tright.SetVal(map["turn left"])
-        self.tleft.SetVal(map["turn right"])
+        self.tright.SetVal(map["turn right"])
+        self.tleft.SetVal(map["turn left"])
         self.sright.SetVal(map["shift right"])
         self.sleft.SetVal(map["shift left"])
 

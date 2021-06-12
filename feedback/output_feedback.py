@@ -1,8 +1,8 @@
 from utils.circularBuffer import CircularBuffer
 import feedback.audio_player as audio_player
 
-def interpret_status(state_classifier_inference, object_localizer_inference):
-    status = {"person": False, "stop sign": False, "car": False, "turn left": False, "turn right": False, "shift right": False, "shift left": False, "person collision": False, "car collision": False}
+def interpret_status(state_classifier_inference, turn_classifier_inference, object_localizer_inference):
+    status = {"person": False, "stop sign": False, "car": False, "turn left": False, "no turn": False, "turn right": False, "shift right": False, "shift left": False, "person collision": False, "car collision": False}
     if state_classifier_inference == "Left of Sidewalk":
         status["shift right"] = True
     elif state_classifier_inference == "Right of Sidewalk":
@@ -18,6 +18,12 @@ def interpret_status(state_classifier_inference, object_localizer_inference):
             status["car"] = True
             if obstacle["colliding"] == True:
                 status["car collision"] = True
+    if turn_classifier_inference == "Right Turn":
+        status["turn right"] = True
+    elif turn_classifier_inference == "Left Turn":
+        status["turn left"] = True
+    else:
+        status["no turn"] = True
     return status
 
 def updateAudioFeedback(state_classifier_inference, object_localizer_inference):
