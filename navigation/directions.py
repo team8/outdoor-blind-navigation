@@ -9,4 +9,6 @@ route = client.directions(coordinates=coords,profile='driving-car',format='geojs
 
 j = open("route.json","w")
 json.dump(route, j, indent = 1)
+
+print(route)
 j.close()
