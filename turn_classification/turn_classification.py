@@ -7,8 +7,8 @@ import capturer
 from utils.circularBuffer import CircularBuffer
 
 labels = ['Left Turn', 'No Turn', 'Right Turn']
-model_path = "./turn_classification/turn_classification_model_resnet_final.h5"
-readings_buffer_size = 10
+model_path = "./turn_classification/turn_classification_model_final_v1.h5"
+readings_buffer_size = 20
 image_preprocessing_dimens = (100, 100)
 detection_threshold = 0.5
 
@@ -45,7 +45,7 @@ class TurnClassification:
         self.readings_buffer.add(None if feedforward_result == None or max(feedforward_result) < detection_threshold else feedforward_result)
         averaged_result = self.readings_buffer.mean()
         # print(averaged_result)
-        self.classifier_queue.add("Unknown Turn" if averaged_result is None else labels[np.argmax(averaged_result)])
+        self.classifier_queue.add("No Turn" if averaged_result is None else labels[np.argmax(averaged_result)])
 
     def get_inference(self):
         return self.classifier_queue.getLast()

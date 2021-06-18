@@ -49,8 +49,8 @@ print(train_ds)
 model.fit(train_ds, validation_data=val_ds, epochs=4)
 
 print(model.summary())
-if input("Do you want to save model? y for yes, n for no?\n") == 'y':
-    model.save("turn_classification_model_resnet_final.h5")
+# if input("Do you want to save model? y for yes, n for no?\n") == 'y':
+model.save("turn_classification_model_final_v1.h5")
 
 
 # modifications for 1 input channel for image

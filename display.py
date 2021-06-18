@@ -96,13 +96,20 @@ class Display:
     def putVideoFrame(self, orig_cap):
         self.frame = cv2.resize(orig_cap, self.viewer_size)
 
-    def putSidewalkState(self, state):
-        if state == "Left of Sidewalk":
+    def putSidewalkState(self, shift_state, turn_state):
+        if turn_state == "Right Turn":
             self.__showLeftArrow()
-        if state == "Middle of Sidewalk":
-            self.__showForwardArrow()
-        if (state == "Right of Sidewalk"):
+            return
+        if turn_state == "Left Turn":
             self.__showRightArrow()
+            return
+        if turn_state == "No Turn":
+            if shift_state == "Left of Sidewalk":
+                self.__showLeftArrow()
+            if shift_state == "Middle of Sidewalk":
+                self.__showForwardArrow()
+            if shift_state == "Right of Sidewalk":
+                self.__showRightArrow()
 
     def view(self):
         self.mv = pango.ModelViewLookAt(math.cos(self.tX), math.sin(self.tY), -2.5,
