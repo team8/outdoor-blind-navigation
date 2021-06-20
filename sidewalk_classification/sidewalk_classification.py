@@ -8,7 +8,7 @@ from utils.circularBuffer import CircularBuffer
 
 classes = ['Left of Sidewalk', 'Middle of Sidewalk', 'Right of Sidewalk', 'Nothing Detected']
 model_path = "./sidewalk_classification/sidewalk_classification_model_vgg16_final.h5"
-readings_buffer_size = 25
+readings_buffer_size = 50
 image_preprocessing_dimens = (100, 100)
 detection_threshold = 0.5
 

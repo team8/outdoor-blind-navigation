@@ -2,9 +2,20 @@ import simpleaudio as sa
 import time
 from utils.circularBuffer import CircularBuffer
 
-clipPriority = {"ShiftRight": 0, "ShiftLeft": 1, "Stop": 2, "Person": 3, "Car": 4} # lower value -> higher priority
+clipPriority = {"TurnRight": 0, "TurnLeft": 1, "ShiftRight": 2, "ShiftLeft": 3, "Stop": 4, "Person": 5, "Car": 6} # lower value -> higher priority
 wantedAudioClips = [] # Have certain clips expire after certain amount of time? 
 
+def runTurnRight():
+    if "TurnRight" not in wantedAudioClips:
+        wantedAudioClips.append("TurnRight")
+        if "ShiftRight" in wantedAudioClips: wantedAudioClips.remove("ShiftRight")
+        if "ShiftLeft" in wantedAudioClips: wantedAudioClips.remove("ShiftLeft")
+
+def runTurnLeft():
+    if "TurnLeft" not in wantedAudioClips:
+        wantedAudioClips.append("TurnLeft")
+        if "ShiftRight" in wantedAudioClips: wantedAudioClips.remove("ShiftRight")
+        if "ShiftLeft" in wantedAudioClips: wantedAudioClips.remove("ShiftLeft")
 def runShiftRight():
     if "ShiftRight" not in wantedAudioClips:
         wantedAudioClips.append("ShiftRight")
@@ -61,7 +72,13 @@ class AudioPlayer:
         print("Playing " + audio_string)
         wave_obj = None
         audio_params = audio_string.split()
-        if audio_params[0] == "ShiftLeft":
+
+
+        if audio_params[0] == "TurnLeft":
+            wave_obj = sa.WaveObject.from_wave_file("assets/LeftTurnAudio.wav")
+        elif audio_params[0] == "TurnRight":
+            wave_obj = sa.WaveObject.from_wave_file("assets/RightTurnAudio.wav")
+        elif audio_params[0] == "ShiftLeft":
             wave_obj = sa.WaveObject.from_wave_file("assets/ShiftLeftAudio.wav")
         elif audio_params[0] == "ShiftRight":
             wave_obj = sa.WaveObject.from_wave_file("assets/ShiftRightAudio.wav")

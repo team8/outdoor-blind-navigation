@@ -26,7 +26,11 @@ def interpret_status(state_classifier_inference, turn_classifier_inference, obje
         status["no turn"] = True
     return status
 
-def updateAudioFeedback(state_classifier_inference, object_localizer_inference):
+def updateAudioFeedback(state_classifier_inference, turn_classifier_inference, object_localizer_inference):
+    if turn_classifier_inference == "Left Turn":
+        audio_player.runTurnLeft()
+    if turn_classifier_inference == "Right Turn":
+        audio_player.runTurnRight()
     if state_classifier_inference == "Left of Sidewalk":
        audio_player.runShiftRight()
     elif state_classifier_inference == "Right of Sidewalk":
