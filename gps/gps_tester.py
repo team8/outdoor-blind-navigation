@@ -9,9 +9,11 @@ gpsd = gps(mode=WATCH_ENABLE | WATCH_NEWSTYLE)
 currentLat = 0.0
 currentLon = 0.0
 
+api_key = '5b3ce3597851110001cf624893d90c21680948129afaa561366cd798'
+
 try:
     #please initialize this with the api key
-    client = ors.Client(key='')
+    client = ors.Client(key=api_key)
 
     while True:
         report = gpsd.next()  #
@@ -24,7 +26,8 @@ try:
                 point=coordinate,
                 validate=True,
             )
-            print(reverse.raw)
+            print(reverse)
+            # print(reverse.raw)
 
         time.sleep(0.1)
 
