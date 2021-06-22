@@ -44,7 +44,9 @@ Our demo video showcases the above features on top of our visualization tools. M
 
 [process_runner.py](process_runner.py) manages all sub tasks.
 
-[sidewalk_classification.py](sidewalk_classification) manages and provides sidewalk state inference.
+[sidewalk_classification.py](sidewalk_classification) manages and provides sidewalk shift state inference.
+
+[turn_classification.py](sidewalk_classification) manages and provides sidewalk turn state inference.
 
 [detector.py](person_automobile_sign_detection/detector.py) manages and provides object localization inferences.
 
@@ -52,9 +54,11 @@ Our demo video showcases the above features on top of our visualization tools. M
 
 [capturer.py](capturer.py) handles getting images from the camera
 
-[display.py](display.py) handles displaying those images onto the visualization tool
+[display.py](display.py) handles displaying those images onto the 2d and 3d visualization tool
 
 [feedback](feedback/) handles feedback to Jetson Xavier NX (waist vibration and audio cues)
+
+
 
 ## Future Plans
 
@@ -71,10 +75,11 @@ SightWalk is entirely open source, meaning all software, CAD designs, and image 
 
 1. Create a fork of this repository on github
 2. Clone the fork you made ``git clone https://github.com/GITHUB-ACCOUNT-NAME/blind-navigation.git``
-3. Make a new branch with a descriptive name
-4. Implement the new feature
-5. Write test cases showing the robustness of the feature against multiple test cases and edge cases.
-6. Submit a pull request detailing all changes made.
+3. Download models and place them in the appropriate folders <br> [Model Download Link](https://drive.google.com/file/d/1AinPk80U0Euq6phM6UEneZsE8TIypnoy/view?usp=sharing)
+4. Make a new branch with a descriptive name
+5. Implement the new feature
+6. Write test cases showing the robustness of the feature against multiple test cases and edge cases.
+7. Submit a pull request detailing all changes made.
 
 ## Image Dataset Link
 
