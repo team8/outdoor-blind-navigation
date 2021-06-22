@@ -26,11 +26,11 @@ while True:
 
     state_classifier_inference = sc.get_inference()
     object_localizer_inference = ol.get_inference()
+    print(object_localizer_inference)
     turn_classifier_inference = tc.get_inference()
     print(turn_classifier_inference)
     if turn_classifier_inference == "Left Turn" or turn_classifier_inference == "Right Turn":
         state_classifier_inference = "Middle of Sidewalk"
-    # print(state_classifier_inference if counter % 2 == 0 else object_localizer_inference)
     display.putVideoFrame(capture)
     display.putSidewalkState(state_classifier_inference, turn_classifier_inference)
     display.putObjects(object_localizer_inference)
