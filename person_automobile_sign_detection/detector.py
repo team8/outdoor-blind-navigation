@@ -72,6 +72,9 @@ class Detector:
         return inference
 
     def detection_starter(self):
+        while collision.viewer3d_size is None and collision.viewer3d_stretch is None:
+            # If not initialized yet
+            time.sleep(1)
         while True:
             last_darknet_image = self.images_queue.get()[0]
             last_time = time.time()
