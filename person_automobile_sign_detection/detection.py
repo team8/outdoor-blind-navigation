@@ -1,4 +1,4 @@
-import person_automobile_sign_detection.object_filter_util as ofu
+import person_automobile_sign_detection.detection_calc_util as ofu
 import person_automobile_sign_detection.collision as collision_detector
 import display
 

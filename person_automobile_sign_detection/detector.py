@@ -8,7 +8,7 @@ from queue import Queue
 import capturer
 import darknet
 import person_automobile_sign_detection.collision as collision
-import person_automobile_sign_detection.object_filter_util as ofu
+import person_automobile_sign_detection.detection_calc_util as ofu
 from person_automobile_sign_detection.detection import Detection
 from utils.circularBuffer import CircularBuffer
 

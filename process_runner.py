@@ -4,6 +4,7 @@ from turn_classification.turn_classification import TurnClassification as TurnCl
 from display import Display
 import capturer
 from person_automobile_sign_detection.detector import Detector as ObjectLocalizer
+import person_automobile_sign_detection.intersection_safety_filter as isf
 import time
 import feedback.output_feedback as feedback
 from feedback.audio_player import AudioPlayer
@@ -29,6 +30,7 @@ while True:
     print(object_localizer_inference)
     turn_classifier_inference = tc.get_inference()
     print(turn_classifier_inference)
+    print("No Moving Vehicles?:" + str(isf.no_moving_vehicles(object_localizer_inference))) # Only useful when person not in movement
     if turn_classifier_inference == "Left Turn" or turn_classifier_inference == "Right Turn":
         state_classifier_inference = "Middle of Sidewalk"
     display.putVideoFrame(capture)
