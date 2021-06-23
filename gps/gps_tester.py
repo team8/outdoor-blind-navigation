@@ -1,4 +1,4 @@
-#! /usr/bin/python
+import json
 
 from gps import *
 import time
@@ -9,11 +9,8 @@ gpsd = gps(mode=WATCH_ENABLE | WATCH_NEWSTYLE)
 currentLat = 0.0
 currentLon = 0.0
 
-api_key = '5b3ce3597851110001cf624893d90c21680948129afaa561366cd798'
-
 try:
-    #please initialize this with the api key
-    client = ors.Client(key=api_key)
+    client = ors.Client(key='5b3ce3597851110001cf624893d90c21680948129afaa561366cd798')
 
     while True:
         report = gpsd.next()  #
@@ -21,15 +18,16 @@ try:
             currentLat = getattr(report, 'lat', 0.0)
             currentLon = getattr(report, 'lon', 0.0)
             print(currentLat, "\t", currentLon)
-            coordinate = [currentLat, currentLon]
+            coordinate = [currentLon, currentLat]
             reverse = client.pelias_reverse(
                 point=coordinate,
                 validate=True,
             )
-            print(reverse)
-            # print(reverse.raw)
+            print(reverse["features"][0]["properties"]["name"])
 
-        time.sleep(0.1)
+            time.sleep(0.1)
 
 except (KeyboardInterrupt, SystemExit):  # when you press ctrl+c
     print("Done.\nExiting.")
+
+
