@@ -18,13 +18,12 @@ try:
             currentLat = getattr(report, 'lat', 0.0)
             currentLon = getattr(report, 'lon', 0.0)
             print(currentLat, "\t", currentLon)
-            coordinate = [currentLat, currentLon]
+            coordinate = [currentLon, currentLat]
             reverse = client.pelias_reverse(
                 point=coordinate,
                 validate=True,
             )
-            tempJson = json.loads(reverse)
-            print(tempJson["features"]["properties"]["name"])
+            print(reverse["features"][0]["properties"]["name"])
 
             time.sleep(0.1)
 
