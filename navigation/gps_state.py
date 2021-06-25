@@ -13,27 +13,28 @@ currentLon = 0.0
 client = ors.Client(key=constants.api_key)
 
 def get_current_address():
-    report = gpsd.next()  #
-    if report['class'] == 'TPV':
-        currentLat = getattr(report, 'lat', 0.0)
-        currentLon = getattr(report, 'lon', 0.0)
-        print(currentLat, "\t", currentLon)
-        coordinate = [currentLon, currentLat]
-        reverse = client.pelias_reverse(
-            point=coordinate,
-            validate=True,
-        )
-        print(reverse["features"][0]["properties"]["name"])
-        return None if currentLat == 0 and currentLon == 0 else (reverse["features"][0]["properties"]["name"])
-    return None
+    while True:
+        report = gpsd.next()  #
+        if report['class'] == 'TPV':
+            currentLat = getattr(report, 'lat', 0.0)
+            currentLon = getattr(report, 'lon', 0.0)
+            # print(currentLat, "\t", currentLon)
+            coordinate = [currentLon, currentLat]
+            reverse = client.pelias_reverse(
+                point=coordinate,
+                validate=True,
+            )
+            # print(reverse["features"][0]["properties"]["name"])
+            if currentLat != 0 or currentLon != 0: return (reverse["features"][0]["properties"]["name"]);
 
 
 def get_current_coordinate():
-    report = gpsd.next()  #
-    if report['class'] == 'TPV':
-        currentLat = getattr(report, 'lat', 0.0)
-        currentLon = getattr(report, 'lon', 0.0)
-        print(currentLat, "\t", currentLon)
-        coordinate = {"Longitude": currentLon, "Latitude": currentLat}
-        return None if currentLat == 0 and currentLon == 0 else coordinate
+    while True:
+        report = gpsd.next()  #
+        if report['class'] == 'TPV':
+            currentLat = getattr(report, 'lat', 0.0)
+            currentLon = getattr(report, 'lon', 0.0)
+            # print(currentLat, "\t", currentLon)
+            coordinate = [currentLon, currentLat]
+            if currentLat != 0 or currentLon != 0: return coordinate
 

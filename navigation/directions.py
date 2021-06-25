@@ -13,4 +13,4 @@ def get_directions(starting_coords, ending_coords):
     j = open("route.json","w")
     json.dump(route, j, indent=1)
     j.close()
-    print(route)
+    # print(route)
