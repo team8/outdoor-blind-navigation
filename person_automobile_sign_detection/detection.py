@@ -62,10 +62,11 @@ class Detection:
     def __updateCollision(self):
         self.collision_history.insert(0, collision_detector.isColliding({"label": self.label, "bbox": self.bbox_history[0], "mdv": self.mdv_history[0]}))
         del self.collision_history[-1]
-        if self.colliding == False and self.collision_history.count(True) > len(self.collision_history) * 0.6:
-            self.colliding = True
-        elif self.colliding == True and self.collision_history.count(True) < len(self.collision_history) * 0.2:
-            self.colliding = False
+        self.colliding = self.collision_history[0] 
+        # if self.colliding == False and self.collision_history.count(True) > len(self.collision_history) * 0.6:
+        #     self.colliding = True
+        # elif self.colliding == True and self.collision_history.count(True) < len(self.collision_history) * 0.2:
+        #     self.colliding = False
 
     def evaluateRemove(self) -> bool:
         return True if self.consecutiveNotSeenCount > 4 else False # finish

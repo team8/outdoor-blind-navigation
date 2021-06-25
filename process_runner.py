@@ -29,6 +29,11 @@ while True:
     object_localizer_inference = ol.get_inference()
     print(object_localizer_inference)
     turn_classifier_inference = tc.get_inference()
+
+    # state_classifier_inference = None   
+    # turn_classifier_inference = None
+
+
     print(turn_classifier_inference)
     print("No Moving Vehicles?:" + str(isf.no_moving_vehicles(object_localizer_inference))) # Only useful when person not in movement
     if turn_classifier_inference == "Left Turn" or turn_classifier_inference == "Right Turn":

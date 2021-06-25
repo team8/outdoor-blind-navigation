@@ -11,8 +11,6 @@ import person_automobile_sign_detection.collision as collision
 class Display:
     # dimension can be 2 or 3
     def __init__(self, dimension=3, size=(720, 540), bbox_inference_coord_size=(618, 618)):
-        global viewer_size
-        global stretch
         self.dimension = dimension
         self.viewer_size = size
         self.bbox_inference_coord_size = bbox_inference_coord_size
@@ -47,7 +45,7 @@ class Display:
             self.pm = pango.ProjectionMatrix(640, 480, 420, 420, 320, 240, 0.5, 100)
 
             # This allows changing of "camera" angle : glulookat style model view matrix (x, y, z, lx, ly, lz, AxisDirection Up) Forward is -z and up is +y
-            self.mv = pango.ModelViewLookAt(0.3, 0, -2.5,
+            self.mv = pango.ModelViewLookAt(0.3, 0, -3.5,
                                             0, 0, 0,
                                             0, -1, 0)
             '''
@@ -112,7 +110,7 @@ class Display:
                 self.__showRightArrow()
 
     def view(self):
-        self.mv = pango.ModelViewLookAt(math.cos(self.tX), math.sin(self.tY), -2.5,
+        self.mv = pango.ModelViewLookAt(math.cos(self.tX), math.sin(self.tY), -3.5,
                                         0, 0, 0,
                                         0, -1, 0)
 
@@ -123,7 +121,7 @@ class Display:
         self.tY += self.yspeed.Get() / 10
 
     def view_n(self):
-        self.mv = pango.ModelViewLookAt(0, 0, -2.5,
+        self.mv = pango.ModelViewLookAt(0, 0, -3.5,
                                         0, 0, 0,
                                         0, -1, 0)
 
@@ -271,7 +269,7 @@ class Display:
                     x_anchor = (x_anchor * self.stretchXValue / self.viewer_size[0]) * 2 - 1
                     y_anchor = (y_anchor * self.stretchYValue / self.viewer_size[1]) * 2 - 1
 
-                    wanted_z_anchor = -abs(z_offset)
+                    wanted_z_anchor = -(z_offset)
                     z_anchor = max(math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor, -0.5) if detection["colliding"] == False else min(math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor, -collision.collisionROI[0][2] - 0.2)
                     # z axis (+)  is toward self
                     pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor + x_offset, y_anchor + y_offset,

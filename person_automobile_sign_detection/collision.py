@@ -10,7 +10,7 @@ Perhaps move to object detector stuffs so you get detection instance to play wit
 '''
 import math
 
-collisionROI = [[0.4, -0.2, -0.3], [0.6, 0.8, -0.3], [-0.6, 0.8, -0.3], [-0.4, -0.2, -0.3], [0.4, -0.2, -0.3]] # in opengl 3d coordinate system [-1, 1] in both x and y axis. bottom right hand corner is (1, 1). Toward self is negative, away is positive for z pos. Points go cyclicly from top right to bottom right to bottom left to top left back to top right
+collisionROI = [[0.4, -0.2, -0.15], [0.6, 0.8, -0.15], [-0.6, 0.8, -0.15], [-0.4, -0.2, -0.15], [0.4, -0.2, -0.15]] # in opengl 3d coordinate system [-1, 1] in both x and y axis. bottom right hand corner is (1, 1). Toward self is negative, away is positive for z pos. Points go cyclicly from top right to bottom right to bottom left to top left back to top right
 areaROI = (collisionROI[1][1] - collisionROI[0][1]) * ((collisionROI[1][0] - collisionROI[2][0]) + (collisionROI[4][0] - collisionROI[3][0]))/2
 
 #
@@ -30,7 +30,7 @@ def setConstants(size, stretch):
     global viewer3d_size
     global viewer3d_stretch
     viewer3d_size = size
-    viewer3d_stretch = stretch
+    viewer3d_stretch = stretch 
 
 def isColliding(detection):
     if detection["label"] == "person" or detection["label"] == "car":
@@ -40,7 +40,7 @@ def isColliding(detection):
         y_offset = (y_offset * viewer3d_stretch[1] / viewer3d_size[1])
         x_anchor = (x_anchor * viewer3d_stretch[0] / viewer3d_size[0]) * 2 - 1
         y_anchor = (y_anchor * viewer3d_stretch[1] / viewer3d_size[1]) * 2 - 1
-        wanted_z_anchor = -abs(z_offset)
+        wanted_z_anchor = -(z_offset)
         # z_anchor = min(math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor, 0.5)
         z_anchor = math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor
         pointing_toward_center = True if math.ceil(abs(x_offset + x_anchor) * 10) < math.floor(abs(x_offset) * 10) else False # TODO: enhance this alg
