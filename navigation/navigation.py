@@ -1,8 +1,9 @@
 import constants
 import openrouteservice as ors
 import json
-# import gps_state
+import gps_state
 import speech_2_text
+import directions
 
 client = ors.Client(key=constants.api_key)
 
@@ -21,26 +22,15 @@ def geocode(name, start):  # start = True means you are geocoding for the start 
         return None
     return route
 
-
-start = geocode("50 Embarcadero Road, Palo Alto, CA 94301", True)
+start = geocode(gps_state.get_current_address(), True)
 coords[0] = start["features"][0]["geometry"]["coordinates"]
-
-# start = geocode(gps_state.get_current_address())
 
 destination_speech = speech_2_text.get_speech_to_text()
 destination = geocode(destination_speech, False)
-# print(start, destination)
-
-
-
 
 if destination == None:
     print("No such location found. Try again.")
-
 else:
     print ("Getting directions...")
     coords[1] = destination["features"][0]["geometry"]["coordinates"]
-    route = client.directions(coordinates=coords, profile='foot-walking', format='geojson', language='en')
-    j = open("route.json", "w")
-    json.dump(route, j, indent=1)
-    j.close()
+    directions.get_directions(coords[0], coords[1])
