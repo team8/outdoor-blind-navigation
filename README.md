@@ -1,34 +1,37 @@
 # SightWalk
 
+![](assets/JetsonCase.png)
+
 ## Project Description
 
-SightWalk is an entirely open source visual assistance and sidewalk navigation device that helps visually-impaired individuals navigate outdoor environments. SightWalk uses neural network models that detect objects, such as people, cars, bikes, street signs, and more, and a custom trained deep neural network model to determine an individual’s position relative to a sidewalk. While the user is walking, a chest-mounted device using camera data evaluates the user’s surroundings and determines if the user is approaching a hazard or has drifted onto the road. The program sends signals to the chest-mounted device that vibrates and gives audio cues to alert the user of potential concerns, aiding users in the goal of safe outdoor exercise without the assistance of guides.
+### Goal: Aiding blind users in the goal of safe outdoor exercise without the assistance of guides
+
+SightWalk is an entirely open source visual assistance and sidewalk navigation device that helps visually-impaired individuals navigate outdoor environments. SightWalk uses neural network models that detect objects, such as people, cars, bikes, street signs, and more, and a set of custom trained deep neural network models to provide relevant & specific sidewalk state space information. At the moment, we have 2 custom models: a sidewalk shift classification model and a turn classification model. The shift classification model determines an individual’s position relative to a sidewalk as a classification NN problem which can be used to provide feedback on which direction the blind user should move to get back onto the sidewalk given that they have drifted onto the road (a common and potentially fatal situation faced by blind individuals when navigating their outdoor environments). The turn classification model can determine if there is a junction point up ahead, and if so, what direction the sidewalk is leading the blind user. While the user is walking, the discreet "button camera" paired with the waist-mounted Jetson Xavier computer uses these convolutional NN models for blind-user position evaluation. This evaluation outputed by the program then interfaces with the visually-impared user using 2 feedback modalities: audio and vibratory. 
+
 
 ## Detection Demo
 
 [![youtube link](assets/Youtube.png)](https://www.youtube.com/watch?v=xqhnR9QOT2w)
 
 
-## Technical Details
-
-The physical hardware we made for SightWalk is a 3d printed chest-mounted apparatus housing a Jetson ML-optimized computer (Xavier NX) powered via a lipo battery pack. One of the main considerations with our design was comfort and wearability and so the entire chest mount was printed in a flexible TPU filament so that it would contour to the user’s body shape.
-
-## Design
-![](assets/Design.png)
-
-
 ## Physical Build
-![](assets/Physical_Build.jpg)
 
-Attached to the chest mount is a camera which takes a live video stream of the surroundings of the blind individual upon which important data can be extrapolated. 
-In order to determine the sidewalk state, we custom trained a convolutional neural network (CNN) to perform the classification problem. The CNN model uses Resnet architecture and was trained on a custom dataset of over 3000 images we took. Using this we can achieve around 95% accuracy - something that would improve further with a larger image dataset.
+Discreet Camera            | Computer Housing
+:-------------------------:|:-------------------------:
+![](assets/DesignV2Camera.png)  |  ![](assets/DesignV2Worn.png)
 
-In order to identify obstacles such as cars, people, vehicles, stop signs, street lights, and other unseen hazards such as fire hydrants, we trained a YOLOV4-Tiny CNN model on the COCO image dataset. In order to track objects through frames, we wrote a custom tracking algorithm which can take the model’s inferences and associate detections through multiple frames (doing extra false positive and false negative detection removals simultaneously). We ended up with a highly accurate object detection pipeline as shown in the demo video.
+## Technical Details: A More In-Depth Explanation
+The button camera as shown above takes a live video stream of the surroundings of the blind individual upon which important data can be extrapolated. 
 
-In order to interact with the user, we also have a set of vibration motors which allow for dynamic steering of the course of the blind individual based on the detected sidewalk state in order to steer them away from the road. An ambient sound pass-through earbud set is used for higher resolution outputs which is more specifically used for communicating object detection data as well as for easy future functionality expandability.
+In order to determine the sidewalk shift state and the sidewalk turn state, we trained 2 custom convolutional neural networks. The CNN models use Resnet and VGG architecture respectively and were trained on custom datasets of over 5000 images taken by the Paly Robotics team. Both models have around 95% verification accuracy at the moment. 
+
+In order to identify obstacles such as cars, people, vehicles, stop signs, street lights, and other unseen hazards such as fire hydrants, we trained a YOLOV4-Tiny CNN model on the COCO image dataset. In order to track objects through frames, we wrote a custom tracking algorithm which can take the model’s inferences and associate detections through multiple frames (doing extra false positive and false negative detection removals simultaneously). We ended up with a highly accurate object detection pipeline as shown in the demo video. With the ability to id each object and associate objects in movement, we have access to the temporal movement history of all objects which allow us to calculate the movemement direction vector of the object which can be used to predict possible collisions that may occur. Since only objects likely to come into collision with the blind user are relevant feedbackthat is acted upon, this allows us to filter out important and unimportant object locationary information as to not overload the auditory feedback modality. We also use this information for a lightweight intersection safety detector which can evaluate if there are no moving cars at an intersection based on the movement direction vectors of all the vehicles in the scene.
+
+In order to interact with the user, we also have a set of vibration motors which allow for dynamic steering of the course of the blind individual, useful for providing more immediate and abrupt feedback. An ambient sound pass-through earbud set is used for higher resolution outputs such as object detection data.
 
 Our demo video showcases the above features on top of our visualization tools. Most recently, we have worked on the development of the 3d viewing tool using OpenGL as shown in the beginning of the video which allows us to navigate around frames and view the three-dimensional movement direction vectors of detected objects.
 
+We also have been prototyping a navigation system that can take in audio input specifying the wanted location, search for the location in a place database, use gps to find the current location, generate a route or trajectory, and then follow the trajectory. A prototype of this is attached in the above video.
 
 ## Blind Navigation Code Diagram
 
@@ -64,7 +67,6 @@ Our demo video showcases the above features on top of our visualization tools. M
 
 TODO:
 * [ ] Convert to phone application
-* [ ] Add more capabilities such as more sidewalk states, when to turn, when it is safe to cross the street, etc.
 * [ ] Adding GPS + ML in order to make it easier to get to the destination
 * [ ] Add more aids such as text recognition
 * [ ] Monocular point slam
