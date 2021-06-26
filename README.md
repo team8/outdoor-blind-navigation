@@ -6,7 +6,7 @@ SightWalk is an entirely open source visual assistance and sidewalk navigation d
 
 ## Detection Demo
 
-[![youtube link](assets/Youtube.png)](https://www.youtube.com/watch?v=nbDt9nyb0Tw)
+[![youtube link](assets/Youtube.png)](https://www.youtube.com/watch?v=xqhnR9QOT2w)
 
 
 ## Technical Details
