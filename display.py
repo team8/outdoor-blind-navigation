@@ -117,18 +117,18 @@ class Display:
 
     def put_position_state(self, shift_state, turn_state):
         if turn_state == "Right Turn":
-            self.__showleft_arrow_overlay()
+            self.__show_left_arrow()
             return
         if turn_state == "Left Turn":
-            self.__showright_arrow_overlay()
+            self.__show_right_arrow()
             return
         if turn_state == "No Turn":
             if shift_state == "Left of Sidewalk":
-                self.__showleft_arrow_overlay()
+                self.__show_left_arrow()
             if shift_state == "Middle of Sidewalk":
-                self.__showforward_arrow_overlay()
+                self.__show_forward_arrow()
             if shift_state == "Right of Sidewalk":
-                self.__showright_arrow_overlay()
+                self.__show_right_arrow()
 
     def view(self):
         self.mv = pango.ModelViewLookAt(
@@ -200,13 +200,13 @@ class Display:
                     self.view_mode = 1
                     self.view()
 
-                self.__drawCanvas(
+                self.__draw_canvas(
                     (1, 1.0, 0.025), (-1, -1.0, 0))  # Draws 3d canvas
                 # Draws arrows on 3d viewer for movement direction vector of
                 # objects
-                self.__putMovementDirectionVectors()
+                self.__put_movement_direction_vectors()
                 # self.__put_statuses({"person": False, "stop sign": False, "car": True, "turn left": False, "turn right": False, "shift right": False, "shift left": False, "person collision": False, "car collision": True})
-                self.__putCollisionROI()
+                self.__put_collision_ROI()
                 self.t += 0.05
                 # Swap Frames and Process Events
                 pango.FinishFrame()
@@ -233,7 +233,7 @@ class Display:
         # # Create Interactive View in window
         # self.handler = pango.Handler3D(self.s_cam)
 
-    def __drawCanvas(self, p1, p2):
+    def __draw_canvas(self, p1, p2):
         x1, y1, z1 = p1
         x2, y2, z2 = p2
 
@@ -293,7 +293,7 @@ class Display:
 
         glBindTexture(GL_TEXTURE_2D, 0)
 
-    def __putMovementDirectionVectors(self):
+    def __put_movement_direction_vectors(self):
         glLineWidth(3)
         if self.obstacles is not None:
             for detection in self.obstacles:
@@ -338,7 +338,7 @@ class Display:
                     if detection["colliding"]:
                         glColor3f(1, 1, 1)
 
-    def __putCollisionROI(self):
+    def __put_collision_ROI(self):
         collision_ROI = collision.collision_ROI
         for i in range(0, len(collision_ROI) - 1):
             pango.DrawLine([collision_ROI[i], collision_ROI[i + 1]])
@@ -349,15 +349,15 @@ class Display:
             return
         for detection in obstacles:
             if detection["label"] in self.label_2_color.keys():
-                self.frame = self.__displayObjects(detection)
+                self.frame = self.__display_objects(detection)
 
-    def __displayObjects(self, objectInfo):
+    def __display_objects(self, objectInfo):
         x, y, w, h = objectInfo["bbox"]
         x *= self.stretch_x
         y *= self.stretch_y
         w *= self.stretch_x
         h *= self.stretch_y
-        lineLengthWeightage = 2
+        line_length_weightage = 2
         centerX = x
         centerY = y + (h / 2) + 15
         if (centerY + 15 >= self.viewer_size[1]):
@@ -368,7 +368,7 @@ class Display:
                                   (int(x + (w / 2)),
                                       int(y + (h / 2))),
                                   self.label_2_color[objectInfo["label"]],
-                                  lineLengthWeightage)
+                                  line_length_weightage)
         font = cv2.FONT_HERSHEY_SIMPLEX
         shownText = objectInfo["label"].replace(
             "sign", "") + " ID: " + str(objectInfo["id"])
@@ -393,21 +393,21 @@ class Display:
         im_pil = Image.fromarray(cv2.cvtColor(cv_image, cv2.COLOR_RGB2RGBA))
         return im_pil
 
-    def transposeImageSrc(self, arrow):
+    def __transpose_image_src(self, arrow):
         src = self.__openCVToPil(self.frame)
         img = arrow.resize(src.size)
         img = Image.alpha_composite(src, img)
         imcv = self.__pilToOpenCV(img)
         return imcv
 
-    def __showleft_arrow_overlay(self):
-        self.frame = self.transposeImageSrc(self.right_arrow_overlay)
+    def __show_left_arrow(self):
+        self.frame = self.__transpose_image_src(self.right_arrow_overlay)
 
-    def __showforward_arrow_overlay(self):
-        self.frame = self.transposeImageSrc(self.forward_arrow_overlay)
+    def __show_forward_arrow(self):
+        self.frame = self.__transpose_image_src(self.forward_arrow_overlay)
 
-    def __showright_arrow_overlay(self):
-        self.frame = self.transposeImageSrc(self.left_arrow_overlay)
+    def __show_right_arrow(self):
+        self.frame = self.__transpose_image_src(self.left_arrow_overlay)
 
     def get_stretch_factor(self):
         return self.stretch
