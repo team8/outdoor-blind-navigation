@@ -48,6 +48,7 @@ class DETECTION(Structure):
                 ("sim", c_float),
                 ("track_id", c_int)]
 
+
 class DETNUMPAIR(Structure):
     _fields_ = [("num", c_int),
                 ("dets", POINTER(DETECTION))]
@@ -113,7 +114,8 @@ def load_network(config_file, data_file, weights, batch_size=1):
         config_file.encode("ascii"),
         weights.encode("ascii"), 0, batch_size)
     metadata = load_meta(data_file.encode("ascii"))
-    class_names = [metadata.names[i].decode("ascii") for i in range(metadata.classes)]
+    class_names = [metadata.names[i].decode(
+        "ascii") for i in range(metadata.classes)]
     colors = class_colors(class_names)
     return network, class_names, colors
 
@@ -123,7 +125,14 @@ def print_detections(detections, coordinates=False):
     for label, confidence, bbox in detections:
         x, y, w, h = bbox
         if coordinates:
-            print("{}: {}%    (left_x: {:.0f}   top_y:  {:.0f}   width:   {:.0f}   height:  {:.0f})".format(label, confidence, x, y, w, h))
+            print(
+                "{}: {}%    (left_x: {:.0f}   top_y:  {:.0f}   width:   {:.0f}   height:  {:.0f})".format(
+                    label,
+                    confidence,
+                    x,
+                    y,
+                    w,
+                    h))
         else:
             print("{}: {}%".format(label, confidence))
 
@@ -161,7 +170,13 @@ def remove_negatives(detections, class_names, num):
     return predictions
 
 
-def detect_image(network, class_names, image, thresh=.5, hier_thresh=.5, nms=.45):
+def detect_image(
+        network,
+        class_names,
+        image,
+        thresh=.5,
+        hier_thresh=.5,
+        nms=.45):
     """
         Returns a list with highest confidence class and their bbox
     """
@@ -218,7 +233,8 @@ if os.name == "nt":
         else:
             # Try the other way, in case no_gpu was compile but not renamed
             lib = CDLL(winGPUdll, RTLD_GLOBAL)
-            print("Environment variables indicated a CPU run, but we didn't find {}. Trying a GPU run anyway.".format(winNoGPUdll))
+            print("Environment variables indicated a CPU run, but we didn't find {}. Trying a GPU run anyway.".format(
+                winNoGPUdll))
 else:
     lib = CDLL(os.path.join(
         os.environ.get('DARKNET_PATH', './'),
@@ -226,8 +242,8 @@ else:
 
 
 # lib = CDLL(os.path.join(
-        # os.environ.get('DARKNET_PATH', '../'),
-        # "libdarknet.so"), RTLD_GLOBAL)
+    # os.environ.get('DARKNET_PATH', '../'),
+    # "libdarknet.so"), RTLD_GLOBAL)
 
 
 lib.network_width.argtypes = [c_void_p]
@@ -236,7 +252,7 @@ lib.network_height.argtypes = [c_void_p]
 lib.network_height.restype = c_int
 
 copy_image_from_bytes = lib.copy_image_from_bytes
-copy_image_from_bytes.argtypes = [IMAGE,c_char_p]
+copy_image_from_bytes.argtypes = [IMAGE, c_char_p]
 
 predict = lib.network_predict_ptr
 predict.argtypes = [c_void_p, POINTER(c_float)]
@@ -253,7 +269,16 @@ make_image.argtypes = [c_int, c_int, c_int]
 make_image.restype = IMAGE
 
 get_network_boxes = lib.get_network_boxes
-get_network_boxes.argtypes = [c_void_p, c_int, c_int, c_float, c_float, POINTER(c_int), c_int, POINTER(c_int), c_int]
+get_network_boxes.argtypes = [
+    c_void_p,
+    c_int,
+    c_int,
+    c_float,
+    c_float,
+    POINTER(c_int),
+    c_int,
+    POINTER(c_int),
+    c_int]
 get_network_boxes.restype = POINTER(DETECTION)
 
 make_network_boxes = lib.make_network_boxes
@@ -320,6 +345,15 @@ predict_image_letterbox.argtypes = [c_void_p, IMAGE]
 predict_image_letterbox.restype = POINTER(c_float)
 
 network_predict_batch = lib.network_predict_batch
-network_predict_batch.argtypes = [c_void_p, IMAGE, c_int, c_int, c_int,
-                                   c_float, c_float, POINTER(c_int), c_int, c_int]
+network_predict_batch.argtypes = [
+    c_void_p,
+    IMAGE,
+    c_int,
+    c_int,
+    c_int,
+    c_float,
+    c_float,
+    POINTER(c_int),
+    c_int,
+    c_int]
 network_predict_batch.restype = POINTER(DETNUMPAIR)

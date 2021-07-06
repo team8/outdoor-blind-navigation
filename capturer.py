@@ -4,7 +4,8 @@ import time
 
 try:
     stream = cv2.VideoCapture(0)
-    cv2.resize(stream.read()[1], (100, 100)) # throws exception if webcam is not attached
+    # throws exception if webcam is not attached
+    cv2.resize(stream.read()[1], (100, 100))
 except Exception as e:
     stream = cv2.VideoCapture('./TurnSidewalk.mp4')
     # stream = cv2.VideoCapture('./PersonCollision.mp4')
@@ -21,6 +22,7 @@ except Exception as e:
     # stream.set(cv2.CAP_PROP_POS_FRAMES, (position_video * stream.get(cv2.CAP_PROP_FRAME_COUNT)))
 images_queue = CircularBuffer(2)
 
+
 def capturer():
     first_run = True
     print("Capturing Starting")
@@ -33,7 +35,6 @@ def capturer():
             # time.sleep(0.3)
         first_run = False
 
+
 def get_images():
     return images_queue
-
-

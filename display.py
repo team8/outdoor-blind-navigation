@@ -10,24 +10,32 @@ import person_automobile_sign_detection.collision as collision
 
 class Display:
     # dimension can be 2 or 3
-    def __init__(self, dimension=3, size=(720, 540), bbox_inference_coord_size=(618, 618)):
+    def __init__(
+        self, dimension=3, size=(
+            720, 540), bbox_inference_coord_size=(
+            618, 618)):
         self.dimension = dimension
         self.viewer_size = size
         self.bbox_inference_coord_size = bbox_inference_coord_size
-        self.stretch_x = self.viewer_size[0]/self.bbox_inference_coord_size[0]
-        self.stretch_y = self.viewer_size[1]/self.bbox_inference_coord_size[1]
+        self.stretch_x = self.viewer_size[0] / \
+            self.bbox_inference_coord_size[0]
+        self.stretch_y = self.viewer_size[1] / \
+            self.bbox_inference_coord_size[1]
         self.stretch = (self.stretch_x, self.stretch_y)
         self.label_2_color = {"stop sign": ((0, 0, 255)),
-                             "person": ((0, 255, 0)),
-                             "car": ((255, 0, 0)),
-                             "bicycle": ((255, 255, 0)),
-                             "traffic light": ((255, 0, 255)),
-                             "fire hydrant": ((0, 255, 255)),
-                             "bench": ((200, 100, 200))}
+                              "person": ((0, 255, 0)),
+                              "car": ((255, 0, 0)),
+                              "bicycle": ((255, 255, 0)),
+                              "traffic light": ((255, 0, 255)),
+                              "fire hydrant": ((0, 255, 255)),
+                              "bench": ((200, 100, 200))}
 
-        self.right_arrow_overlay = Image.open("./display_resources/RightExpanded.png")
-        self.left_arrow_overlay = Image.open("./display_resources/LeftExpanded.png")
-        self.forward_arrow_overlay = Image.open("./display_resources/ForwardExpanded.png")
+        self.right_arrow_overlay = Image.open(
+            "./display_resources/RightExpanded.png")
+        self.left_arrow_overlay = Image.open(
+            "./display_resources/LeftExpanded.png")
+        self.forward_arrow_overlay = Image.open(
+            "./display_resources/ForwardExpanded.png")
         self.view_mode = 0
         self.t = 0
         self.tX = 0
@@ -36,15 +44,20 @@ class Display:
         if self.dimension == 3:
             print("Initializing pangolin opengl 3d viewer")
 
-            self.win = pango.CreateWindowAndBind("Visualization Tool 3d", size[0], size[1])
+            self.win = pango.CreateWindowAndBind(
+                "Visualization Tool 3d", size[0], size[1])
             glEnable(GL_DEPTH_TEST)
 
             # Definition of Projection and initial ModelView matrices
 
-            # ProjectionMatrix (int w, int h, double fu, double fv, double u0, double v0, double zNear, double zFar)
-            self.pm = pango.ProjectionMatrix(640, 480, 420, 420, 320, 240, 0.5, 100)
+            # ProjectionMatrix (int w, int h, double fu, double fv, double u0,
+            # double v0, double zNear, double zFar)
+            self.pm = pango.ProjectionMatrix(
+                640, 480, 420, 420, 320, 240, 0.5, 100)
 
-            # This allows changing of "camera" angle : glulookat style model view matrix (x, y, z, lx, ly, lz, AxisDirection Up) Forward is -z and up is +y
+            # This allows changing of "camera" angle : glulookat style model
+            # view matrix (x, y, z, lx, ly, lz, AxisDirection Up) Forward is -z
+            # and up is +y
             self.mv = pango.ModelViewLookAt(0.3, 0, -3.5,
                                             0, 0, 0,
                                             0, -1, 0)
@@ -58,14 +71,16 @@ class Display:
             self.handler = pango.Handler3D(self.s_cam)
             self.d_cam = (
                 pango.CreateDisplay()
-                    .SetBounds(
+                .SetBounds(
                     pango.Attach(0),
                     pango.Attach(1),
-                    pango.Attach.Pix(1),  # side bar which can be used for notification system; not used right now
+                    # side bar which can be used for notification system; not
+                    # used right now
+                    pango.Attach.Pix(1),
                     pango.Attach(1),
                     -640.0 / 480.0,
                 )
-                    .SetHandler(self.handler)
+                .SetHandler(self.handler)
             )
 
             panel = pango.CreatePanel('ui')
@@ -76,12 +91,18 @@ class Display:
             self.stop = pango.VarBool('ui.Stop Sign', value=False, toggle=True)
             self.person = pango.VarBool('ui.Person', value=False, toggle=True)
             self.car = pango.VarBool('ui.Car', value=False, toggle=True)
-            self.cperson = pango.VarBool('ui.Person Collision', value=False, toggle=True)
-            self.ccar = pango.VarBool('ui.Car Collision', value=False, toggle=True)
-            self.tright = pango.VarBool('ui.Turn Right', value=False, toggle=True)
-            self.tleft = pango.VarBool('ui.Turn Left', value=False, toggle=True)
-            self.sright = pango.VarBool('ui.Shift Right', value=False, toggle=True)
-            self.sleft = pango.VarBool('ui.Shift Left', value=False, toggle=True)
+            self.cperson = pango.VarBool(
+                'ui.Person Collision', value=False, toggle=True)
+            self.ccar = pango.VarBool(
+                'ui.Car Collision', value=False, toggle=True)
+            self.tright = pango.VarBool(
+                'ui.Turn Right', value=False, toggle=True)
+            self.tleft = pango.VarBool(
+                'ui.Turn Left', value=False, toggle=True)
+            self.sright = pango.VarBool(
+                'ui.Shift Right', value=False, toggle=True)
+            self.sleft = pango.VarBool(
+                'ui.Shift Left', value=False, toggle=True)
 
             glPointSize(15)
             # pango.RegisterKeyPressCallback(int(pango.PANGO_CTRL) + ord('r'), self.rehome3dViewer()) # Key press with panfolin for rehoming is broken - use different key press lib
@@ -110,9 +131,10 @@ class Display:
                 self.__showright_arrow_overlay()
 
     def view(self):
-        self.mv = pango.ModelViewLookAt(math.cos(self.tX), math.sin(self.tY), -3.5,
-                                        0, 0, 0,
-                                        0, -1, 0)
+        self.mv = pango.ModelViewLookAt(
+            math.cos(
+                self.tX), math.sin(
+                self.tY), -3.5, 0, 0, 0, 0, -1, 0)
 
         self.s_cam = pango.OpenGlRenderState(self.pm, self.mv)
         # Create Interactive View in window
@@ -143,15 +165,27 @@ class Display:
                 glLineWidth(5)
 
                 # Generates and applies texture for canvas
-                texture_data = cv2.rotate(cv2.cvtColor(cv2.resize(self.frame, (1400, 1400)), cv2.COLOR_BGR2RGBA),
-                                          cv2.ROTATE_180)
+                texture_data = cv2.rotate(
+                    cv2.cvtColor(
+                        cv2.resize(
+                            self.frame,
+                            (1400,
+                             1400)),
+                        cv2.COLOR_BGR2RGBA),
+                    cv2.ROTATE_180)
                 height, width, _ = texture_data.shape
 
                 glBindTexture(GL_TEXTURE_2D, self.texid)
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
                              0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+                glTexParameteri(
+                    GL_TEXTURE_2D,
+                    GL_TEXTURE_MIN_FILTER,
+                    GL_NEAREST)
+                glTexParameteri(
+                    GL_TEXTURE_2D,
+                    GL_TEXTURE_MAG_FILTER,
+                    GL_NEAREST)
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
                 glBindTexture(GL_TEXTURE_2D, 0)
@@ -166,8 +200,11 @@ class Display:
                     self.view_mode = 1
                     self.view()
 
-                self.__drawCanvas((1, 1.0, 0.025), (-1, -1.0, 0))  # Draws 3d canvas
-                self.__putMovementDirectionVectors()  # Draws arrows on 3d viewer for movement direction vector of objects
+                self.__drawCanvas(
+                    (1, 1.0, 0.025), (-1, -1.0, 0))  # Draws 3d canvas
+                # Draws arrows on 3d viewer for movement direction vector of
+                # objects
+                self.__putMovementDirectionVectors()
                 # self.__put_statuses({"person": False, "stop sign": False, "car": True, "turn left": False, "turn right": False, "shift right": False, "shift left": False, "person collision": False, "car collision": True})
                 self.__putCollisionROI()
                 self.t += 0.05
@@ -205,7 +242,8 @@ class Display:
         pango.DrawLine([[x1, y2, z1], [x1, y2, z1 - 0.3]])  # top right
         pango.DrawLine([[x2, y2, z1], [x2, y2, z1 - 0.3]])  # top left
         pango.DrawLine([[x1, y1, z1], [x1, y1, z1 - 0.3]])  # bottom right
-        pango.DrawPoints([[x2, y1, z1 - 0.3], [x1, y2, z1 - 0.3], [x2, y2, z1 - 0.3], [x1, y1, z1 - 0.3]])
+        pango.DrawPoints([[x2, y1, z1 - 0.3], [x1, y2, z1 - 0.3],
+                         [x2, y2, z1 - 0.3], [x1, y1, z1 - 0.3]])
 
         glColor3f(1.0, 1.0, 1.0)
 
@@ -260,30 +298,50 @@ class Display:
         if self.obstacles is not None:
             for detection in self.obstacles:
                 if detection["label"] == "person" or detection["label"] == "car":
-                    if detection["colliding"] == True:
+                    if detection["colliding"]:
                         glColor3f(1, 0.5, 0.25)
                     x_offset, y_offset, z_offset = detection["mdv"]
                     x_anchor, y_anchor, w, h = detection["bbox"]
-                    x_offset = (x_offset * self.stretch_x / self.viewer_size[0])
-                    y_offset = (y_offset * self.stretch_y / self.viewer_size[1])
-                    x_anchor = (x_anchor * self.stretch_x / self.viewer_size[0]) * 2 - 1
-                    y_anchor = (y_anchor * self.stretch_y / self.viewer_size[1]) * 2 - 1
+                    x_offset = (
+                        x_offset *
+                        self.stretch_x /
+                        self.viewer_size[0])
+                    y_offset = (
+                        y_offset *
+                        self.stretch_y /
+                        self.viewer_size[1])
+                    x_anchor = (x_anchor * self.stretch_x /
+                                self.viewer_size[0]) * 2 - 1
+                    y_anchor = (y_anchor * self.stretch_y /
+                                self.viewer_size[1]) * 2 - 1
 
                     wanted_z_anchor = -(z_offset)
-                    z_anchor = max(math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor, -0.5) if detection["colliding"] == False else min(math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor, -collision.collision_ROI[0][2] - 0.2)
+                    z_anchor = max(math.sqrt(1 -
+                                             x_offset**2 -
+                                             y_offset**2) *
+                                   wanted_z_anchor, -
+                                   0.5) if detection["colliding"] == False else min(math.sqrt(1 -
+                                                                                              x_offset**2 -
+                                                                                              y_offset**2) *
+                                                                                    wanted_z_anchor, -
+                                                                                    collision.collision_ROI[0][2] -
+                                                                                    0.2)
                     # z axis (+)  is toward self
-                    pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor + x_offset, y_anchor + y_offset,
-                                                              z_anchor]])  # down is positive y, right is positive x - this does bottom left
+                    # down is positive y, right is positive x - this does
+                    # bottom left
+                    pango.DrawLine([[x_anchor, y_anchor, 0], [
+                                   x_anchor + x_offset, y_anchor + y_offset, z_anchor]])
 
-                    pango.DrawPoints([[x_anchor + x_offset, y_anchor + y_offset, z_anchor]])
+                    pango.DrawPoints(
+                        [[x_anchor + x_offset, y_anchor + y_offset, z_anchor]])
 
-                    if detection["colliding"] == True:
+                    if detection["colliding"]:
                         glColor3f(1, 1, 1)
 
     def __putCollisionROI(self):
         collision_ROI = collision.collision_ROI
         for i in range(0, len(collision_ROI) - 1):
-           pango.DrawLine([collision_ROI[i], collision_ROI[i+1]])
+            pango.DrawLine([collision_ROI[i], collision_ROI[i + 1]])
 
     def put_objects(self, obstacles):
         self.obstacles = obstacles
@@ -304,12 +362,28 @@ class Display:
         centerY = y + (h / 2) + 15
         if (centerY + 15 >= self.viewer_size[1]):
             centerY = y - (h / 2) - 15
-        self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))), (int(x + (w / 2)), int(y + (h / 2))), self.label_2_color[objectInfo["label"]], lineLengthWeightage)
+        self.rect = cv2.rectangle(self.frame,
+                                  (int(x - (w / 2)),
+                                   int(y - (h / 2))),
+                                  (int(x + (w / 2)),
+                                      int(y + (h / 2))),
+                                  self.label_2_color[objectInfo["label"]],
+                                  lineLengthWeightage)
         font = cv2.FONT_HERSHEY_SIMPLEX
-        shownText = objectInfo["label"].replace("sign", "") + " ID: " + str(objectInfo["id"])
+        shownText = objectInfo["label"].replace(
+            "sign", "") + " ID: " + str(objectInfo["id"])
         textsize = cv2.getTextSize(shownText, font, 0.5, 2)[0]
-        cv2.putText(self.frame, shownText, (int(centerX - (textsize[0] / 2)), int(centerY)), font, 0.7, (255, 255, 255),
-                    2, cv2.LINE_AA)
+        cv2.putText(self.frame,
+                    shownText,
+                    (int(centerX - (textsize[0] / 2)),
+                     int(centerY)),
+                    font,
+                    0.7,
+                    (255,
+                        255,
+                        255),
+                    2,
+                    cv2.LINE_AA)
         return self.frame
 
     def __pilToOpenCV(self, pil_image):
@@ -337,5 +411,6 @@ class Display:
 
     def get_stretch_factor(self):
         return self.stretch
+
     def get_viewer_size(self):
         return self.viewer_size
