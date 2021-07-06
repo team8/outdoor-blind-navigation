@@ -10,7 +10,7 @@ class CircularBuffer:
         self.lastAccessed = False
 
     #Start out the buffer with given list listIn
-    def initQueue(self, listIn):
+    def init_queue(self, listIn):
         temp = listIn.copy()
         temp.reverse()
         for i in temp:
@@ -72,16 +72,15 @@ class CircularBuffer:
     def size(self):
         return len(self.queue)
 
-    def getLast(self):
+    def get_last(self):
         self.lastAccessed = True
         return self.queue[0]
 
     def getList(self):
         return self.queue
 
-    def getLastAccessed(self) -> bool:
+    def get_last_accessed(self) -> bool:
         return self.lastAccessed
 
-    def replaceIndex(self, new_val, index):
+    def replace_index(self, new_val, index):
         self.queue[index] = new_val
-

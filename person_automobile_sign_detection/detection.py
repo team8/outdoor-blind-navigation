@@ -60,7 +60,7 @@ class Detection:
         del self.mdv_history[-1]
 
     def __updateCollision(self):
-        self.collision_history.insert(0, collision_detector.isColliding({"label": self.label, "bbox": self.bbox_history[0], "mdv": self.mdv_history[0]}))
+        self.collision_history.insert(0, collision_detector.is_colliding({"label": self.label, "bbox": self.bbox_history[0], "mdv": self.mdv_history[0]}))
         del self.collision_history[-1]
         self.colliding = self.collision_history[0] 
         # if self.colliding == False and self.collision_history.count(True) > len(self.collision_history) * 0.6:

@@ -14,10 +14,10 @@ class Display:
         self.dimension = dimension
         self.viewer_size = size
         self.bbox_inference_coord_size = bbox_inference_coord_size
-        self.stretchXValue = self.viewer_size[0]/self.bbox_inference_coord_size[0]
-        self.stretchYValue = self.viewer_size[1]/self.bbox_inference_coord_size[1]
-        self.stretch = (self.stretchXValue, self.stretchYValue)
-        self.labelToColor = {"stop sign": ((0, 0, 255)),
+        self.stretch_x = self.viewer_size[0]/self.bbox_inference_coord_size[0]
+        self.stretch_y = self.viewer_size[1]/self.bbox_inference_coord_size[1]
+        self.stretch = (self.stretch_x, self.stretch_y)
+        self.label_2_color = {"stop sign": ((0, 0, 255)),
                              "person": ((0, 255, 0)),
                              "car": ((255, 0, 0)),
                              "bicycle": ((255, 255, 0)),
@@ -25,9 +25,9 @@ class Display:
                              "fire hydrant": ((0, 255, 255)),
                              "bench": ((200, 100, 200))}
 
-        self.rightArrow = Image.open("./display_resources/RightExpanded.png")
-        self.leftArrow = Image.open("./display_resources/LeftExpanded.png")
-        self.forwardArrow = Image.open("./display_resources/ForwardExpanded.png")
+        self.right_arrow_overlay = Image.open("./display_resources/RightExpanded.png")
+        self.left_arrow_overlay = Image.open("./display_resources/LeftExpanded.png")
+        self.forward_arrow_overlay = Image.open("./display_resources/ForwardExpanded.png")
         self.view_mode = 0
         self.t = 0
         self.tX = 0
@@ -91,23 +91,23 @@ class Display:
         else:
             raise Exception("Dimension for viewing tool must be either 2 or 3")
 
-    def putVideoFrame(self, orig_cap):
+    def put_video_frame(self, orig_cap):
         self.frame = cv2.resize(orig_cap, self.viewer_size)
 
-    def putSidewalkState(self, shift_state, turn_state):
+    def put_position_state(self, shift_state, turn_state):
         if turn_state == "Right Turn":
-            self.__showLeftArrow()
+            self.__showleft_arrow_overlay()
             return
         if turn_state == "Left Turn":
-            self.__showRightArrow()
+            self.__showright_arrow_overlay()
             return
         if turn_state == "No Turn":
             if shift_state == "Left of Sidewalk":
-                self.__showLeftArrow()
+                self.__showleft_arrow_overlay()
             if shift_state == "Middle of Sidewalk":
-                self.__showForwardArrow()
+                self.__showforward_arrow_overlay()
             if shift_state == "Right of Sidewalk":
-                self.__showRightArrow()
+                self.__showright_arrow_overlay()
 
     def view(self):
         self.mv = pango.ModelViewLookAt(math.cos(self.tX), math.sin(self.tY), -3.5,
@@ -132,7 +132,7 @@ class Display:
         self.tX = 0
         self.tY = 0
 
-    def displayScreen(self):
+    def display(self):
         if self.dimension == 3:
             glEnable(GL_TEXTURE_2D)
             self.texid = glGenTextures(1)
@@ -179,7 +179,7 @@ class Display:
             cv2.imshow("2d visualizer", self.frame)
             cv2.waitKey(1)
 
-    def putState(self, map):
+    def put_state(self, map):
         self.person.SetVal(map["person"])
         self.car.SetVal(map["car"])
         self.cperson.SetVal(map["person collision"])
@@ -264,13 +264,13 @@ class Display:
                         glColor3f(1, 0.5, 0.25)
                     x_offset, y_offset, z_offset = detection["mdv"]
                     x_anchor, y_anchor, w, h = detection["bbox"]
-                    x_offset = (x_offset * self.stretchXValue / self.viewer_size[0])
-                    y_offset = (y_offset * self.stretchYValue / self.viewer_size[1])
-                    x_anchor = (x_anchor * self.stretchXValue / self.viewer_size[0]) * 2 - 1
-                    y_anchor = (y_anchor * self.stretchYValue / self.viewer_size[1]) * 2 - 1
+                    x_offset = (x_offset * self.stretch_x / self.viewer_size[0])
+                    y_offset = (y_offset * self.stretch_y / self.viewer_size[1])
+                    x_anchor = (x_anchor * self.stretch_x / self.viewer_size[0]) * 2 - 1
+                    y_anchor = (y_anchor * self.stretch_y / self.viewer_size[1]) * 2 - 1
 
                     wanted_z_anchor = -(z_offset)
-                    z_anchor = max(math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor, -0.5) if detection["colliding"] == False else min(math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor, -collision.collisionROI[0][2] - 0.2)
+                    z_anchor = max(math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor, -0.5) if detection["colliding"] == False else min(math.sqrt(1 - x_offset**2 - y_offset**2) * wanted_z_anchor, -collision.collision_ROI[0][2] - 0.2)
                     # z axis (+)  is toward self
                     pango.DrawLine([[x_anchor, y_anchor, 0], [x_anchor + x_offset, y_anchor + y_offset,
                                                               z_anchor]])  # down is positive y, right is positive x - this does bottom left
@@ -281,30 +281,30 @@ class Display:
                         glColor3f(1, 1, 1)
 
     def __putCollisionROI(self):
-        collisionROI = collision.collisionROI
-        for i in range(0, len(collisionROI) - 1):
-           pango.DrawLine([collisionROI[i], collisionROI[i+1]])
+        collision_ROI = collision.collision_ROI
+        for i in range(0, len(collision_ROI) - 1):
+           pango.DrawLine([collision_ROI[i], collision_ROI[i+1]])
 
-    def putObjects(self, obstacles):
+    def put_objects(self, obstacles):
         self.obstacles = obstacles
         if obstacles is None:
             return
         for detection in obstacles:
-            if detection["label"] in self.labelToColor.keys():
+            if detection["label"] in self.label_2_color.keys():
                 self.frame = self.__displayObjects(detection)
 
     def __displayObjects(self, objectInfo):
         x, y, w, h = objectInfo["bbox"]
-        x *= self.stretchXValue
-        y *= self.stretchYValue
-        w *= self.stretchXValue
-        h *= self.stretchYValue
+        x *= self.stretch_x
+        y *= self.stretch_y
+        w *= self.stretch_x
+        h *= self.stretch_y
         lineLengthWeightage = 2
         centerX = x
         centerY = y + (h / 2) + 15
         if (centerY + 15 >= self.viewer_size[1]):
             centerY = y - (h / 2) - 15
-        self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))), (int(x + (w / 2)), int(y + (h / 2))), self.labelToColor[objectInfo["label"]], lineLengthWeightage)
+        self.rect = cv2.rectangle(self.frame, (int(x - (w / 2)), int(y - (h / 2))), (int(x + (w / 2)), int(y + (h / 2))), self.label_2_color[objectInfo["label"]], lineLengthWeightage)
         font = cv2.FONT_HERSHEY_SIMPLEX
         shownText = objectInfo["label"].replace("sign", "") + " ID: " + str(objectInfo["id"])
         textsize = cv2.getTextSize(shownText, font, 0.5, 2)[0]
@@ -326,18 +326,16 @@ class Display:
         imcv = self.__pilToOpenCV(img)
         return imcv
 
-    def __showLeftArrow(self):
-        self.frame = self.transposeImageSrc(self.rightArrow)
+    def __showleft_arrow_overlay(self):
+        self.frame = self.transposeImageSrc(self.right_arrow_overlay)
 
-    def __showForwardArrow(self):
-        self.frame = self.transposeImageSrc(self.forwardArrow)
+    def __showforward_arrow_overlay(self):
+        self.frame = self.transposeImageSrc(self.forward_arrow_overlay)
 
-    def __showRightArrow(self):
-        self.frame = self.transposeImageSrc(self.leftArrow)
+    def __showright_arrow_overlay(self):
+        self.frame = self.transposeImageSrc(self.left_arrow_overlay)
 
-    def getStretchFactor(self):
+    def get_stretch_factor(self):
         return self.stretch
-    def getViewerSize(self):
+    def get_viewer_size(self):
         return self.viewer_size
-
-

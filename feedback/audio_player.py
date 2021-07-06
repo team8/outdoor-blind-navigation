@@ -63,7 +63,7 @@ class AudioPlayer:
                 for clip_index in range(0, len(playedAudioClips.getList())):
                     if playedAudioClips.getList()[clip_index] != None:
                         if (currentTime - playedAudioClips.getList()[clip_index][1]) > timeTillPlayedAudioClipDelete:
-                            playedAudioClips.replaceIndex(None, clip_index)
+                            playedAudioClips.replace_index(None, clip_index)
             except Exception as e:
                 print(e)
 

@@ -28,9 +28,9 @@ int mapKeymap(int osx_key)
         return pangolin::PANGO_SPECIAL + pangolin::PANGO_KEY_UP;
     else if(osx_key == NSDownArrowFunctionKey)
         return pangolin::PANGO_SPECIAL + pangolin::PANGO_KEY_DOWN;
-    else if(osx_key == NSLeftArrowFunctionKey)
+    else if(osx_key == NSleft_arrow_overlayFunctionKey)
         return pangolin::PANGO_SPECIAL + pangolin::PANGO_KEY_LEFT;
-    else if(osx_key == NSRightArrowFunctionKey)
+    else if(osx_key == NSright_arrow_overlayFunctionKey)
         return pangolin::PANGO_SPECIAL + pangolin::PANGO_KEY_RIGHT;
     else if(osx_key == NSPageUpFunctionKey)
         return pangolin::PANGO_SPECIAL + pangolin::PANGO_KEY_PAGE_UP;

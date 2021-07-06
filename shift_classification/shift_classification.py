@@ -2,12 +2,11 @@ import cv2
 import threading
 import tensorflow as tf
 import numpy as np
-import time
 import capturer
 from utils.circularBuffer import CircularBuffer
 
 classes = ['Left of Sidewalk', 'Middle of Sidewalk', 'Right of Sidewalk', 'Nothing Detected']
-model_path = "./sidewalk_classification/sidewalk_classification_model_vgg16_final.h5"
+model_path = "./shift_classification/shift_classification_model_vgg16_final.h5"
 readings_buffer_size = 50
 image_preprocessing_dimens = (100, 100)
 detection_threshold = 0.5
@@ -24,7 +23,7 @@ class SidewalkClassification:
     def capture_processing(self):
         while True:
             try:
-                frame = capturer.getImages().getLast()
+                frame = capturer.get_images().get_last()
                 if frame is not None:
                     preprocessed_frame = cv2.resize(frame, image_preprocessing_dimens, interpolation=cv2.INTER_LINEAR)
                     self.images_queue.add(np.expand_dims(preprocessed_frame, 0))
@@ -35,7 +34,7 @@ class SidewalkClassification:
         threading.Thread(target=self.capture_processing).start()
         while True:
             try:
-                self.perform_inference(self.images_queue.getLast())
+                self.perform_inference(self.images_queue.get_last())
             except Exception as e:
                 print("Classification Not Working", e)
 
@@ -48,5 +47,5 @@ class SidewalkClassification:
         self.classifier_queue.add(classes[len(classes) - 1] if averaged_result is None else classes[np.argmax(averaged_result)])
 
     def get_inference(self):
-        return self.classifier_queue.getLast()
+        return self.classifier_queue.get_last()
 

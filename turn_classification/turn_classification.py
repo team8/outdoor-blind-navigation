@@ -24,7 +24,7 @@ class TurnClassification:
     def capture_processing(self):
         while True:
             try:
-                frame = capturer.getImages().getLast()
+                frame = capturer.get_images().get_last()
                 if frame is not None:
                     preprocessed_frame = cv2.resize(frame, image_preprocessing_dimens, interpolation=cv2.INTER_LINEAR)
                     self.images_queue.add(np.expand_dims(preprocessed_frame, 0))
@@ -35,7 +35,7 @@ class TurnClassification:
         threading.Thread(target=self.capture_processing).start()
         while True:
             try:
-                self.perform_inference(self.images_queue.getLast())
+                self.perform_inference(self.images_queue.get_last())
             except Exception as e:
                 print("Classification Not Working", e)
 
@@ -48,5 +48,4 @@ class TurnClassification:
         self.classifier_queue.add("No Turn" if averaged_result is None else labels[np.argmax(averaged_result)])
 
     def get_inference(self):
-        return self.classifier_queue.getLast()
-
+        return self.classifier_queue.get_last()

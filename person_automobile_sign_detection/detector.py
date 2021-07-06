@@ -48,12 +48,12 @@ class Detector:
         threading.Thread(target=self.detection_starter).start()
 
     def setup_collision_detector(self, viewer_size, viewer_stretch_factor):
-        collision.setConstants(viewer_size, viewer_stretch_factor)
+        collision.set_constants(viewer_size, viewer_stretch_factor)
 
     def capture_processing(self):
         while True:
             try:
-                frame = capturer.getImages().getLast()
+                frame = capturer.get_images().get_last()
                 preprocessed_frame = cv2.resize(frame, (self.width, self.height), interpolation=cv2.INTER_LINEAR)
                 darknet_image = darknet.make_image(self.width, self.height, 3)
                 darknet.copy_image_from_bytes(darknet_image, preprocessed_frame.tobytes())
@@ -80,7 +80,7 @@ class Detector:
             last_time = time.time()
             detections = darknet.detect_image(self.network, self.class_names, last_darknet_image, thresh=0.25)
 
-            self.prev_detections_queue.add(self.detections_queue.getLast())
+            self.prev_detections_queue.add(self.detections_queue.get_last())
             self.detections_queue.add(detections)
             self.update_running_detections(detections)
             self.fps_queue.add(1 / (time.time() - last_time))
@@ -122,14 +122,14 @@ class Detector:
         self.running_detections = [i for j, i in enumerate(self.running_detections) if j not in indexToDelete]
 
     def getFPS(self):
-        return self.fps_queue.getLast()
+        return self.fps_queue.get_last()
 
     def display(self):
         while True:
             try:
-                last_detection = self.detections_queue.getLast()
+                last_detection = self.detections_queue.get_last()
                 last_image = self.images_queue.get()[1]
-                fps = self.fps_queue.getLast()
+                fps = self.fps_queue.get_last()
                 for detection in last_detection:
                     x, y, w, h = detection[2]
                     xmin = int(x - (w / 2))

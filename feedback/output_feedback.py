@@ -1,11 +1,11 @@
 from utils.circularBuffer import CircularBuffer
 import feedback.audio_player as audio_player
 
-def interpret_status(state_classifier_inference, turn_classifier_inference, object_localizer_inference):
+def interpret_status(shift_classifier_inference, turn_classifier_inference, object_localizer_inference):
     status = {"person": False, "stop sign": False, "car": False, "turn left": False, "no turn": False, "turn right": False, "shift right": False, "shift left": False, "person collision": False, "car collision": False}
-    if state_classifier_inference == "Left of Sidewalk":
+    if shift_classifier_inference == "Left of Sidewalk":
         status["shift right"] = True
-    elif state_classifier_inference == "Right of Sidewalk":
+    elif shift_classifier_inference == "Right of Sidewalk":
         status["shift left"] = True
     for obstacle in object_localizer_inference:
         if obstacle["label"] == "stop sign":
@@ -26,14 +26,14 @@ def interpret_status(state_classifier_inference, turn_classifier_inference, obje
         status["no turn"] = True
     return status
 
-def updateAudioFeedback(state_classifier_inference, turn_classifier_inference, object_localizer_inference):
+def update_audio_feedback(shift_classifier_inference, turn_classifier_inference, object_localizer_inference):
     if turn_classifier_inference == "Left Turn":
         audio_player.runTurnLeft()
     if turn_classifier_inference == "Right Turn":
         audio_player.runTurnRight()
-    if state_classifier_inference == "Left of Sidewalk":
+    if shift_classifier_inference == "Left of Sidewalk":
        audio_player.runShiftRight()
-    elif state_classifier_inference == "Right of Sidewalk":
+    elif shift_classifier_inference == "Right of Sidewalk":
        audio_player.runShiftLeft()
     for obstacle in object_localizer_inference:
         if obstacle["label"] == "stop sign":
@@ -44,5 +44,3 @@ def updateAudioFeedback(state_classifier_inference, turn_classifier_inference, o
         if obstacle["label"] == "car":
             if obstacle["colliding"] == True:
                 audio_player.runCarCollisionDetected(obstacle["id"], obstacle["colliding"])
-
-
